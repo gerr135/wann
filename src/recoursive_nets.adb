@@ -16,7 +16,7 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
-package body generic_proto_nets is
+package body recoursive_nets is
 
     function sigmoid(x : Real) return Real is
     begin
@@ -32,4 +32,4 @@ package body generic_proto_nets is
 
 
 
-end generic_proto_nets;
+end recoursive_nets;

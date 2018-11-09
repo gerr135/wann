@@ -23,7 +23,7 @@
 --
 generic
     type Real is digits <>; -- to easily select single/double precision
-package generic_proto_nets is
+package recoursive_nets is
 
     -- We can have neurons connected to 1. other neurons, 1. inputs or 3. outputs
     -- so we need an abstraction to provide common interface
@@ -54,4 +54,4 @@ package generic_proto_nets is
     function sigmoid(x : Real) return Real;
     function reLu   (x : Real) return Real;
 
-end generic_proto_nets;
+end recoursive_nets;
