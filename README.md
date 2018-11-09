@@ -1,2 +1,8 @@
-# wann
-Neural Networks the Ada way
+# wann - Neural Networks the Ada way
+Well, yeah, that would make it nnaw, but that acronym is plain unreadable, while wann sounds good :).
+
+The idea here is to use Ada features, such as separate interface section with its powerful data layout capabilities, to separate network design and minimize actual code. Typically (with Ada) once the interfaces have been properly designed, the implementation code is trivial or boring. Here, in simple cases, it might not be needed at all. At least this is the idea. 
+
+This is more of an excersize at the moment, to get something a bit different from Keras, tensorflow and such and potentially test one idea of FSM (Flying Spagetti Monster) NN. Once the library basics are in I may experiment with one idea I have and depending on results either release it (as a separate project using this one) or abandon both altogehter..
+
+About this lib: the chosen approach is different from Keras, tensorflow or other common libs in that, instead of focusing on layers with (usually) full connectivity and directly translating that into matrix/"tensor" algebra, this will try to represent actual connections explicitly as the core structure. This fill weed into that one idea I want to test later..
