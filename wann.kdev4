@@ -1,0 +1,4 @@
+[Project]
+Name=wann
+Manager=KDevCustomMakeManager
+VersionControl=kdevgit
