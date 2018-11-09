@@ -1,4 +1,4 @@
-project customNN is
+project wann is
 	-- supports debug (default) or release modes
 	-- use with -Xmode=release to prepare a release version
 
@@ -19,4 +19,4 @@ project customNN is
       end case;
    end Compiler;
 
-end customNN;
+end wann;

@@ -1,0 +1,8 @@
+[Buildset]
+BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x08\x00w\x00a\x00n\x00n)
+
+[Project]
+VersionControlSupport=kdevgit
+
+[SourceFileTemplates]
+LastUsedTemplate=/home/gerr/.local/share/kdevfiletemplates/template_descriptions/ada_pkg_basic.desktop

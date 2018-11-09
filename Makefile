@@ -3,4 +3,4 @@ SOURCES = src/*.ad?
 
 # rule to link the program
 customNN: $(SOURCES)
-	gprbuild -P customNN.gpr
+	gprbuild -P wann.gpr

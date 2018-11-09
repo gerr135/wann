@@ -1,6 +1,6 @@
 --
 -- <one line to give the program's name and a brief idea of what it does.>
--- 
+--
 -- This program is distributed in the hope that it will be useful,
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -12,6 +12,8 @@ with Ada.Directories, Ada.Environment_Variables;
 with Ada.Text_IO, Ada.Integer_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 -- all methods in .Unbounded are easy to ident and have unique names, no need to hide visibility
+
+with generic_proto_nets;
 
 
 procedure run_customNN is
@@ -123,6 +125,12 @@ procedure run_customNN is
     params : ParamRec;
 
     use Ada.Text_IO;
+
+    -- try constructing nnet
+    package PN is new generic_proto_nets(Real => Float);
+    use PN;
+    C1 : Neuron(Nin=>2);
+
 
 begin  -- main
     processCommandLine (params);
