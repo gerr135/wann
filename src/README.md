@@ -43,3 +43,34 @@ forming 1st layer. Their outputs forming 2nd layer (including self-cycled neuron
 Cycles are followed until all the outputs are reached/saturated, at which point they are 
 either dropped or continued, if simulation is followed through (say, to observe the 
 post-stimulation signals/oscillations..). 
+
+Such topological sorting and layering will allow to serialize the simulation, 
+significantly restricting the width of the network pass-band (back and forth).This should 
+make the training feasible on available hardware and allow further automation, as 
+described below. In particular, to keep the network reasonable even in auto-evolution 
+mode, an increasing score handicap maybe imposed when max width approaches some set 
+threshold.
+
+This topological sorting can and should be automated. No manual input should be needed 
+beyond constructing the initial seed network.
+The ultimate goal is to allow dynamic network that would add/remove neurons and 
+connections itself. Initial fit can be performed with a very small network. Then the 
+network should be allowed to grow to fit the training data better. Genetic algorithms can 
+be employed to produce a more optimal network.
+
+## Representation formats
+Two are envisioned: 
+1. human-readable string representation. Two variants:
+1.1 Complete representation for parsing in/out - JSON makes sense. Needto dig JSON lib for Ada..
+    Intended for proper IO/storage and ARCH independed exchange.
+    JSON libs: 1 simple search yields 2 seemingly reasonable libs:
+    **a)** an older but more stable feature-rich?, part of gnatcoll: 
+       https://docs.adacore.com/gnatcoll-docs/json.html
+    **b)** some github project, more recent required Ada-2012, but less features? 
+       In particular, no Unicode support:  https://github.com/onox/json-ada
+1.2 Compact topology-only: straight string with () for grouping or indented multiline text?
+    This one is intended for easy overview of the current topology..
+
+2.  Binary - essentially an in-memory stream IO of representation records. 
+    For quick (binary) IO/storage and applying genetic algorythms 
+    (as these should have much better field-width consistency).

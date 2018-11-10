@@ -13,7 +13,7 @@ with Ada.Text_IO, Ada.Integer_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 -- all methods in .Unbounded are easy to ident and have unique names, no need to hide visibility
 
-with generic_proto_nets;
+with wann;
 
 
 procedure run_customNN is
@@ -127,7 +127,7 @@ procedure run_customNN is
     use Ada.Text_IO;
 
     -- try constructing nnet
-    package PN is new generic_proto_nets(Real => Float);
+    package PN is new wann(Real => Float);
     use PN;
     C1 : Neuron(Nin=>2);
 
