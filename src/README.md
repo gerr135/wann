@@ -61,14 +61,14 @@ be employed to produce a more optimal network.
 ## Representation formats
 Two are envisioned: 
 1. human-readable string representation. Two variants:
-1.1 Complete representation for parsing in/out - JSON makes sense. Needto dig JSON lib for Ada..
+    1. Complete representation for parsing in/out - JSON makes sense. Need to dig JSON lib for Ada..
     Intended for proper IO/storage and ARCH independed exchange.
     JSON libs: 1 simple search yields 2 seemingly reasonable libs:
-    **a)** an older but more stable feature-rich?, part of gnatcoll: 
-       https://docs.adacore.com/gnatcoll-docs/json.html
-    **b)** some github project, more recent required Ada-2012, but less features? 
-       In particular, no Unicode support:  https://github.com/onox/json-ada
-1.2 Compact topology-only: straight string with () for grouping or indented multiline text?
+        1. an older but more stable feature-rich?, part of gnatcoll: 
+           https://docs.adacore.com/gnatcoll-docs/json.html
+        2. some github project, more recent required Ada-2012, but less features? 
+           In particular, no Unicode support:  https://github.com/onox/json-ada
+    2. Compact topology-only: straight string with () for grouping or indented multiline text?
     This one is intended for easy overview of the current topology..
 
 2.  Binary - essentially an in-memory stream IO of representation records. 
