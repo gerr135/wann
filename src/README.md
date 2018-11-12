@@ -65,7 +65,13 @@ Two are envisioned:
     Intended for proper IO/storage and ARCH independed exchange.
     JSON libs: 1 simple search yields 2 seemingly reasonable libs:
         1. an older but more stable feature-rich?, part of gnatcoll: 
-           https://docs.adacore.com/gnatcoll-docs/json.html
+           https://docs.adacore.com/gnatcoll-docs/json.html<br>
+           NOTE: it seems that a more up-to-date version of gnatcvoll is on github now:
+           https://github.com/AdaCore/gnatcoll-core/blob/master/src/gnatcoll-json.ads<br>
+           Gnatcoll itself was split into multiple packages:<br>
+           https://github.com/AdaCore/gnatcoll  - original library, only README left pointing the split parts
+           https://github.com/AdaCore/gnatcoll-core  - the core library. The other parts 
+           are essentially just bindings to Python and other languages and libs.
         2. some github project, more recent required Ada-2012, but less features? 
            In particular, no Unicode support:  https://github.com/onox/json-ada
     2. Compact topology-only: straight string with () for grouping or indented multiline text?
