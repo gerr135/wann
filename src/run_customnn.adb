@@ -14,6 +14,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 -- all methods in .Unbounded are easy to ident and have unique names, no need to hide visibility
 
 with wann;
+with wann.nets;
 
 
 procedure run_customNN is

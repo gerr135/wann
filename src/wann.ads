@@ -3,17 +3,17 @@
 --  record types and JSON/binary data formats to be passed around.
 --
 -- Copyright (C) 2018  <George Shapovalov> <gshapovalov@gmail.com>
--- 
+--
 -- This program is free software: you can redistribute it and/or modify
 -- it under the terms of the GNU Lesser General Public License as published by
 -- the Free Software Foundation, either version 3 of the License, or
 -- (at your option) any later version.
--- 
+--
 -- This program is distributed in the hope that it will be useful,
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 -- GNU General Public License for more details.
--- 
+--
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
@@ -28,7 +28,7 @@ package wann is
 
     Debug : Boolean := False;
     --  set this to True to make this lib spit out debug messages (to console)
-        
+
     type ActivationType is (Sigmoid, ReLu);
     type ActivationFunction is access function (x : Real) return Real;
 
@@ -48,7 +48,7 @@ package wann is
 
     -----------------------------------------------------
     -- Main record types representing Neuron and NNet parameters.
-    -- These types can be used as an alphabet to form a linear description, 
+    -- These types can be used as an alphabet to form a linear description,
     -- a-la DNA/protein sequence. Then the NNet can be simply defined as some linear sequence
     -- in declaration which can be passed to the NNet constructor.
 
@@ -68,7 +68,7 @@ package wann is
 
     type InputIndex  is new Positive;
     type OutputIndex is new Positive;
-    
+
     type NNetRec(Nin : InputIndex; Nout : OutputIndex; Npts : NNIndex) is record
         neurons : NeuronsArray(1 .. Npts);
         -- incomplete. Needs some more play with to decide which params to keep in what form
@@ -79,7 +79,7 @@ package wann is
     -- A mutable using Containers.Vectors
     -- Both NeuronRec and NNetRec can change not only the specific connections,
     -- but also number of neurons and connections
-    
+
     package WV is new Ada.Containers.Vectors(Index_Type=>NIndex, Element_Type=>Real);
     package NV is new Ada.Containers.Vectors(Index_Type=>NIndex, Element_Type=>NNIndex);
 
@@ -91,9 +91,22 @@ package wann is
         inputs  : NV.Vector;
     end record;
 
-    
---     type NNet is private;
-    type Neuron(Nin : NIndex) is private;
+
+    --------------------------------------
+    -- Lets define the common NNet interface here.
+    -- Specific implementations (fixed arrays or mutale collection-based; in-memory, on-disk, etc)
+    -- will be done in child packages
+
+    type NNet_Interface is limited interface;
+    -- don;t see the reason to pass it around, but may lift "limited" later..
+    procedure AddNeuron(net : in out NNet_Interface; neur : );
+    procedure DelNeuron(net : in out NNet_Interface; idx : NNIndex);
+    procedure ReplaceNeuron(net : in out NNet_Interface; idx: NNIndex; neur :);
+    function  GetNeuron(net : NNet_Interface; idx : NNIndex) return NeuronRec_Fixed;
+
+    -- perform topological sort - can make 'Class and implement once only?
+    procedure SortForward (net : NNet_Interface);
+    procedure SortBackward(net : NNet_Interface);
 
 private
 
