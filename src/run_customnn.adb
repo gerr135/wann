@@ -129,13 +129,16 @@ procedure run_customNN is
 
     -- try constructing nnet
     package PN is new wann(Real => Float);
-    use PN;
-    C1 : Neuron(Nin=>2);
+    package PNN is new PN.nets;
+    use PN, PNN;
+    net : NNet_Fixed(Nin=>2, Nout=>1, Npts=>1);
 
 
 begin  -- main
     processCommandLine (params);
     Put_Line("basic test");
+    --
+    net.ConnectNeuron(1, Sigmoid, (1,2));
 exception
 	when Finish => null;
 end run_customNN;

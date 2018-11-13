@@ -21,13 +21,13 @@
 generic
 package wann.nets is
 
-    type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex; Npts : NNIndex) is tagged limited private;
-    procedure Add_Neuron(net : in out NNet_Fixed; neur : NeuronRec_Fixed);
+    type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex; Npts : NIndex) is tagged limited private;
+    procedure ConnectNeuron(net : in out NNet_Fixed; idx : NNIndex; activat : ActivationType; connects : InputsArray);
 
 private
 
-    type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex; Npts : NNIndex) is tagged limited record
-        neurons : NeuronsArray(1 .. Npts);
+    type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex; Npts : NIndex) is tagged limited record
+        neurons : InputsArray(1 .. Npts);
     end record;
 
 end wann.nets;

@@ -29,10 +29,17 @@ package wann is
     Debug : Boolean := False;
     --  set this to True to make this lib spit out debug messages (to console)
 
+    -- General conventions
+    -- Neural Net (NNet) consists of Nin inputs, Nout outputs and Npts neurons
+    -- Neuron connections are tracked by connections index in range 1 .. Nin + Nout + Npts
+    --  First Nin numbers denote inputs  (1 .. Nin),
+    --  next Nout numbers denote outputs (Nin+1 .. Nin+Nout)
+    --  the rest of numbers index actual neurons (Nin+Nout+1 .. Nin+Nout+Npts)
+
     type ActivationType is (Sigmoid, ReLu);
     type ActivationFunction is access function (x : Real) return Real;
 
-    -- index types (to catch misplaced i errors)
+    -- index types (to catch misplaced index errors)
     -- this one tracks inputs inside neuron
     type NIndex_Base is new Natural;
     subtype NIndex is NIndex_Base range 1 .. NIndex_Base'Last;
@@ -41,8 +48,11 @@ package wann is
     type NNIndex_Base is new Natural;
     subtype NNIndex is NNIndex_Base range 1 .. NNIndex_Base'Last;
 
+    type InputIndex  is new Positive;
+    type OutputIndex is new Positive;
+
     --- index arrays. Primarily used by immutable records, but may be useful throughout.
-    type NeuronIdxArray is array (NIndex range <>) of NNIndex;
+    type InputsArray  is array (NIndex range <>) of NNIndex;
     type WeightsArray is array (NIndex_Base range <>) of Real;
 
 
@@ -53,27 +63,45 @@ package wann is
     -- in declaration which can be passed to the NNet constructor.
 
     -----------------
-    -- First, a base, immutable NNet/Neuron version, using only core Ada types (arrays, etc).
+    -- A base, immutable version, using only core Ada types (arrays, etc).
+    -- This is a reference representation of data, used as a basis for binary/JSON strings.
 
-    type NeuronRec_Fixed(Nin : NIndex) is record
+    type NeuronRec(Nin : NIndex) is record
         idx     : NNIndex; -- own index in NNet
         activat : ActivationType;
         lag     : Real;    -- delay of result propagation
         weights : WeightsArray(0 .. Nin);
-        inputs  : NeuronIdxArray(1 .. Nin);
+        inputs  : InputsArray (1 .. Nin);
     end record;
     --
-    type NeuronRec_Fixed_Ptr is access NeuronRec_Fixed;
-    type NeuronsArray is array (NNIndex range <>) of NeuronRec_Fixed_Ptr;
+--     type NeuronRecPtr   is access NeuronRec;
+--     type NeuronRecArray is array (NNIndex range <>) of NeuronRecPtr;
+--
+--
+--     type NNetRec(Nin : InputIndex; Nout : OutputIndex; Npts : NNIndex) is record
+--         neurons : NeuronRecArray(1 .. Npts);
+--         -- incomplete. Needs some more play with to decide which params to keep in what form
+--     end record;
 
-    type InputIndex  is new Positive;
-    type OutputIndex is new Positive;
 
-    type NNetRec(Nin : InputIndex; Nout : OutputIndex; Npts : NNIndex) is record
-        neurons : NeuronsArray(1 .. Npts);
-        -- incomplete. Needs some more play with to decide which params to keep in what form
-    end record;
 
+    --------------------------------------
+    -- Lets define the common NNet interface here.
+    -- Specific implementations (fixed arrays or mutale collection-based; in-memory, on-disk, etc)
+    -- will be done in child packages
+
+    type NNet_Interface is limited interface;
+    -- don't see the reason to pass it around, but may lift "limited" later..
+    procedure AddNeuron(net : in out NNet_Interface; neur : NeuronRec) is abstract;
+    procedure DelNeuron(net : in out NNet_Interface; idx : NNIndex) is abstract;
+    procedure ReplaceNeuron(net : in out NNet_Interface; idx: NNIndex; neur : NeuronRec) is abstract;
+    function  GetNeuron(net : NNet_Interface; idx : NNIndex) return NeuronRec is abstract;
+
+    -- perform topological sort - can make 'Class and implement once only?
+    procedure SortForward (net : NNet_Interface) is null;
+    procedure SortBackward(net : NNet_Interface) is null;
+
+private
 
     -----------------
     -- A mutable using Containers.Vectors
@@ -91,29 +119,10 @@ package wann is
         inputs  : NV.Vector;
     end record;
 
-
-    --------------------------------------
-    -- Lets define the common NNet interface here.
-    -- Specific implementations (fixed arrays or mutale collection-based; in-memory, on-disk, etc)
-    -- will be done in child packages
-
-    type NNet_Interface is limited interface;
-    -- don;t see the reason to pass it around, but may lift "limited" later..
-    procedure AddNeuron(net : in out NNet_Interface; neur : );
-    procedure DelNeuron(net : in out NNet_Interface; idx : NNIndex);
-    procedure ReplaceNeuron(net : in out NNet_Interface; idx: NNIndex; neur :);
-    function  GetNeuron(net : NNet_Interface; idx : NNIndex) return NeuronRec_Fixed;
-
-    -- perform topological sort - can make 'Class and implement once only?
-    procedure SortForward (net : NNet_Interface);
-    procedure SortBackward(net : NNet_Interface);
-
-private
-
     type Neuron(Nin : NIndex) is record
         activat : ActivationType;
         weights : WeightsArray(0 .. Nin);
-        inputs  : NeuronIdxArray(1 .. Nin);
+        inputs  : InputsArray (1 .. Nin);
         lag     : Real;
     end record;
 
