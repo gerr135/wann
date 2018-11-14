@@ -107,7 +107,7 @@ matrix calcs between layers. Another plus point is that COnnectors can be reused
 connect Connectrons, when the lib is generalized, as well as they may be necessary anyway
 for LSTMs or other RNN/other advanced structures..
 
-So, considering all this, I will likely got with the Connector approach, at least with the
+So, considering all this, I will likely go with the Connector approach, at least with the
 mutable nets. Might try to do a fixed index approach with fixed nnets first, just to get
 the formulas verified..
 
