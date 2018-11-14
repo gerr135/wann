@@ -138,7 +138,10 @@ begin  -- main
     processCommandLine (params);
     Put_Line("basic test");
     --
-    net.ConnectNeuron(1, Sigmoid, (1,2));
+    net.ConnectNeuron(1, Sigmoid, ((I,1),(I,2)));
+    for i in 1 .. 10 loop
+        Null;
+    end loop;
 exception
 	when Finish => null;
 end run_customNN;

@@ -39,6 +39,7 @@ package wann is
     type ActivationType is (Sigmoid, ReLu);
     type ActivationFunction is access function (x : Real) return Real;
 
+    ------------------------------------------------
     -- index types (to catch misplaced index errors)
     -- this one tracks inputs inside neuron
     type NIndex_Base is new Natural;
@@ -51,8 +52,19 @@ package wann is
     type InputIndex  is new Positive;
     type OutputIndex is new Positive;
 
+
+    ---------------------------------------------------
+    --  connection specification
+    type ConnectionType is (I, O, N);
+    -- Input, Output, Neuron, but intended to be used in assignment, so shorting it down
+    type ConnectionRec is record
+        T : ConnectionType;
+        idx : NNIndex;
+    end record;
+
+
     --- index arrays. Primarily used by immutable records, but may be useful throughout.
-    type InputsArray  is array (NIndex range <>) of NNIndex;
+    type InputsArray  is array (NIndex range <>) of ConnectionRec;
     type WeightsArray is array (NIndex_Base range <>) of Real;
 
 
@@ -117,13 +129,6 @@ private
         lag     : Real;    -- delay of result propagation
         weights : WV.Vector;
         inputs  : NV.Vector;
-    end record;
-
-    type Neuron(Nin : NIndex) is record
-        activat : ActivationType;
-        weights : WeightsArray(0 .. Nin);
-        inputs  : InputsArray (1 .. Nin);
-        lag     : Real;
     end record;
 
 end wann;

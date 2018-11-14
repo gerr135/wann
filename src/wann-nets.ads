@@ -27,6 +27,31 @@ package wann.nets is
     procedure ConnectNeuron(net : in out NNet_Fixed; idx : NNIndex; activat : ActivationType; connects : InputsArray);
 
 
+    --------------------------
+    -- A mutable NNet type and methods
+    -- using separate inputs/outputs and Connector type
+    -- See Readme for details on design and representation description..
+    type NNet is tagged limited private;
+
+    -- base constructor
+    function Create (Nin : InputIndex; Nout : OutputIndex) return NNet;
+    --
+    -- utility constructor;
+    -- creates a nnet with random interconnects, each output is linked to Random(maxConnects)
+    -- inputs/neurons in a random manner
+    function CreateRandom (Nin : InputIndex; Nout : OutputIndex; Npts : NNIndex; maxConnects : NIndex) return NNet;
+
+    function AddNeuron(net : in out NNet; neur : NeuronRec) return NNIndex;
+    -- adds new NeuronRec with weights; returns new index
+    --
+    function AddNeuron(net : in out NNet; activat : ActivationType; connects : InputsArray) return NNIndex;
+    -- adds new neuron, topology only, no weights; returns new index
+    --
+    procedure DelNeuron(net : in out NNet; idx : NNIndex);
+    -- deletes neuron by index
+    --
+    procedure ConnectNeuron(net : in out NNet; idx : NNIndex; activat : ActivationType; connects : InputsArray);
+    -- replaces neuron[idx] activation function and connections byt new values
 
 private
 
@@ -37,5 +62,23 @@ private
         outputs : InputsArray(1 .. Nout);
         neurons : InputsArray(1 .. Npts);
     end record;
+
+
+    -----------------
+    -- A mutable NNet using Containers.Vectors and Connectors to link neurons and inputs/outputs
+
+    type Connector is record
+        idx : NNIndex;
+    end record;
+
+    package IV is new Ada.Containers.Vectors(Index_Type=>InputIndex,  Element_Type=>Connector);
+    package OV is new Ada.Containers.Vectors(Index_Type=>OutputIndex, Element_Type=>Connector);
+
+    type NNet is tagged limited record
+        inputs  : IV.Vector;
+        outputs : OV.Vector;
+        neurons : NV.Vector;
+    end record;
+
 
 end wann.nets;
