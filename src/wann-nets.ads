@@ -21,12 +21,20 @@
 generic
 package wann.nets is
 
-    type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex; Npts : NIndex) is tagged limited private;
+    -- Trying mixed inputs/outputs/neurons, selected by index ranges, for fixed nets.
+    -- See Readme for description.
+    type NNet_Fixed(Nin, Nout, Npts : NIndex) is tagged limited private;
     procedure ConnectNeuron(net : in out NNet_Fixed; idx : NNIndex; activat : ActivationType; connects : InputsArray);
+
+
 
 private
 
-    type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex; Npts : NIndex) is tagged limited record
+    type NNet_Fixed(Nin, Nout, Npts : NIndex) is tagged limited record
+        -- cannot use InputsArray(1 .. Nin+Nout+Npts) as expressions on discriminats are not allowed
+        -- which pretty much makes this design pointless
+        inputs  : InputsArray(1 .. Nin);
+        outputs : InputsArray(1 .. Nout);
         neurons : InputsArray(1 .. Npts);
     end record;
 
