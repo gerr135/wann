@@ -13,8 +13,8 @@ with Ada.Text_IO, Ada.Integer_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 -- all methods in .Unbounded are easy to ident and have unique names, no need to hide visibility
 
-with wann;
-with wann.nets;
+--with wann; with wann.nets;
+with wann.nets.mutable;
 
 
 procedure run_customNN is
@@ -130,15 +130,16 @@ procedure run_customNN is
     -- try constructing nnet
     package PN is new wann(Real => Float);
     package PNN is new PN.nets;
-    use PN, PNN;
-    net : NNet_Fixed(Nin=>2, Nout=>1, Npts=>1);
+    package PNNM is new PNN.mutable;
+    use PN, PNN, PNNM;
+    net : NNet_Mutable := Create(Nin=>2, Nout=>1);
 
 
 begin  -- main
     processCommandLine (params);
     Put_Line("basic test");
     --
-    net.ConnectNeuron(1, Sigmoid, ((I,1),(I,2)));
+    net.AddNeuron(Sigmoid, ((I,1),(I,2)));
     for i in 1 .. 10 loop
         Null;
     end loop;

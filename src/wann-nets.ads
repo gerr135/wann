@@ -1,5 +1,5 @@
 --
--- A child package holding main type definitions: NNet, layers, etc..
+-- Top NNet packege, holding abstract type/interface with utility, but no storage..
 --
 -- Copyright (C) 2018  <George Shapovalov> <gshapovalov@gmail.com>
 --
@@ -21,64 +21,57 @@
 generic
 package wann.nets is
 
-    -- Trying mixed inputs/outputs/neurons, selected by index ranges, for fixed nets.
-    -- See Readme for description.
-    type NNet_Fixed(Nin, Nout, Npts : NIndex) is tagged limited private;
-    procedure ConnectNeuron(net : in out NNet_Fixed; idx : NNIndex; activat : ActivationType; connects : InputsArray);
+    type NNet is abstract tagged limited private;
+
+    procedure NewNeuron(net : in out NNet; idx : out NNIndex_Base) is abstract;
+    -- create new empty neuron emplacement and return its index
+    -- needs overriding in dynamic/mutable net.
+    -- Makes no sense for fixed nnet; that one should just return 0 (and do nothing otherwise).
+
+    procedure DelNeuron(net : in out NNet; idx : NNIndex) is null;
+    -- remove neuron from NNet, as with New, only for mutable representation
+
+    procedure SetNeuron(net : in out NNet; neur : NeuronRec) is abstract;
+    -- set neuron parameters
 
 
-    --------------------------
-    -- A mutable NNet type and methods
-    -- using separate inputs/outputs and Connector type
-    -- See Readme for details on design and representation description..
-    type NNet is tagged limited private;
+    -----------------------------------
+    -- class-wide stuff: main utility
 
-    -- base constructor
-    function Create (Nin : InputIndex; Nout : OutputIndex) return NNet;
     --
-    -- utility constructor;
-    -- creates a nnet with random interconnects, each output is linked to Random(maxConnects)
-    -- inputs/neurons in a random manner
-    function CreateRandom (Nin : InputIndex; Nout : OutputIndex; Npts : NNIndex; maxConnects : NIndex) return NNet;
+    -- Neuron manipulation
+    --
+    function  AddNeuron(net : in out NNet'Class; neur : NeuronRec) return NNIndex;
+    procedure AddNeuron(net : in out NNet'Class; neur : NeuronRec; idx : out NNIndex);
+    procedure AddNeuron(net : in out NNet'Class; neur : NeuronRec);
+    -- combines New and Set
+    --
+    function  AddNeuron(net : in out NNet'Class; activat : ActivationType; connects : InputsArray) return NNIndex;
+    procedure AddNeuron(net : in out NNet'Class; activat : ActivationType; connects : InputsArray; idx : out NNIndex);
+    procedure AddNeuron(net : in out NNet'Class; activat : ActivationType; connects : InputsArray);
+    -- New plus Set by parameters
+    --
+    procedure ResetNeuron(net : in out NNet'Class; neur : NeuronRec);
+    procedure ResetNeuron(net : in out NNet'Class; idx  : NNIndex; activat : ActivationType; connects : InputsArray);
+    procedure ResetNeuron(net : in out NNet'Class; idx  : NNIndex; connects : InputsArray);
+    -- replaces neuron[idx] parameters, either all or partial
 
-    function AddNeuron(net : in out NNet; neur : NeuronRec) return NNIndex;
-    -- adds new NeuronRec with weights; returns new index
     --
-    function AddNeuron(net : in out NNet; activat : ActivationType; connects : InputsArray) return NNIndex;
-    -- adds new neuron, topology only, no weights; returns new index
+    --  Nnet manipulation
     --
-    procedure DelNeuron(net : in out NNet; idx : NNIndex);
-    -- deletes neuron by index
-    --
-    procedure ConnectNeuron(net : in out NNet; idx : NNIndex; activat : ActivationType; connects : InputsArray);
-    -- replaces neuron[idx] activation function and connections byt new values
+    procedure ReconnectNeuronRandom(net : in out NNet'Class; idx  : NNIndex; maxConnects : NIndex_Base := 0);
+    procedure PopulateRandom (net : in out NNet'Class; maxConnects : NIndex; Npts : NNIndex_Base := 0);
+    -- populates net with new neurons or resets existing one to random configuration
+    -- Npts needs to be passed in case of empty mutable net, otherwise it simply rearranges existing net.
+
 
 private
 
-    type NNet_Fixed(Nin, Nout, Npts : NIndex) is tagged limited record
-        -- cannot use InputsArray(1 .. Nin+Nout+Npts) as expressions on discriminats are not allowed
-        -- which pretty much makes this design pointless
-        inputs  : InputsArray(1 .. Nin);
-        outputs : InputsArray(1 .. Nout);
-        neurons : InputsArray(1 .. Npts);
-    end record;
-
-
-    -----------------
-    -- A mutable NNet using Containers.Vectors and Connectors to link neurons and inputs/outputs
-
-    type Connector is record
-        idx : NNIndex;
-    end record;
-
-    package IV is new Ada.Containers.Vectors(Index_Type=>InputIndex,  Element_Type=>Connector);
-    package OV is new Ada.Containers.Vectors(Index_Type=>OutputIndex, Element_Type=>Connector);
-
-    type NNet is tagged limited record
-        inputs  : IV.Vector;
-        outputs : OV.Vector;
-        neurons : NV.Vector;
-    end record;
+    type NNet is abstract tagged limited null record;
+--         inputs  : IV.Vector;
+--         outputs : OV.Vector;
+--         neurons : NV.Vector;
+--     end record;
 
 
 end wann.nets;
