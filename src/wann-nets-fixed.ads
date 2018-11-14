@@ -19,21 +19,37 @@
 
 
 generic
-package wann.nets is
+package wann.nets.fixed is
 
     -- Trying mixed inputs/outputs/neurons, selected by index ranges, for fixed nets.
     -- See Readme for description.
-    type NNet_Fixed(Nin, Nout, Npts : NIndex) is new NNet with private;
-    procedure ConnectNeuron(net : in out NNet_Fixed; idx : NNIndex; activat : ActivationType; connects : InputsArray);
+    --------------------------
+    -- A mutable NNet type and methods
+    -- using separate inputs/outputs and Connector type
+    -- See Readme for details on design and representation description..
+    type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex; Npts : NNIndex) is new NNet with private;
+    -- try to avoid allocation altogether and parametrize the nnet right there, by discriminants
+    --
+    -- NOTE: ATTN!! due to restriction on how discriminants can be used in record entries,
+    -- Ntot should be set to toal entities: Ntot := Nin + Nout + Nneurons
+
+    -- Base constructor, create empty net with set Nin and Nout
+--     function Create  return NNet_Fixed;
+
+    -- inherited methods
+    overriding
+    procedure NewNeuron(net : in out Nnet_Fixed; idx : out NNIndex_Base);
+
+    overriding
+    procedure SetNeuron(net : in out Nnet_Fixed; neur : NeuronRec);
+
 
 private
 
-    type NNet_Fixed(Nin, Nout, Npts : NIndex) is tagged limited record
-        -- cannot use InputsArray(1 .. Nin+Nout+Npts) as expressions on discriminats are not allowed
-        -- which pretty much makes this design pointless
-        inputs  : InputsArray(1 .. Nin);
-        outputs : InputsArray(1 .. Nout);
-        neurons : InputsArray(1 .. Npts);
+    type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex; Npts : NIndex) is new NNet with record
+        inputs  : ConnectArray(InputIndex or NIndex?);
+        outputs :
+        neurons : ConnectArray(1 .. Npts);
     end record;
 
-end wann.nets;
+end wann.nets.fixed;

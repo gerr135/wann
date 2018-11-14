@@ -46,14 +46,14 @@ package wann.nets is
     procedure AddNeuron(net : in out NNet'Class; neur : NeuronRec);
     -- combines New and Set
     --
-    function  AddNeuron(net : in out NNet'Class; activat : ActivationType; connects : InputsArray) return NNIndex;
-    procedure AddNeuron(net : in out NNet'Class; activat : ActivationType; connects : InputsArray; idx : out NNIndex);
-    procedure AddNeuron(net : in out NNet'Class; activat : ActivationType; connects : InputsArray);
+    function  AddNeuron(net : in out NNet'Class; activat : ActivationType; connects : ConnectArray) return NNIndex;
+    procedure AddNeuron(net : in out NNet'Class; activat : ActivationType; connects : ConnectArray; idx : out NNIndex);
+    procedure AddNeuron(net : in out NNet'Class; activat : ActivationType; connects : ConnectArray);
     -- New plus Set by parameters
     --
     procedure ResetNeuron(net : in out NNet'Class; neur : NeuronRec);
-    procedure ResetNeuron(net : in out NNet'Class; idx  : NNIndex; activat : ActivationType; connects : InputsArray);
-    procedure ResetNeuron(net : in out NNet'Class; idx  : NNIndex; connects : InputsArray);
+    procedure ResetNeuron(net : in out NNet'Class; idx  : NNIndex; activat : ActivationType; connects : ConnectArray);
+    procedure ResetNeuron(net : in out NNet'Class; idx  : NNIndex; connects : ConnectArray);
     -- replaces neuron[idx] parameters, either all or partial
 
     --

@@ -39,7 +39,7 @@ package body wann.nets is
     ---------------
 
     function AddNeuron (net : in out NNet'Class; activat : ActivationType;
-                        connects : InputsArray) return NNIndex is
+                        connects : ConnectArray) return NNIndex is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
@@ -51,7 +51,7 @@ package body wann.nets is
     ---------------
 
     procedure AddNeuron (net : in out NNet'Class; activat : ActivationType;
-                        connects : InputsArray; idx : out NNIndex) is
+                        connects : ConnectArray; idx : out NNIndex) is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
@@ -63,7 +63,7 @@ package body wann.nets is
     ---------------
 
     procedure AddNeuron (net : in out NNet'Class; activat : ActivationType;
-                        connects : InputsArray) is
+                        connects : ConnectArray) is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
@@ -86,7 +86,7 @@ package body wann.nets is
     -----------------
 
     procedure ResetNeuron (net : in out NNet'Class; idx  : NNIndex;
-                            activat : ActivationType; connects : InputsArray) is
+                            activat : ActivationType; connects : ConnectArray) is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "ResetNeuron unimplemented");
@@ -98,7 +98,7 @@ package body wann.nets is
     -----------------
 
     procedure ResetNeuron (net : in out NNet'Class; idx  : NNIndex;
-                            connects : InputsArray) is
+                            connects : ConnectArray) is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "ResetNeuron unimplemented");

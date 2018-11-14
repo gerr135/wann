@@ -51,6 +51,7 @@ package wann is
 
     type InputIndex  is new Positive;
     type OutputIndex is new Positive;
+    -- check if it makes more sense to use NIndex instead of these two
 
 
     ---------------------------------------------------
@@ -59,12 +60,14 @@ package wann is
     -- Input, Output, Neuron, but intended to be used in assignment, so shorting it down
     type ConnectionRec is record
         T : ConnectionType;
-        idx : NNIndex;
+        idx : Positive; -- used for text input most often, so its essentially a number
+        -- could be made one of index types, but then it would make sense to use variant record
+        -- and then we cannot make a simple array, as that's an unconstrained type..
     end record;
 
 
     --- index arrays. Primarily used by immutable records, but may be useful throughout.
-    type InputsArray  is array (NIndex range <>) of ConnectionRec;
+    type ConnectArray  is array (NIndex range <>) of ConnectionRec;
     type WeightsArray is array (NIndex_Base range <>) of Real;
 
 
@@ -83,7 +86,7 @@ package wann is
         activat : ActivationType;
         lag     : Real;    -- delay of result propagation
         weights : WeightsArray(0 .. Nin);
-        inputs  : InputsArray (1 .. Nin);
+        inputs  : ConnectArray (1 .. Nin);
     end record;
     --
 --     type NeuronRecPtr   is access NeuronRec;
@@ -115,6 +118,15 @@ package wann is
 
 private
 
+
+    -- actual data that may be used in neuron arrays
+    -- we also need to track where outputs are connected (e.g for backprop)
+    -- but this info is unneeded to create initial topology
+    type NeuronT is record
+        neur : NeuronRec;
+        outs : ConnectArray;
+    end record;
+    
     -----------------
     -- A mutable using Containers.Vectors
     -- Both NeuronRec and NNetRec can change not only the specific connections,
