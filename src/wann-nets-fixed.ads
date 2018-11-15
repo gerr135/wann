@@ -21,13 +21,15 @@
 generic
 package wann.nets.fixed is
 
+    NetOverflow : Exception;
+    
     -- Trying mixed inputs/outputs/neurons, selected by index ranges, for fixed nets.
     -- See Readme for description.
     --------------------------
     -- A mutable NNet type and methods
     -- using separate inputs/outputs and Connector type
     -- See Readme for details on design and representation description..
-    type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex; Npts : NNIndex) is new NNet with private;
+    type NNet_Fixed(Nin, Nout, Npts : NIndex) is new NNet with private;
     -- try to avoid allocation altogether and parametrize the nnet right there, by discriminants
     --
     -- NOTE: ATTN!! due to restriction on how discriminants can be used in record entries,
@@ -39,6 +41,7 @@ package wann.nets.fixed is
     -- inherited methods
     overriding
     procedure NewNeuron(net : in out Nnet_Fixed; idx : out NNIndex_Base);
+    -- nothing to create for real, but try to mimick mutable 
 
     overriding
     procedure SetNeuron(net : in out Nnet_Fixed; neur : NeuronRec);
@@ -46,10 +49,11 @@ package wann.nets.fixed is
 
 private
 
-    type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex; Npts : NIndex) is new NNet with record
-        inputs  : ConnectArray(InputIndex or NIndex?);
-        outputs :
-        neurons : ConnectArray(1 .. Npts);
+    type NNet_Fixed(Nin, Nout, Npts : NIndex) is new NNet with record
+        Nassigned : NIndex_Base := 0;
+        inputs  : ConnectArray(1 .. Nin);
+        outputs : ConnectArray(1 .. Nout);
+        neurons : -- needs actual NeuronRec or expansion array;
     end record;
 
 end wann.nets.fixed;

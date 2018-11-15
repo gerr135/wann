@@ -134,7 +134,7 @@ procedure run_customNN is
     package PNNF is new PNN.fixed;
     use PN, PNN, PNNM, PNNF;
     netm : NNet_Mutable := Create(Nin=>2, Nout=>1);
-    netf : NNet_Fixed(Nin=>2, Nout=>1, Ntot=>4);
+    netf : NNet_Fixed(Nin=>2, Nout=>1, Npts=>4);
 
 
 begin  -- main
@@ -142,6 +142,7 @@ begin  -- main
     Put_Line("basic test");
     --
     netm.AddNeuron(Sigmoid, ((I,1),(I,2)));
+    netf.AddNeuron(Sigmoid, ((I,1),(I,2)));
     for i in 1 .. 10 loop
         Null;
     end loop;

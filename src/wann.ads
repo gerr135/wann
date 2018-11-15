@@ -67,7 +67,7 @@ package wann is
 
 
     --- index arrays. Primarily used by immutable records, but may be useful throughout.
-    type ConnectArray  is array (NIndex range <>) of ConnectionRec;
+    type ConnectArray is array (NIndex range <>) of ConnectionRec;
     type WeightsArray is array (NIndex_Base range <>) of Real;
 
 
@@ -122,10 +122,10 @@ private
     -- actual data that may be used in neuron arrays
     -- we also need to track where outputs are connected (e.g for backprop)
     -- but this info is unneeded to create initial topology
-    type NeuronT is record
-        neur : NeuronRec;
-        outs : ConnectArray;
-    end record;
+--     type NeuronT is record
+--         neur : NeuronRec;
+--         outs : ConnectArray;
+--     end record;
     
     -----------------
     -- A mutable using Containers.Vectors
