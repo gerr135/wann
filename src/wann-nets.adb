@@ -5,104 +5,89 @@ package body wann.nets is
     -- AddNeuron --
     ---------------
 
-    function AddNeuron (net : in out NNet'Class; neur : NeuronRec) return NNIndex is
+    procedure AddNeuron (net : in out NNet'Class; NR : NeuronRec; idx : out NNIndex) is
+        newNR : NeuronRec := NR;
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
-        return raise Program_Error with "Unimplemented function AddNeuron";
+        net.NewNeuron(idx);
+        newNR.idx := idx;
+        net.SetNeuron(newNR);
     end AddNeuron;
 
-    ---------------
-    -- AddNeuron --
-    ---------------
-
-    procedure AddNeuron (net : in out NNet'Class; neur : NeuronRec; idx : out NNIndex) is
+    procedure AddNeuron (net : in out NNet'Class; NR : NeuronRec) is
+        newNR : NeuronRec := NR;
+        idx : NNIndex_Base;
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
-        raise Program_Error with "Unimplemented procedure AddNeuron";
+        net.NewNeuron(idx);
+        newNR.idx := idx;
+        net.SetNeuron(newNR);
     end AddNeuron;
 
-    ---------------
-    -- AddNeuron --
-    ---------------
-
-    procedure AddNeuron (net : in out NNet'Class; neur : NeuronRec) is
+    function AddNeuron (net : in out NNet'Class; NR : NeuronRec) return NNIndex is
+        idx : NNIndex_Base;
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
-        raise Program_Error with "Unimplemented procedure AddNeuron";
+        net.AddNeuron(NR,idx);
+        return idx;
     end AddNeuron;
-
-    ---------------
-    -- AddNeuron --
-    ---------------
-
-    function AddNeuron (net : in out NNet'Class; activat : ActivationType;
-                        connects : ConnectArray) return NNIndex is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
-        return raise Program_Error with "Unimplemented function AddNeuron";
-    end AddNeuron;
-
-    ---------------
-    -- AddNeuron --
-    ---------------
 
     procedure AddNeuron (net : in out NNet'Class; activat : ActivationType;
                         connects : ConnectArray; idx : out NNIndex) is
+        NR : NeuronRec(Nin=>connects'Last) :=
+            ( idx=>1, lag=>0.0,
+              Nin => connects'Last,
+              activat=>activat,
+              weights => (others=>0.0),
+              inputs  => connects );
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
-        raise Program_Error with "Unimplemented procedure AddNeuron";
+        net.AddNeuron(NR,idx);
     end AddNeuron;
-
-    ---------------
-    -- AddNeuron --
-    ---------------
 
     procedure AddNeuron (net : in out NNet'Class; activat : ActivationType;
                         connects : ConnectArray) is
+        idx : NNIndex_Base;
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
-        raise Program_Error with "Unimplemented procedure AddNeuron";
+        net.AddNeuron(activat,connects,idx);
     end AddNeuron;
 
-    -----------------
-    -- ResetNeuron --
-    -----------------
-
-    procedure ResetNeuron (net : in out NNet'Class; neur : NeuronRec) is
+    function AddNeuron (net : in out NNet'Class; activat : ActivationType;
+                        connects : ConnectArray) return NNIndex is
+        idx : NNIndex_Base;
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "ResetNeuron unimplemented");
-        raise Program_Error with "Unimplemented procedure ResetNeuron";
-    end ResetNeuron;
+        net.AddNeuron(activat, connects,idx);
+        return idx;
+    end AddNeuron;
+
 
     -----------------
     -- ResetNeuron --
     -----------------
+
+    procedure ResetNeuron (net : in out NNet'Class; NR : NeuronRec) is
+    begin
+        net.SetNeuron(NR);
+    end ResetNeuron;
 
     procedure ResetNeuron (net : in out NNet'Class; idx  : NNIndex;
-                            activat : ActivationType; connects : ConnectArray) is
+                           activat : ActivationType; connects : ConnectArray) is
+        NR : NeuronRec(Nin=>connects'Last) :=
+            ( idx=>idx, lag=>0.0,
+              Nin => connects'Last,
+              activat=>activat,
+              weights => (others=>0.0),
+              inputs  => connects );
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "ResetNeuron unimplemented");
-        raise Program_Error with "Unimplemented procedure ResetNeuron";
+        net.SetNeuron(NR);
     end ResetNeuron;
-
-    -----------------
-    -- ResetNeuron --
-    -----------------
 
     procedure ResetNeuron (net : in out NNet'Class; idx  : NNIndex;
                             connects : ConnectArray) is
+        NR : NeuronRec(Nin=>connects'Last) :=
+            ( idx => idx, lag => 0.0,
+              Nin => connects'Last,
+              activat => net.GetNeuron(idx).activat,
+              weights => (others=>0.0),
+              inputs  => connects );
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "ResetNeuron unimplemented");
-        raise Program_Error with "Unimplemented procedure ResetNeuron";
+        net.ResetNeuron(NR);
     end ResetNeuron;
 
     ---------------------------
@@ -128,5 +113,15 @@ package body wann.nets is
         pragma Compile_Time_Warning (Standard.True, "PopulateRandom unimplemented");
         raise Program_Error with "Unimplemented procedure PopulateRandom";
     end PopulateRandom;
+
+
+    function ForwardProp(net : NNet'Class; inputs : InputArray) return OutputArray is
+        Stub : OutputArray(1 .. net.No) := (others=>0.0);
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "PopulateRandom unimplemented");
+        raise Program_Error with "Unimplemented procedure PopulateRandom";
+        return Stub;
+    end;
 
 end wann.nets;

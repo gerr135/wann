@@ -38,6 +38,9 @@ package wann.nets.mutable is
     procedure DelNeuron(net : in out NNet_Mutable; idx : NNIndex);
 
     overriding
+    function  GetNeuron(net : NNet_Mutable; idx : NNIndex) return NeuronRec;
+
+    overriding
     procedure SetNeuron(net : in out NNet_Mutable; neur : NeuronRec);
 
 

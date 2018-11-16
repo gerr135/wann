@@ -29,12 +29,21 @@ package wann is
     Debug : Boolean := False;
     --  set this to True to make this lib spit out debug messages (to console)
 
+
+    ----------------------------------
+    --  Common stuff - info passing
+    type InputIndex  is new Positive;
+    type OutputIndex is new Positive;
+    -- check if it makes more sense to use NIndex (or some single index) instead of these two
+
+    type InputArray  is array (InputIndex  range<>) of Real;
+    type OutputArray is array (OutputIndex range<>) of Real;
+
+
     -- General conventions
     -- Neural Net (NNet) consists of Nin inputs, Nout outputs and Npts neurons
-    -- Neuron connections are tracked by connections index in range 1 .. Nin + Nout + Npts
-    --  First Nin numbers denote inputs  (1 .. Nin),
-    --  next Nout numbers denote outputs (Nin+1 .. Nin+Nout)
-    --  the rest of numbers index actual neurons (Nin+Nout+1 .. Nin+Nout+Npts)
+    -- Connections are tracked by (ConnectionType, index) record, to discriminate between
+    -- inputs, outputs and other neurons.
 
     type ActivationType is (Sigmoid, ReLu);
     type ActivationFunction is access function (x : Real) return Real;
@@ -48,10 +57,6 @@ package wann is
     -- this one tracks neurons in the NNet
     type NNIndex_Base is new Natural;
     subtype NNIndex is NNIndex_Base range 1 .. NNIndex_Base'Last;
-
-    type InputIndex  is new Positive;
-    type OutputIndex is new Positive;
-    -- check if it makes more sense to use NIndex instead of these two
 
 
     ---------------------------------------------------
@@ -126,7 +131,7 @@ private
 --         neur : NeuronRec;
 --         outs : ConnectArray;
 --     end record;
-    
+
     -----------------
     -- A mutable using Containers.Vectors
     -- Both NeuronRec and NNetRec can change not only the specific connections,

@@ -37,8 +37,24 @@ package body wann.nets.mutable is
     end DelNeuron;
 
    ---------------
-   -- SetNeuron --
+   -- Getter and setter --
    ---------------
+
+    overriding
+    function  GetNeuron(net : NNet_Mutable; idx : NNIndex) return NeuronRec is
+        Stub : NeuronRec(Nin=>0) :=
+            ( idx => 0, lag => 0.0,
+              Nin => 0,
+              activat => Sigmoid,
+              weights => (others=>0.0),
+              inputs  => (others=>(N,0)) );
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "SetNeuron unimplemented");
+        raise Program_Error with "Unimplemented procedure SetNeuron";
+        return Stub;
+    end GetNeuron;
+
 
     overriding
     procedure SetNeuron (net : in out NNet_Mutable; neur : NeuronRec) is

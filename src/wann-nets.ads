@@ -31,8 +31,9 @@ package wann.nets is
     procedure DelNeuron(net : in out NNet; idx : NNIndex) is null;
     -- remove neuron from NNet, as with New, only for mutable representation
 
-    procedure SetNeuron(net : in out NNet; neur : NeuronRec) is abstract;
-    -- set neuron parameters
+    -- getter and setter
+    function  GetNeuron(net : NNet; idx : NNIndex) return NeuronRec is abstract;
+    procedure SetNeuron(net : in out NNet; NR : NeuronRec) is abstract;
 
 
     -----------------------------------
@@ -41,9 +42,9 @@ package wann.nets is
     --
     -- Neuron manipulation
     --
-    function  AddNeuron(net : in out NNet'Class; neur : NeuronRec) return NNIndex;
-    procedure AddNeuron(net : in out NNet'Class; neur : NeuronRec; idx : out NNIndex);
-    procedure AddNeuron(net : in out NNet'Class; neur : NeuronRec);
+    function  AddNeuron(net : in out NNet'Class; NR : NeuronRec) return NNIndex;
+    procedure AddNeuron(net : in out NNet'Class; NR : NeuronRec; idx : out NNIndex);
+    procedure AddNeuron(net : in out NNet'Class; NR : NeuronRec);
     -- combines New and Set
     --
     function  AddNeuron(net : in out NNet'Class; activat : ActivationType; connects : ConnectArray) return NNIndex;
@@ -51,7 +52,7 @@ package wann.nets is
     procedure AddNeuron(net : in out NNet'Class; activat : ActivationType; connects : ConnectArray);
     -- New plus Set by parameters
     --
-    procedure ResetNeuron(net : in out NNet'Class; neur : NeuronRec);
+    procedure ResetNeuron(net : in out NNet'Class; NR : NeuronRec);
     procedure ResetNeuron(net : in out NNet'Class; idx  : NNIndex; activat : ActivationType; connects : ConnectArray);
     procedure ResetNeuron(net : in out NNet'Class; idx  : NNIndex; connects : ConnectArray);
     -- replaces neuron[idx] parameters, either all or partial
@@ -64,14 +65,19 @@ package wann.nets is
     -- populates net with new neurons or resets existing one to random configuration
     -- Npts needs to be passed in case of empty mutable net, otherwise it simply rearranges existing net.
 
+    --
+    --  Propagation
+    --
+    function ForwardProp(net : NNet'Class; inputs : InputArray) return OutputArray;
+
 
 private
 
-    type NNet is abstract tagged limited null record;
---         inputs  : IV.Vector;
---         outputs : OV.Vector;
---         neurons : NV.Vector;
---     end record;
+    type NNet is abstract tagged limited record
+        No : OutputIndex;
+        Ni : InputIndex;
+        Nn : NIndex;
+    end record;
 
 
 end wann.nets;

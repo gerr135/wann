@@ -22,7 +22,7 @@ generic
 package wann.nets.fixed is
 
     NetOverflow : Exception;
-    
+
     -- Trying mixed inputs/outputs/neurons, selected by index ranges, for fixed nets.
     -- See Readme for description.
     --------------------------
@@ -41,7 +41,10 @@ package wann.nets.fixed is
     -- inherited methods
     overriding
     procedure NewNeuron(net : in out Nnet_Fixed; idx : out NNIndex_Base);
-    -- nothing to create for real, but try to mimick mutable 
+    -- nothing to create for real, but try to mimick mutable
+
+    overriding
+    function  GetNeuron(net : NNet_Fixed; idx : NNIndex) return NeuronRec;
 
     overriding
     procedure SetNeuron(net : in out Nnet_Fixed; neur : NeuronRec);
@@ -53,7 +56,7 @@ private
         Nassigned : NIndex_Base := 0;
         inputs  : ConnectArray(1 .. Nin);
         outputs : ConnectArray(1 .. Nout);
-        neurons : -- needs actual NeuronRec or expansion array;
+--         neurons : -- needs actual NeuronRec or expansion array;
     end record;
 
 end wann.nets.fixed;
