@@ -17,14 +17,15 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
+with Ada.Containers.Vectors;
+with Ada.Containers.Indefinite_Vectors;
+
 
 generic
 package wann.nets.mutable is
 
     --------------------------
     -- A mutable NNet type and methods
-    -- using separate inputs/outputs and Connector type
-    -- See Readme for details on design and representation description..
     type NNet_Mutable is new NNet with private;
 
     -- Base constructor, create empty net with set Nin and Nout
@@ -32,17 +33,31 @@ package wann.nets.mutable is
 
     -- inherited methods
     overriding
-    procedure NewNeuron(net : in out NNet_Mutable; idx : out NNIndex_Base);
+    function GetNInputs (net : NNet_Mutable) return InputIndex;
 
     overriding
-    procedure DelNeuron(net : in out NNet_Mutable; idx : NNIndex);
+    function GetNOutputs(net : NNet_Mutable) return OutputIndex;
 
     overriding
-    function  GetNeuron(net : NNet_Mutable; idx : NNIndex) return NeuronRec;
+    function GetNNeurons(net : NNet_Mutable) return NeuronIndex;
+
+    overriding
+    procedure NewNeuron(net : in out NNet_Mutable; idx : out NeuronIndex_Base);
+
+    overriding
+    procedure DelNeuron(net : in out NNet_Mutable; idx : NeuronIndex);
+
+    overriding
+    function  GetNeuron(net : NNet_Mutable; idx : NeuronIndex) return NeuronRec;
 
     overriding
     procedure SetNeuron(net : in out NNet_Mutable; neur : NeuronRec);
 
+    overriding
+    function  GetLayer(net : in NNet_Mutable;     idx : LayerIndex) return LayerRec;
+
+    overriding
+    procedure SetLayer(net : in out NNet_Mutable; idx : LayerIndex; LR :   LayerRec);
 
 
 private
@@ -50,17 +65,16 @@ private
     -----------------
     -- A mutable NNet using Containers.Vectors and Connectors to link neurons and inputs/outputs
 
-    type Connector is record
-        idx : NNIndex;
-    end record;
-
-    package IV is new Ada.Containers.Vectors(Index_Type=>InputIndex,  Element_Type=>Connector);
-    package OV is new Ada.Containers.Vectors(Index_Type=>OutputIndex, Element_Type=>Connector);
+    package IV is new Ada.Containers.Vectors(Index_Type=>InputIndex,  Element_Type=>ConnectionRec);
+    package OV is new Ada.Containers.Vectors(Index_Type=>OutputIndex, Element_Type=>ConnectionRec);
+    package NV is new Ada.Containers.Vectors(Index_Type=>NeuronIndex, Element_Type=>ConnectionRec);
+    package LV is new Ada.Containers.Indefinite_Vectors(Index_Type=>LayerIndex,  Element_Type=>LayerRec);
 
     type NNet_Mutable is new NNet with record
         inputs  : IV.Vector;
         outputs : OV.Vector;
         neurons : NV.Vector;
+        layers  : LV.Vector;
     end record;
 
 

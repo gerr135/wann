@@ -134,7 +134,7 @@ procedure run_customNN is
     package PNNF is new PNN.fixed;
     use PN, PNN, PNNM, PNNF;
     netm : NNet_Mutable := Create(Nin=>2, Nout=>1);
-    netf : NNet_Fixed(Nin=>2, Nout=>1, Npts=>4);
+    netf : NNet_Fixed(Nin=>2, Nout=>1, Npts=>4, maxLayers=>1);
 
 
 begin  -- main

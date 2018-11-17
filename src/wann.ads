@@ -19,8 +19,6 @@
 --
 
 
-with Ada.Containers.Vectors;
-
 generic
     type Real is digits <>;
 --     with function Img(E : Key_Type) return String;
@@ -30,39 +28,33 @@ package wann is
     --  set this to True to make this lib spit out debug messages (to console)
 
 
-    ----------------------------------
-    --  Common stuff - info passing
-    type InputIndex  is new Positive;
-    type OutputIndex is new Positive;
-    -- check if it makes more sense to use NIndex (or some single index) instead of these two
-
-    type InputArray  is array (InputIndex  range<>) of Real;
-    type OutputArray is array (OutputIndex range<>) of Real;
-
-
     -- General conventions
     -- Neural Net (NNet) consists of Nin inputs, Nout outputs and Npts neurons
     -- Connections are tracked by (ConnectionType, index) record, to discriminate between
     -- inputs, outputs and other neurons.
 
+    ----------------------------------
+    --  Common stuff - info passing
     type ActivationType is (Sigmoid, ReLu);
     type ActivationFunction is access function (x : Real) return Real;
 
     ------------------------------------------------
     -- index types (to catch misplaced index errors)
     -- this one tracks inputs inside neuron
-    type NIndex_Base is new Natural;
-    subtype NIndex is NIndex_Base range 1 .. NIndex_Base'Last;
+    type    InputIndex_Base is new Natural;
+    subtype InputIndex is InputIndex_Base range 1 .. InputIndex_Base'Last;
+
+    type OutputIndex is new Positive;
 
     -- this one tracks neurons in the NNet
-    type NNIndex_Base is new Natural;
-    subtype NNIndex is NNIndex_Base range 1 .. NNIndex_Base'Last;
+    type    NeuronIndex_Base is new Natural;
+    subtype NeuronIndex is NeuronIndex_Base range 1 .. NeuronIndex_Base'Last;
 
-
-    ---------------------------------------------------
+    -------------------------------------------------
     --  connection specification
     type ConnectionType is (I, O, N);
     -- Input, Output, Neuron, but intended to be used in assignment, so shorting it down
+
     type ConnectionRec is record
         T : ConnectionType;
         idx : Positive; -- used for text input most often, so its essentially a number
@@ -70,82 +62,35 @@ package wann is
         -- and then we cannot make a simple array, as that's an unconstrained type..
     end record;
 
+    type InConArray  is array (InputIndex range <>)  of ConnectionRec;
+    type OutConArray is array (OutputIndex range <>) of ConnectionRec;
+    type NConArray   is array (NeuronIndex range <>) of ConnectionRec;
+    -- 1st two are specirfic for inputs/outputs,
+    -- the last one used throughout neurons
 
-    --- index arrays. Primarily used by immutable records, but may be useful throughout.
-    type ConnectArray is array (NIndex range <>) of ConnectionRec;
-    type WeightsArray is array (NIndex_Base range <>) of Real;
+    --------------------------------------------------
+    -- values to be passed around
+    type InputArray   is array (InputIndex  range<>) of Real;
+    type OutputArray  is array (OutputIndex range<>) of Real;
+    type WeightsArray is array (InputIndex_Base range <>) of Real;
 
 
     -----------------------------------------------------
-    -- Main record types representing Neuron and NNet parameters.
-    -- These types can be used as an alphabet to form a linear description,
+    -- Main record types representing Neuron parameters.
+    -- To be used for storage, IO and as an alphabet to form a linear description,
     -- a-la DNA/protein sequence. Then the NNet can be simply defined as some linear sequence
     -- in declaration which can be passed to the NNet constructor.
-
-    -----------------
-    -- A base, immutable version, using only core Ada types (arrays, etc).
-    -- This is a reference representation of data, used as a basis for binary/JSON strings.
-
-    type NeuronRec(Nin : NIndex) is record
-        idx     : NNIndex; -- own index in NNet
-        activat : ActivationType;
-        lag     : Real;    -- delay of result propagation
-        weights : WeightsArray(0 .. Nin);
-        inputs  : ConnectArray (1 .. Nin);
-    end record;
     --
---     type NeuronRecPtr   is access NeuronRec;
---     type NeuronRecArray is array (NNIndex range <>) of NeuronRecPtr;
---
---
---     type NNetRec(Nin : InputIndex; Nout : OutputIndex; Npts : NNIndex) is record
---         neurons : NeuronRecArray(1 .. Npts);
---         -- incomplete. Needs some more play with to decide which params to keep in what form
---     end record;
+    -- This is a reference representation of data, using Ada primitives.
 
-
-
-    --------------------------------------
-    -- Lets define the common NNet interface here.
-    -- Specific implementations (fixed arrays or mutale collection-based; in-memory, on-disk, etc)
-    -- will be done in child packages
-
-    type NNet_Interface is limited interface;
-    -- don't see the reason to pass it around, but may lift "limited" later..
-    procedure AddNeuron(net : in out NNet_Interface; neur : NeuronRec) is abstract;
-    procedure DelNeuron(net : in out NNet_Interface; idx : NNIndex) is abstract;
-    procedure ReplaceNeuron(net : in out NNet_Interface; idx: NNIndex; neur : NeuronRec) is abstract;
-    function  GetNeuron(net : NNet_Interface; idx : NNIndex) return NeuronRec is abstract;
-
-    -- perform topological sort - can make 'Class and implement once only?
-    procedure SortForward (net : NNet_Interface) is null;
-    procedure SortBackward(net : NNet_Interface) is null;
-
-private
-
-
-    -- actual data that may be used in neuron arrays
-    -- we also need to track where outputs are connected (e.g for backprop)
-    -- but this info is unneeded to create initial topology
---     type NeuronT is record
---         neur : NeuronRec;
---         outs : ConnectArray;
---     end record;
-
-    -----------------
-    -- A mutable using Containers.Vectors
-    -- Both NeuronRec and NNetRec can change not only the specific connections,
-    -- but also number of neurons and connections
-
-    package WV is new Ada.Containers.Vectors(Index_Type=>NIndex, Element_Type=>Real);
-    package NV is new Ada.Containers.Vectors(Index_Type=>NIndex, Element_Type=>NNIndex);
-
-    type NeuronRec_Mutable is record
-        idx     : NNIndex; -- own index in the enclosing NNet
+    type NeuronRec(Nin : InputIndex) is record
+        idx     : NeuronIndex; -- own index in NNet
         activat : ActivationType;
-        lag     : Real;    -- delay of result propagation
-        weights : WV.Vector;
-        inputs  : NV.Vector;
+        lag     : Real;    -- delay of result propagation, unused for now
+        weights : WeightsArray(0 .. Nin);
+        inputs  : InConArray  (1 .. Nin);
     end record;
+    type NeuronRecPtr is access NeuronRec;
+
 
 end wann;
