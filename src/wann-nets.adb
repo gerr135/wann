@@ -1,6 +1,14 @@
 pragma Ada_2012;
 package body wann.nets is
 
+    -----------------------------------
+    -- Layer class-wides
+    procedure PropForward(L : in out Abstract_Layer'Class) is
+    begin
+        pragma Compile_Time_Warning (Standard.True, "PropForward unimplemented");
+        raise Program_Error with "Unimplemented procedure PropForward";
+    end;
+
     ---------------
     -- AddNeuron --
     ---------------
@@ -33,10 +41,10 @@ package body wann.nets is
                         connects : InConArray; idx : out NeuronIndex) is
         NR : NeuronRec(Nin=>connects'Last) :=
             ( idx=>1, lag=>0.0,
-                Nin => connects'Last,
-                activat=>activat,
-                weights => (others=>0.0),
-                inputs  => connects );
+            Nin => connects'Last,
+            activat=>activat,
+            weights => (others=>0.0),
+            inputs  => connects );
     begin
         net.AddNeuron(NR,idx);
     end AddNeuron;
@@ -179,7 +187,13 @@ package body wann.nets is
 
     function ProcessInputs (net : NNet_Interface'Class; inputs : InputArray) return OutputArray is
     begin
-        for li in 1 .. net.GetNLayers-1 loop
+        -- first set the inputs in net
+        for li in 1 .. net.GetNLayers loop
+            declare
+                LC : Abstract_Layer'Class := net.GetLayer(li);
+            begin
+                LC.PropForward;
+            end;
         end loop;
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "ProcessInputs unimplemented");
@@ -215,14 +229,14 @@ package body wann.nets is
         pragma Compile_Time_Warning (Standard.True, "SortForward unimplemented");
         raise Program_Error with "Unimplemented procedure SortForward";
     end PLFMatrix;
-        
+
     procedure PLFGPU       (net : NNet_Interface'Class; idx : LayerIndex) is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "SortForward unimplemented");
         raise Program_Error with "Unimplemented procedure SortForward";
     end PLFGPU;
-        
+
 
 
 end wann.nets;

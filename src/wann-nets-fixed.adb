@@ -23,6 +23,13 @@ package body wann.nets.fixed is
     end;
 
 
+    overriding
+    function GetNLayers (net : NNet_Fixed) return LayerIndex is
+    begin
+        return raise Program_Error with "Unimplemented function GetNLayers";
+    end;
+
+
     --------------------------------------------
     -- Neuron handling
     overriding
@@ -70,19 +77,23 @@ package body wann.nets.fixed is
     ---------------------------------------------
     -- Layer handling
     overriding
-    function  GetLayer(net : in NNet_Fixed;     idx : LayerIndex) return LayerRec is
+    function  GetLayer(net : in NNet_Fixed;     idx : LayerIndex) return Abstract_Layer'Class is
     begin
-        return net.layers(idx).all;
+--         return net.layers(idx).all;
         -- Range_Error is raised by language itself if out of range
         -- no extra checks necessary..
+        pragma Compile_Time_Warning (Standard.True, "GetLayer unimplemented");
+        return raise Program_Error with "Unimplemented procedure GetLayer";
     end;
 
     overriding
-    procedure SetLayer(net : in out NNet_Fixed; idx : LayerIndex; LR :   LayerRec) is
+    procedure SetLayer(net : in out NNet_Fixed; idx : LayerIndex; LR :   Abstract_Layer'Class) is
     begin
-        net.layers(idx).all := LR;
+--         net.layers(idx).all := LR;
+        pragma Compile_Time_Warning (Standard.True, "GetLayer unimplemented");
+        raise Program_Error with "Unimplemented procedure GetLayer";
     end;
 
 
-    
+
 end wann.nets.fixed;

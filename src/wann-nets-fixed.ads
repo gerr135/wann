@@ -18,15 +18,12 @@
 --
 
 with Ada.Finalization; use Ada.Finalization;
-with wann.layers;
+-- with wann.layers;
 
 generic
 package wann.nets.fixed is
 
     NetOverflow : Exception;
-
-    package RealLayers is new wann.layers;
-    use RealLayers;
 
     -- Trying mixed inputs/outputs/neurons, selected by index ranges, for fixed nets.
     -- See Readme for description.
@@ -34,15 +31,16 @@ package wann.nets.fixed is
     -- A mutable NNet type and methods
     -- using separate inputs/outputs and Connector type
     -- See Readme for details on design and representation description..
-    type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex; 
-                    Npts : NeuronIndex; maxLayers : LayerIndex) is 
+    type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex;
+                    Npts : NeuronIndex; maxLayers : LayerIndex) is
         new Limited_Controlled and NNet_Interface with private;
     -- The NNet_Fixed id parametrized by discriminants
     -- However we cannot avoid allocation altogether, as there are varying size connections throughout
     -- So, we pretty much have to derive this type from Controlled;
     -- Limited_ might be lifter at some point if we ever need to copy existing NNet
-    
+
     -- inherited methods
+    -- getters
     overriding
     function GetNInputs (net : NNet_Fixed) return InputIndex;
 
@@ -52,6 +50,11 @@ package wann.nets.fixed is
     overriding
     function GetNNeurons(net : NNet_Fixed) return NeuronIndex;
 
+    overriding
+    function GetNLayers (net : NNet_Fixed) return LayerIndex;
+
+
+    -- neuron handling
     overriding
     procedure NewNeuron(net : in out Nnet_Fixed; idx : out NeuronIndex_Base);
     -- nothing to create for real, but try to mimick mutable
@@ -63,10 +66,10 @@ package wann.nets.fixed is
     procedure SetNeuron(net : in out Nnet_Fixed; neur : NeuronRec);
 
     overriding
-    function  GetLayer(net : in NNet_Fixed;     idx : LayerIndex) return LayerRec;
+    function  GetLayer(net : in NNet_Fixed;     idx : LayerIndex) return Abstract_Layer'Class;
 
     overriding
-    procedure SetLayer(net : in out NNet_Fixed; idx : LayerIndex; LR :   LayerRec);
+    procedure SetLayer(net : in out NNet_Fixed; idx : LayerIndex; LR :   Abstract_Layer'Class);
 
 
 
@@ -75,9 +78,9 @@ private
     type NeuronArray is array(NeuronIndex range <>) of NeuronReprPtr;
     type LayerArray  is array(LayerIndex  range <>) of LayerRecPtr;
 
-    type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex; 
-                    Npts : NeuronIndex; maxLayers : LayerIndex) is 
-                    new Limited_Controlled and NNet with record
+    type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex;
+                    Npts : NeuronIndex; maxLayers : LayerIndex) is
+                    new Limited_Controlled and NNet_Interface with record
         Nassigned : InputIndex_Base := 0;
         inputs  : InConArray (1 .. Nin);
         outputs : OutConArray(1 .. Nout);

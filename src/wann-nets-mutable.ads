@@ -24,6 +24,20 @@ with Ada.Containers.Indefinite_Vectors;
 generic
 package wann.nets.mutable is
 
+    type Layer_SimpleVector is new Abstract_Layer with private;
+    -- this should be moved to separate package (and multiple Layer variants added there too)
+    -- perhaps wann.layers can be reused to store all Layer realizations
+
+    overriding
+    function  Length(AL : Layer_SimpleVector) return NeuronIndex_Base;
+
+    overriding
+    function  Get(AL : Layer_SimpleVector) return LayerRec;
+
+    overriding
+    procedure Set(AL : in out Layer_SimpleVector; LR : LayerRec);
+
+
     --------------------------
     -- A mutable NNet type and methods
     type NNet_Mutable is new NNet_Interface with private;
@@ -32,6 +46,7 @@ package wann.nets.mutable is
     function Create (Nin : InputIndex; Nout : OutputIndex) return NNet_Mutable;
 
     -- inherited methods
+    -- getters
     overriding
     function GetNInputs (net : NNet_Mutable) return InputIndex;
 
@@ -41,6 +56,11 @@ package wann.nets.mutable is
     overriding
     function GetNNeurons(net : NNet_Mutable) return NeuronIndex;
 
+    overriding
+    function GetNLayers (net : NNet_Mutable) return LayerIndex;
+
+
+    -- neuron handling
     overriding
     procedure NewNeuron(net : in out NNet_Mutable; idx : out NeuronIndex_Base);
 
@@ -54,23 +74,32 @@ package wann.nets.mutable is
     procedure SetNeuron(net : in out NNet_Mutable; neur : NeuronRec);
 
     overriding
-    function  GetLayer(net : in NNet_Mutable;     idx : LayerIndex) return LayerRec;
+    function  GetLayer(net : in NNet_Mutable;     idx : LayerIndex) return Abstract_Layer'Class;
 
     overriding
-    procedure SetLayer(net : in out NNet_Mutable; idx : LayerIndex; LR :   LayerRec);
+    procedure SetLayer(net : in out NNet_Mutable; idx : LayerIndex; LR :   Abstract_Layer'Class);
 
 
 private
 
     -----------------
     -- A mutable NNet using Containers.Vectors and Connectors to link neurons and inputs/outputs
-
+    --
+    -- first common vector types
     package IV is new Ada.Containers.Vectors(Index_Type=>InputIndex,  Element_Type=>ConnectionRec);
     package OV is new Ada.Containers.Vectors(Index_Type=>OutputIndex, Element_Type=>ConnectionRec);
     package NV is new Ada.Containers.Vectors(Index_Type=>NeuronIndex, Element_Type=>ConnectionRec);
-    package LV is new Ada.Containers.Indefinite_Vectors(Index_Type=>LayerIndex,  Element_Type=>LayerRec);
 
-    type NNet_Mutable is new NNet with record
+    -- basic Layer realization - should be in a separate package
+    type Layer_SimpleVector is new Abstract_Layer with record
+        -- vector of neurons, no matrix recalculation
+        neurons : NV.Vector;
+    end record;
+
+    package LV is new Ada.Containers.Indefinite_Vectors(Index_Type=>LayerIndex,  Element_Type=>Layer_SimpleVector);
+
+    -- Finally the NNet
+    type NNet_Mutable is new NNet_Interface with record
         inputs  : IV.Vector;
         outputs : OV.Vector;
         neurons : NV.Vector;
