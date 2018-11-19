@@ -26,7 +26,7 @@ package wann.nets.mutable is
 
     --------------------------
     -- A mutable NNet type and methods
-    type NNet_Mutable is new NNet with private;
+    type NNet_Mutable is new NNet_Interface with private;
 
     -- Base constructor, create empty net with set Nin and Nout
     function Create (Nin : InputIndex; Nout : OutputIndex) return NNet_Mutable;

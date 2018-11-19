@@ -75,6 +75,13 @@ package wann is
     type WeightsArray is array (InputIndex_Base range <>) of Real;
 
 
+    -- how we move through layers
+    type PropagationType is 
+        (Individual, -- cycle through neurons in layer; for basic tests and in case of very sparce connections
+         Matrix,     -- compose a common matrix and do vector algebra; the common case
+         GPU);       -- try to do linear algebra in GPU
+    
+
     -----------------------------------------------------
     -- Main record types representing Neuron parameters.
     -- To be used for storage, IO and as an alphabet to form a linear description,

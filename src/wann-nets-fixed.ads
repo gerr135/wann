@@ -18,11 +18,15 @@
 --
 
 with Ada.Finalization; use Ada.Finalization;
+with wann.layers;
 
 generic
 package wann.nets.fixed is
 
     NetOverflow : Exception;
+
+    package RealLayers is new wann.layers;
+    use RealLayers;
 
     -- Trying mixed inputs/outputs/neurons, selected by index ranges, for fixed nets.
     -- See Readme for description.
@@ -32,7 +36,7 @@ package wann.nets.fixed is
     -- See Readme for details on design and representation description..
     type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex; 
                     Npts : NeuronIndex; maxLayers : LayerIndex) is 
-        new Limited_Controlled and NNet with private;
+        new Limited_Controlled and NNet_Interface with private;
     -- The NNet_Fixed id parametrized by discriminants
     -- However we cannot avoid allocation altogether, as there are varying size connections throughout
     -- So, we pretty much have to derive this type from Controlled;
