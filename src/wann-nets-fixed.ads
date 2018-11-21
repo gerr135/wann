@@ -66,10 +66,16 @@ package wann.nets.fixed is
     procedure SetNeuron(net : in out Nnet_Fixed; neur : PN.NeuronClass_Access);
 
     overriding
+    function  LayersReady (net : NNet_Fixed) return Boolean;
+
+    overriding
     function  GetLayer(net : in NNet_Fixed;     idx : LayerIndex) return PL.Layer_Interface'Class;
 
     overriding
     procedure SetLayer(net : in out NNet_Fixed; idx : LayerIndex; L :   PL.Layer_Interface'Class);
+
+    overriding
+    procedure SetInputValues(net : in out NNet_Fixed; V : ValueArray);
 
 
 

@@ -54,6 +54,7 @@ package wann is
              (Simple, -- cycle through neurons in layer; for basic use and in case of very sparse connections
               Matrix, -- compose a common matrix and do vector algebra; the common case
               GPU);   -- try to do linear algebra in GPU
+        -- this will be (most likely) handled through layer types via OOP hierarchy.
 
     ----------------------------
     -- Global indices
@@ -77,42 +78,32 @@ package wann is
     -- a mixture of interconnections and "final" output connections.
     -- In general these will have to be treated on individual basis,
     -- so, checks should be made based on the ConnectionType of each output.
-
-
-    -------------------------------------------------
-    -- Global data representations for passing around
     --
     --  connection specification
     type ConnectionType is (I, O, N);
     -- Input, Output, Neuron, but intended to be used in assignment, so shortening down
 
-    type ConnectionRec is record
+    type ConnectionIdx is record
         T : ConnectionType;
         idx : Positive; -- used for text input most often, so its essentially a number
-        -- could be made one of index types, but then it would make sense to use variant record
-        -- and then we cannot make a simple array, as that's an unconstrained type..
     end record;
 
 --     type ConnectionIndex_Base is new Natural;
 --     subtype ConnectionIndex is ConnectionIndex_Base range 1 .. ConnectionIndex_Base'Last;
 --     --
---     type ConnectionArray   is array (ConnectionIndex range <>) of ConnectionRec;
+--     type ConnectionArray   is array (ConnectionIndex range <>) of ConnectionIdx;
 --     -- 1st two are specirfic for inputs/outputs,
 --     -- the last one used throughout neurons
 
     --------------------------------------------------
-    -- value vectors to be passed around
-    -- Used as input/output of neurons and layers
-    -- The tricky part here is relating individual values to proper inputs (of either layers or neurons)
-    -- As NNet structure in this package is not stricktly layer-based.
-    -- In fact NNet can have cycles, neurons can be in multiple layers and connections,
-    -- and even number of neurons, can change dynamically.
-    -- May need another layer of abstraction to handle this in individual packages.
-    -- Some kind of converter between these generic vectors and specific inputs in proper format
-    -- to each subunit..
-    type DataIndex_Base is new Natural;
-    subtype DataIndex is DataIndex_Base range 1 .. DataIndex_Base'Last;
-    --
-    type DataArray is array (DataIndex) of Real;
+    -- Values to be passed around
+    -- Used as data vectors passed between layers, etc
+    -- corresponding arrays or Ada.Containers.Vectors instances should be indexed by 
+    -- an appropriate  XXXIndex in a corresponding package..
+    type DataPoint is record
+        assigned : Boolean;
+        val      : Real;
+    end record;
+
 
 end wann;

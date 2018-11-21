@@ -38,8 +38,8 @@ package wann.neurons is
 
 
     -- associated arrray types for holding params
-    type InConnArray  is array (InputIndex range <>)  of ConnectionRec;
-    type OutConnArray is array (OutputIndex range <>) of ConnectionRec;
+    type InConnArray  is array (InputIndex range <>)  of ConnectionIdx;
+    type OutConnArray is array (OutputIndex range <>) of ConnectionIdx;
     type WeightArray  is array (InputIndex_Base range <>) of Real;
     type ValueArray   is array (InputIndex range <>) of Real;
 
@@ -77,8 +77,8 @@ package wann.neurons is
     -- Outputs, on the other hand, are not part of primitive Rec,
     -- and will need to be reset individually during rearrangement, so need some primitives for these..
     -- The principal users should be Layer or NNet while adding/removeing/reconnecting neurons
-    procedure AddOutput(NI : in out Neuron_Interface; Output : ConnectionRec) is abstract;
-    procedure DelOutput(NI : in out Neuron_Interface; Output : ConnectionRec) is abstract;
+    procedure AddOutput(NI : in out Neuron_Interface; Output : ConnectionIdx) is abstract;
+    procedure DelOutput(NI : in out Neuron_Interface; Output : ConnectionIdx) is abstract;
     --
     -- we also need to cache propagation results
     -- (calling it result to distinguish from Outputs, which are physical connections)

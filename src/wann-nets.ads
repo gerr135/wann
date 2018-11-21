@@ -38,9 +38,9 @@ package wann.nets is
     subtype InputIndex is InputIndex_Base range 1 .. InputIndex_Base'Last;
     type    OutputIndex is new Positive;
     --
-    type InConnArray  is array (InputIndex range <>)  of ConnectionRec;
-    type OutConnArray is array (OutputIndex range <>) of ConnectionRec;
-    type ValueArray   is array (InputIndex range <>) of Real;
+    type InConnArray  is array (InputIndex range <>)  of ConnectionIdx;
+    type OutConnArray is array (OutputIndex range <>) of ConnectionIdx;
+    type ValueArray   is array (InputIndex range <>)  of Real;
 
 
 
@@ -122,7 +122,7 @@ package wann.nets is
     --
     -- forward propagation through trained net
     --  Ease of use wrapper: emulate stateless propagation
-    function  ProcessInputs(net : NNet_Interface'Class; inputs : ValueArray) return ValueArray;
+    function  ProcessInputs(net : NNet_Interface'Class; V : ValueArray) return ValueArray;
     --  Stateful propagation, representative of real data passage
     --  NOTE: initial values should be set first with SetInputValues
     procedure ProcessInputs(net : NNet_Interface'Class);
@@ -130,25 +130,6 @@ package wann.nets is
 
 
 --     procedure Train(net : in out NNet'Class; training_set : TBD);
-
-
-private
-
-    type Abstract_Layer(NN : NNet_Access) is abstract tagged null record;
-
-
---     function  ForwardPropLayer (net : NNet'Class; inputs : InputArray) return OutputArray;
-    --     procedure BackwardPropLayer(net : in out NNet'Class; inputs : InputArray) return OutputArray;
-
-
-    -- all NN calculations are typically done layer-by-layer
-    -- these methods iterate over methods updating cached values to the next step
-    procedure PropLayerForward (net : NNet_Interface'Class; idx : LayerIndex; propType : PropagationType := Matrix);
-    procedure PropLayerBackward(net : NNet_Interface'Class; idx : LayerIndex; propType : PropagationType := Matrix);
-
-    procedure PLFIndividual(net : NNet_Interface'Class; idx : LayerIndex);
-    procedure PLFMatrix    (net : NNet_Interface'Class; idx : LayerIndex);
-    procedure PLFGPU       (net : NNet_Interface'Class; idx : LayerIndex);
 
 
 end wann.nets;

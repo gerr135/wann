@@ -63,10 +63,16 @@ package wann.nets.vectors is
     procedure SetNeuron(net : in out NNet; neur : PN.NeuronCLass_Access);
 
     overriding
+    function  LayersReady (net : NNet) return Boolean;
+
+    overriding
     function  GetLayer(net : in NNet;     idx : LayerIndex) return PL.Layer_Interface'Class;
 
     overriding
     procedure SetLayer(net : in out NNet; idx : LayerIndex; LR :   PL.Layer_Interface'Class);
+
+    overriding
+    procedure SetInputValues(net : in out NNet; V : ValueArray);
 
 
 private
@@ -75,9 +81,9 @@ private
     -- A mutable NNet using Containers.Vectors and Connectors to link neurons and inputs/outputs
     --
     -- first common vector types
-    package IV is new Ada.Containers.Vectors(Index_Type=>InputIndex,  Element_Type=>ConnectionRec);
-    package OV is new Ada.Containers.Vectors(Index_Type=>OutputIndex, Element_Type=>ConnectionRec);
-    package NV is new Ada.Containers.Vectors(Index_Type=>NeuronIndex, Element_Type=>ConnectionRec);
+    package IV is new Ada.Containers.Vectors(Index_Type=>InputIndex,  Element_Type=>ConnectionIdx);
+    package OV is new Ada.Containers.Vectors(Index_Type=>OutputIndex, Element_Type=>ConnectionIdx);
+    package NV is new Ada.Containers.Vectors(Index_Type=>NeuronIndex, Element_Type=>ConnectionIdx);
 
     package LV is new Ada.Containers.Vectors(Index_Type=>LayerIndex,  Element_Type=>PLV.Layer,
                                              "=" => PLV."=");

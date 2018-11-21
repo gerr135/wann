@@ -42,8 +42,9 @@ package wann.layers is
     type OutputIndex is new Positive;
 
     -- associated arrray types for holding params
-    type InputsArray   is array (InputIndex range <>)  of ConnectionRec;
-    type OutputsArray  is array (OutputIndex range <>) of ConnectionRec;
+    type ValueArray   is array (InputIndex range <>)  of DataPoint;
+    type InConnArray  is array (InputIndex range <>)  of ConnectionIdx;
+    type OutConnArray is array (OutputIndex range <>) of ConnectionIdx;
     type LayerNeuronsArray is array (LayerNeuronsIndex range <>) of PN.NeuronClass_Access;
     -- or need NeuronClass_Access?
 

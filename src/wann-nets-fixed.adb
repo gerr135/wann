@@ -3,39 +3,39 @@ package body wann.nets.fixed is
 
     ---------------------------------------------------
     --  Dimension getters
-    overriding
+    overriding 
     function GetNInputs (net : NNet_Fixed) return InputIndex is
     begin
         return net.Nin;
-    end;
+    end GetNInputs;
 
-    overriding
-    function GetNOutputs(net : NNet_Fixed) return OutputIndex is
+    overriding 
+    function GetNOutputs (net : NNet_Fixed) return OutputIndex is
     begin
         return net.Nout;
-    end;
+    end GetNOutputs;
 
-
-    overriding
-    function GetNNeurons(net : NNet_Fixed) return NeuronIndex is
+    overriding 
+    function GetNNeurons (net : NNet_Fixed) return NeuronIndex is
     begin
         return net.Npts;
-    end;
+    end GetNNeurons;
 
-
-    overriding
+    overriding 
     function GetNLayers (net : NNet_Fixed) return LayerIndex is
     begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "GetNLayers unimplemented");
         return raise Program_Error with "Unimplemented function GetNLayers";
-    end;
+    end GetNLayers;
 
 
-    --------------------------------------------
-    -- Neuron handling
-    overriding
-    procedure NewNeuron (net : in out NNet_Fixed; idx : out NeuronIndex_Base) is
-        -- everything is static, we do not really create any neurons..
-        -- just return the number of next one with unassigned params.
+    ---------------
+    -- NewNeuron --
+    ---------------
+
+    overriding 
+    procedure NewNeuron (net : in out Nnet_Fixed; idx : out NeuronIndex_Base) is
     begin
         if net.Nassigned >= InputIndex(net.Npts) then
             raise NetOverflow;
@@ -45,55 +45,82 @@ package body wann.nets.fixed is
         -- here we essentialy create a 1:1 mapping from inner to outer indices
     end NewNeuron;
 
+    ---------------
+    -- GetNeuron --
+    ---------------
 
-    overriding
-    function  GetNeuron(net : NNet_Fixed; idx : NeuronIndex) return NeuronRec is
-        Stub : NeuronRec(Nin=>0) :=
-            ( idx => 0, lag => 0.0,
-              Nin => 0,
-              activat => Sigmoid,
-              weights => (others=>0.0),
-              inputs  => (others=>(N,0)) );
+    overriding 
+    function GetNeuron (net : NNet_Fixed; idx : NeuronIndex) return PN.NeuronClass_Access is
+        Stub : PN.NeuronRec(Nin=>0) := ( 
+            idx => 0, lag => 0.0,
+            Nin => 0,
+            activat => Sigmoid,
+            weights => (others=>0.0),
+            inputs  => (others=>(N,0)) );
     begin
         --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "SetNeuron unimplemented");
-        raise Program_Error with "Unimplemented procedure SetNeuron";
-        return Stub;
+        pragma Compile_Time_Warning (Standard.True, "GetNeuron unimplemented");
+        return raise Program_Error with "Unimplemented function GetNeuron";
     end GetNeuron;
 
+    ---------------
+    -- SetNeuron --
+    ---------------
 
-    overriding
-    procedure SetNeuron (net : in out NNet_Fixed; neur : NeuronRec) is
+    overriding 
+    procedure SetNeuron (net : in out Nnet_Fixed; neur : PN.NeuronClass_Access) is
     begin
-        -- init the inner neuron entry
-
-        -- process all connections
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "SetNeuron unimplemented");
         raise Program_Error with "Unimplemented procedure SetNeuron";
     end SetNeuron;
 
+    -----------------
+    -- LayersReady --
+    -----------------
 
-    ---------------------------------------------
-    -- Layer handling
-    overriding
-    function  GetLayer(net : in NNet_Fixed;     idx : LayerIndex) return Abstract_Layer'Class is
+    overriding 
+    function LayersReady (net : NNet_Fixed) return Boolean is
     begin
---         return net.layers(idx).all;
-        -- Range_Error is raised by language itself if out of range
-        -- no extra checks necessary..
-        pragma Compile_Time_Warning (Standard.True, "GetLayer unimplemented");
-        return raise Program_Error with "Unimplemented procedure GetLayer";
-    end;
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "LayersReady unimplemented");
+        return raise Program_Error with "Unimplemented function LayersReady";
+    end LayersReady;
 
-    overriding
-    procedure SetLayer(net : in out NNet_Fixed; idx : LayerIndex; LR :   Abstract_Layer'Class) is
+    --------------
+    -- GetLayer --
+    --------------
+
+    overriding 
+    function GetLayer (net : in NNet_Fixed; idx : LayerIndex) return PL.Layer_Interface'Class is
     begin
---         net.layers(idx).all := LR;
+        --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "GetLayer unimplemented");
-        raise Program_Error with "Unimplemented procedure GetLayer";
-    end;
+        return raise Program_Error with "Unimplemented function GetLayer";
+    end GetLayer;
 
+    --------------
+    -- SetLayer --
+    --------------
 
+    overriding 
+    procedure SetLayer (net : in out NNet_Fixed; idx : LayerIndex; L : PL.Layer_Interface'Class) is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "SetLayer unimplemented");
+        raise Program_Error with "Unimplemented procedure SetLayer";
+    end SetLayer;
+
+    --------------------
+    -- SetInputValues --
+    --------------------
+
+    overriding 
+    procedure SetInputValues (net : in out NNet_Fixed; V : ValueArray) is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "SetInputValues unimplemented");
+        raise Program_Error with "Unimplemented procedure SetInputValues";
+    end SetInputValues;
 
 end wann.nets.fixed;

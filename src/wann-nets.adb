@@ -1,46 +1,41 @@
 pragma Ada_2012;
 package body wann.nets is
 
-    -----------------------------------
-    -- Layer class-wides
-    procedure PropForward(L : in out Abstract_Layer'Class) is
-    begin
-        pragma Compile_Time_Warning (Standard.True, "PropForward unimplemented");
-        raise Program_Error with "Unimplemented procedure PropForward";
-    end;
-
     ---------------
     -- AddNeuron --
     ---------------
 
-    procedure AddNeuron (net : in out NNet_Interface'Class; NR : NeuronRec; idx : out NeuronIndex) is
-        newNR : NeuronRec := NR;
+    procedure AddNeuron (net : in out NNet_Interface'Class; NR : PN.NeuronRec; 
+                         idx : out NeuronIndex) is
+        newNR : PN.NeuronRec := NR;
     begin
         net.NewNeuron(idx);
         newNR.idx := idx;
-        net.SetNeuron(newNR);
+        -- net.SetNeuron(newNR);
+        pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
+        raise Program_Error with "Unimplemented function AddNeuron";
     end AddNeuron;
 
-    procedure AddNeuron (net : in out NNet_Interface'Class; NR : NeuronRec) is
-        newNR : NeuronRec := NR;
+    procedure AddNeuron (net : in out NNet_Interface'Class; NR : PN.NeuronRec) is
+        -- keep the code centralized: just call above variant and discard extra index
         idx : NeuronIndex_Base;
     begin
-        net.NewNeuron(idx);
-        newNR.idx := idx;
-        net.SetNeuron(newNR);
+        net.AddNeuron(NR, idx);
     end AddNeuron;
 
-    function AddNeuron (net : in out NNet_Interface'Class; NR : NeuronRec) return NeuronIndex is
+    function AddNeuron (net : in out NNet_Interface'Class; 
+                        NR : PN.NeuronRec) return NeuronIndex is
         idx : NeuronIndex_Base;
     begin
         net.AddNeuron(NR,idx);
         return idx;
     end AddNeuron;
 
-    procedure AddNeuron (net : in out NNet_Interface'Class; activat : ActivationType;
-                        connects : InConArray; idx : out NeuronIndex) is
-        NR : NeuronRec(Nin=>connects'Last) :=
-            ( idx=>1, lag=>0.0,
+    procedure AddNeuron (net : in out NNet_Interface'Class; activat : ActivationType; 
+                         connects : PN.InConnArray; idx : out NeuronIndex) is
+        --
+        NR : PN.NeuronRec(Nin=>connects'Last) := (
+            idx=>1, lag=>0.0,
             Nin => connects'Last,
             activat=>activat,
             weights => (others=>0.0),
@@ -49,92 +44,63 @@ package body wann.nets is
         net.AddNeuron(NR,idx);
     end AddNeuron;
 
-    procedure AddNeuron (net : in out NNet_Interface'Class; activat : ActivationType;
-                        connects : InConArray) is
+    procedure AddNeuron (net : in out NNet_Interface'Class; activat : ActivationType; 
+                         connects : PN.InConnArray) is
+        --
         idx : NeuronIndex_Base;
     begin
         net.AddNeuron(activat,connects,idx);
     end AddNeuron;
 
-    function AddNeuron (net : in out NNet_Interface'Class; activat : ActivationType;
-                        connects : InConArray) return NeuronIndex is
+    function AddNeuron (net : in out NNet_Interface'Class; activat : ActivationType; 
+                        connects : PN.InConnArray) return NeuronIndex is
+        --
         idx : NeuronIndex_Base;
     begin
         net.AddNeuron(activat, connects,idx);
         return idx;
     end AddNeuron;
 
-
+    
     -----------------
     -- ResetNeuron --
     -----------------
 
-    procedure ResetNeuron (net : in out NNet_Interface'Class; NR : NeuronRec) is
+    procedure ResetNeuron (net : in out NNet_Interface'Class; NR  : PN.NeuronRec) is
     begin
-        net.SetNeuron(NR);
+--         net.SetNeuron(NR);
+        pragma Compile_Time_Warning (Standard.True, "ReconnectNeuronAtRandom unimplemented");
+        raise Program_Error with "Unimplemented procedure ReconnectNeuronAtRandom";
     end ResetNeuron;
 
-    procedure ResetNeuron (net : in out NNet_Interface'Class; idx  : NeuronIndex;
-                            activat : ActivationType; connects : InConArray) is
-        NR : NeuronRec(Nin=>connects'Last) :=
-            ( idx=>idx, lag=>0.0,
-                Nin => connects'Last,
-                activat=>activat,
-                weights => (others=>0.0),
-                inputs  => connects );
-    begin
-        net.SetNeuron(NR);
-    end ResetNeuron;
-
-    procedure ResetNeuron (net : in out NNet_Interface'Class; idx  : NeuronIndex;
-                            connects : InConArray) is
-        NR : NeuronRec(Nin=>connects'Last) :=
-            ( idx => idx, lag => 0.0,
-                Nin => connects'Last,
-                activat => net.GetNeuron(idx).activat,
-                weights => (others=>0.0),
-                inputs  => connects );
+    procedure ResetNeuron (net : in out NNet_Interface'Class; idx : NeuronIndex; 
+                           activat : ActivationType; connects : PN.InConnArray) is
+        --
+        NR : PN.NeuronRec(Nin=>connects'Last) := ( 
+            idx=>idx, lag=>0.0,
+            Nin => connects'Last,
+            activat=>activat,
+            weights => (others=>0.0),
+            inputs  => connects );
     begin
         net.ResetNeuron(NR);
     end ResetNeuron;
 
-    ---------------------------
-    -- ReconnectNeuronRandom --
-    ---------------------------
-
-    procedure ReconnectNeuronRandom (net : in out NNet_Interface'Class; idx  : NeuronIndex;
-                                    maxConnects : InputIndex_Base := 0) is
+    procedure ResetNeuron (net : in out NNet_Interface'Class; idx : NeuronIndex; 
+                           connects : PN.InConnArray) is
+        --
+        NR : PN.NeuronRec(Nin=>connects'Last) := ( 
+            idx => idx, lag => 0.0,
+            Nin => connects'Last,
+            activat => net.GetNeuron(idx).activat,
+            weights => (others=>0.0),
+            inputs  => connects );
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "ReconnectNeuronRandom unimplemented");
-        raise Program_Error with "Unimplemented procedure ReconnectNeuronRandom";
-    end ReconnectNeuronRandom;
+        net.ResetNeuron(NR);
+    end ResetNeuron;
 
-    --------------------
-    -- PopulateRandom --
-    --------------------
-
-    procedure PopulateRandom (net : in out NNet_Interface'Class; maxConnects : InputIndex;
-                                Npts : NeuronIndex_Base := 0) is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "PopulateRandom unimplemented");
-        raise Program_Error with "Unimplemented procedure PopulateRandom";
-    end PopulateRandom;
-
-
-    function ForwardProp(net : NNet_Interface'Class; inputs : InputArray) return OutputArray is
-        Stub : OutputArray(1 .. net.GetNOutputs) := (others=>0.0);
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "PopulateRandom unimplemented");
-        raise Program_Error with "Unimplemented procedure PopulateRandom";
-        return Stub;
-    end;
-
-
-
-        -----------------------------
+    
+    -----------------------------
     -- ReconnectNeuronAtRandom --
     -----------------------------
 
@@ -164,9 +130,9 @@ package body wann.nets is
         raise Program_Error with "Unimplemented procedure PopulateAtRandom";
     end PopulateAtRandom;
 
-
-    -------------------------------
-    -- Topological Sorting
+    -----------------
+    -- SortForward --
+    -----------------
 
     procedure SortForward (net : in out NNet_Interface'Class) is
     begin
@@ -175,6 +141,10 @@ package body wann.nets is
         raise Program_Error with "Unimplemented procedure SortForward";
     end SortForward;
 
+    ------------------
+    -- SortBackward --
+    ------------------
+
     procedure SortBackward (net : in out NNet_Interface'Class) is
     begin
         --  Generated stub: replace with real body!
@@ -182,23 +152,26 @@ package body wann.nets is
         raise Program_Error with "Unimplemented procedure SortBackward";
     end SortBackward;
 
-    ----------------------------------------
-    -- Actual calculations
+    -------------------
+    -- ProcessInputs --
+    -------------------
 
-    function  ProcessInputs(net : NNet_Interface'Class; inputs : ValueArray) return ValueArray is
+    function ProcessInputs (net : NNet_Interface'Class; V : ValueArray) return ValueArray is
+        -- this is a stateless prop version. All intermidiate data passed locally
     begin
         -- check dimensions
-        if inputs.Length != net.GetNInputs then
+        if V'Length /= net.GetNInputs then
             raise DataWidthMismatch;
         end if;
         if not net.LayersReady then
             raise UnsortedNetPropagation;
         end if;
-        -- first set the inputs in net
+        --
         for li in 1 .. net.GetNLayers loop
             declare
-                L : Layer_Interface'Class := net.GetLayer(li);
-                V : PL.ValueArray := L.PropForward()
+                -- need to dynamically pass layers and data vectors
+                L : PL.Layer_Interface'Class := net.GetLayer(li);
+                V : PL.ValueArray := L.PropForward;
             begin
                 L.PropForward;
             end;
@@ -208,43 +181,26 @@ package body wann.nets is
         return raise Program_Error with "Unimplemented function ProcessInputs";
     end ProcessInputs;
 
+    -------------------
+    -- ProcessInputs --
+    -------------------
 
-
-    procedure PropLayerForward (net : NNet_Interface'Class; idx : LayerIndex; propType : PropagationType := Matrix) is
+    procedure ProcessInputs (net : NNet_Interface'Class) is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "ProcessInputs unimplemented");
-        raise Program_Error with "Unimplemented function ProcessInputs";
-    end PropLayerForward;
+        raise Program_Error with "Unimplemented procedure ProcessInputs";
+    end ProcessInputs;
 
-    procedure PropLayerBackward(net : NNet_Interface'Class; idx : LayerIndex; propType : PropagationType := Matrix) is
+    -----------------
+    -- ReadOutputs --
+    -----------------
+
+    function ReadOutputs (net : NNet_Interface'Class) return ValueArray is
     begin
         --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "SortForward unimplemented");
-        raise Program_Error with "Unimplemented procedure SortForward";
-    end PropLayerBackward;
-
-    procedure PLFIndividual(net : NNet_Interface'Class; idx : LayerIndex) is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "SortForward unimplemented");
-        raise Program_Error with "Unimplemented procedure SortForward";
-    end PLFIndividual;
-
-    procedure PLFMatrix    (net : NNet_Interface'Class; idx : LayerIndex) is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "SortForward unimplemented");
-        raise Program_Error with "Unimplemented procedure SortForward";
-    end PLFMatrix;
-
-    procedure PLFGPU       (net : NNet_Interface'Class; idx : LayerIndex) is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "SortForward unimplemented");
-        raise Program_Error with "Unimplemented procedure SortForward";
-    end PLFGPU;
-
-
+        pragma Compile_Time_Warning (Standard.True, "ReadOutputs unimplemented");
+        return raise Program_Error with "Unimplemented function ReadOutputs";
+    end ReadOutputs;
 
 end wann.nets;
