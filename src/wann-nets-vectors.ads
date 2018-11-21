@@ -20,64 +20,53 @@
 with Ada.Containers.Vectors;
 with Ada.Containers.Indefinite_Vectors;
 
+with wann.layers.vectors;
 
 generic
-package wann.nets.mutable is
+package wann.nets.vectors is
 
-    type Layer_SimpleVector is new Abstract_Layer with private;
-    -- this should be moved to separate package (and multiple Layer variants added there too)
-    -- perhaps wann.layers can be reused to store all Layer realizations
-
-    overriding
-    function  Length(AL : Layer_SimpleVector) return NeuronIndex_Base;
-
-    overriding
-    function  Get(AL : Layer_SimpleVector) return LayerRec;
-
-    overriding
-    procedure Set(AL : in out Layer_SimpleVector; LR : LayerRec);
-
+    package PLV is new PL.vectors;
 
     --------------------------
     -- A mutable NNet type and methods
-    type NNet_Mutable is new NNet_Interface with private;
+    type NNet is new NNet_Interface with private;
 
     -- Base constructor, create empty net with set Nin and Nout
-    function Create (Nin : InputIndex; Nout : OutputIndex) return NNet_Mutable;
+    function Create (Nin : InputIndex; Nout : OutputIndex) return NNet;
 
     -- inherited methods
     -- getters
     overriding
-    function GetNInputs (net : NNet_Mutable) return InputIndex;
+    function GetNInputs (net : NNet) return InputIndex;
 
     overriding
-    function GetNOutputs(net : NNet_Mutable) return OutputIndex;
+    function GetNOutputs(net : NNet) return OutputIndex;
 
     overriding
-    function GetNNeurons(net : NNet_Mutable) return NeuronIndex;
+    function GetNNeurons(net : NNet) return NeuronIndex;
 
     overriding
-    function GetNLayers (net : NNet_Mutable) return LayerIndex;
+    function GetNLayers (net : NNet) return LayerIndex;
 
 
     -- neuron handling
     overriding
-    procedure NewNeuron(net : in out NNet_Mutable; idx : out NeuronIndex_Base);
+    procedure NewNeuron(net : in out NNet; idx : out NeuronIndex_Base);
 
     overriding
-    procedure DelNeuron(net : in out NNet_Mutable; idx : NeuronIndex);
+    procedure DelNeuron(net : in out NNet; idx : NeuronIndex);
 
     overriding
-    function  GetNeuron(net : NNet_Mutable; idx : NeuronIndex) return NeuronRec;
+    function  GetNeuron(net : NNet; idx : NeuronIndex) return PN.NeuronCLass_Access;
 
     overriding
-    procedure SetNeuron(net : in out NNet_Mutable; neur : NeuronRec);
+    procedure SetNeuron(net : in out NNet; neur : PN.NeuronCLass_Access);
 
     overriding
-    function  GetLayer(net : in NNet_Mutable;     idx : LayerIndex) return Abstract_Layer'Class;
+    function  GetLayer(net : in NNet;     idx : LayerIndex) return PL.Layer_Interface'Class;
 
     overriding
-    procedure SetLayer(net : in out NNet_Mutable; idx : LayerIndex; LR :   Abstract_Layer'Class);
+    procedure SetLayer(net : in out NNet; idx : LayerIndex; LR :   PL.Layer_Interface'Class);
 
 
 private
@@ -90,16 +79,11 @@ private
     package OV is new Ada.Containers.Vectors(Index_Type=>OutputIndex, Element_Type=>ConnectionRec);
     package NV is new Ada.Containers.Vectors(Index_Type=>NeuronIndex, Element_Type=>ConnectionRec);
 
-    -- basic Layer realization - should be in a separate package
-    type Layer_SimpleVector is new Abstract_Layer with record
-        -- vector of neurons, no matrix recalculation
-        neurons : NV.Vector;
-    end record;
-
-    package LV is new Ada.Containers.Indefinite_Vectors(Index_Type=>LayerIndex,  Element_Type=>Layer_SimpleVector);
+    package LV is new Ada.Containers.Vectors(Index_Type=>LayerIndex,  Element_Type=>PLV.Layer,
+                                             "=" => PLV."=");
 
     -- Finally the NNet
-    type NNet_Mutable is new NNet_Interface with record
+    type NNet is new NNet_Interface with record
         inputs  : IV.Vector;
         outputs : OV.Vector;
         neurons : NV.Vector;
@@ -107,4 +91,4 @@ private
     end record;
 
 
-end wann.nets.mutable;
+end wann.nets.vectors;

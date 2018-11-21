@@ -60,31 +60,43 @@ package wann.nets.fixed is
     -- nothing to create for real, but try to mimick mutable
 
     overriding
-    function  GetNeuron(net : NNet_Fixed; idx : NeuronIndex) return NeuronRec;
+    function  GetNeuron(net : NNet_Fixed; idx : NeuronIndex) return PN.NeuronClass_Access;
 
     overriding
-    procedure SetNeuron(net : in out Nnet_Fixed; neur : NeuronRec);
+    procedure SetNeuron(net : in out Nnet_Fixed; neur : PN.NeuronClass_Access);
 
     overriding
-    function  GetLayer(net : in NNet_Fixed;     idx : LayerIndex) return Abstract_Layer'Class;
+    function  GetLayer(net : in NNet_Fixed;     idx : LayerIndex) return PL.Layer_Interface'Class;
 
     overriding
-    procedure SetLayer(net : in out NNet_Fixed; idx : LayerIndex; LR :   Abstract_Layer'Class);
+    procedure SetLayer(net : in out NNet_Fixed; idx : LayerIndex; L :   PL.Layer_Interface'Class);
 
 
 
 private
 
+    -- trying to keep dynamic allocation to a minimum, so use discriminated arrays as much as possible
+    type NeuronRepr(Nin : PN.InputIndex; Nout : PN.OutputIndex) is record
+        idx   : NeuronIndex; -- own index in NNet
+        afunc : ActivationType;
+        wghts : PN.WeightArray (0 .. Nin);
+        ins   : PN.InConnArray (1 .. Nin);
+        outs  : PN.OutConnArray(1 .. Nout);
+    end record;
+
+    type NeuronReprPtr is access NeuronRepr;
+
+
     type NeuronArray is array(NeuronIndex range <>) of NeuronReprPtr;
-    type LayerArray  is array(LayerIndex  range <>) of LayerRecPtr;
+    type LayerArray  is array(LayerIndex  range <>) of PL.LayerRecPtr;
 
     type NNet_Fixed(Nin : InputIndex; Nout : OutputIndex;
                     Npts : NeuronIndex; maxLayers : LayerIndex) is
                     new Limited_Controlled and NNet_Interface with record
         Nassigned : InputIndex_Base := 0;
-        inputs  : InConArray (1 .. Nin);
-        outputs : OutConArray(1 .. Nout);
-        neurons : NeuronArray(1 .. Npts);
+        inputs  : InConnArray (1 .. Nin);
+        outputs : OutConnArray(1 .. Nout);
+        neurons : NeuronArray (1 .. Npts);
         NLayers : LayerIndex; -- actual number of layers created
         layers  : LayerArray(1 .. maxLayers);
     end record;

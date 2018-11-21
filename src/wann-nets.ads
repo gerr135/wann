@@ -22,56 +22,25 @@
 -- NOTE: due to whole hierarchy being generic we cannot limited with,
 -- so layers are defined directly in this module
 
+with wann.neurons, wann.layers;
+
 generic
 package wann.nets is
 
-    ----------------------------------------------
-    -- First primitives, to exchange data.
-    -- Layer representation in the NNet
-
-    type LayerIndex is new Positive;
-    -- Index to count rearranged neuron layers 1 .. 'Last
-    -- 'Last is output layer, that can be treated specially on this simple check,
-    -- so no extra marking should be necessary.
-
-    -- representation record, to have common interface to pass data around
-    type LayerRec(N : NeuronIndex) is record
-        neurons : NConArray(1 .. N);
-        -- might get outputs or inputs here, so use generic neuronal array
-        --weightMatrix : some matrix;
-        -- these are stored in referenced neurons anyway
-        -- however constructing a separate matrix may be useful if we need to pass it to, e.g. e GPU
-        -- but will worry about this when (or if) I ever get there..
-        --deltas? : likely need to store those too
-    end record;
-    type LayerRecPtr is access LayerRec;
+    package PN is new wann.neurons;
+    package PL is new wann.layers;
 
 
-
-    ----------------------------------------------
-    --  NNet - the principal type of this module
-    -- forward declaration, for access discriminants
-    type NNet_Interface;
-    type NNet_Access is access NNet_Interface;
-
-    ----------------------------------------------
-    -- Layer interface: to be used by NNet.
-    -- As with NNet itself, multiple representations are possible
-    -- so we make it an Interface with common functionality,
-    -- leaving the representations details to children.
+    ----------------------------------------------------------------
+    -- local indices and associated arrays:
+    -- Input/output connections and data vector
+    type    InputIndex_Base is new Natural;
+    subtype InputIndex is InputIndex_Base range 1 .. InputIndex_Base'Last;
+    type    OutputIndex is new Positive;
     --
-    -- Initial attempt to use a simple discriminated record would explode variants way too fast
-    -- (multiple PropagationType's x multiple possible storage paradigms)
-    -- So, use Interface with primitives here to keep it all sane.
-    --
-    -- discriminant NN points to the enveloping NNet.
-    type Abstract_Layer(NN : NNet_Access) is abstract tagged private;
-
-    function  Length(AL : Abstract_Layer) return NeuronIndex_Base is abstract;
-    function  Get(AL : Abstract_Layer) return LayerRec is abstract;
-    procedure Set(AL : in out Abstract_Layer; LR : LayerRec) is abstract;
-
-    procedure PropForward(L : in out Abstract_Layer'Class);
+    type InConnArray  is array (InputIndex range <>)  of ConnectionRec;
+    type OutConnArray is array (OutputIndex range <>) of ConnectionRec;
+    type ValueArray   is array (InputIndex range <>) of Real;
 
 
 
@@ -79,6 +48,7 @@ package wann.nets is
     -- the main type of this package, the NNet itself
     --  making it an interface to allow composition (say with Controlled)
     type NNet_Interface is limited Interface;
+    type NNet_Access is access NNet_Interface;
 
     -- Dimension getters; the setters are imnplementation-specific,
     -- and should either be handled during construction or be dynamic
@@ -97,12 +67,12 @@ package wann.nets is
     -- remove neuron from NNet_Interface, as with New, only for mutable representation
 
     -- getter and setter
-    function  GetNeuron(net : NNet_Interface; idx : NeuronIndex) return NeuronRec is abstract;
-    procedure SetNeuron(net : in out NNet_Interface; NR : NeuronRec) is abstract;
+    function  GetNeuron(net : NNet_Interface; idx : NeuronIndex) return PN.NeuronCLass_Access is abstract;
+    procedure SetNeuron(net : in out NNet_Interface; NA : PN.NeuronClass_Access) is abstract;
 
     -- layer handling
-    function  GetLayer(net : in NNet_Interface;     idx : LayerIndex) return Abstract_Layer'Class  is abstract;
-    procedure SetLayer(net : in out NNet_Interface; idx : LayerIndex; L :    Abstract_Layer'Class) is abstract;
+    function  GetLayer(net : in NNet_Interface;     idx : LayerIndex) return PL.Layer_Interface'Class  is abstract;
+    procedure SetLayer(net : in out NNet_Interface; idx : LayerIndex; L :    PL.Layer_Interface'Class) is abstract;
 
 
 
@@ -112,19 +82,19 @@ package wann.nets is
     --
     -- Neuron manipulation
     --
-    function  AddNeuron(net : in out NNet_Interface'Class; NR : NeuronRec) return NeuronIndex;
-    procedure AddNeuron(net : in out NNet_Interface'Class; NR : NeuronRec; idx : out NeuronIndex);
-    procedure AddNeuron(net : in out NNet_Interface'Class; NR : NeuronRec);
+    function  AddNeuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec) return NeuronIndex;
+    procedure AddNeuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec; idx : out NeuronIndex);
+    procedure AddNeuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec);
     -- combines New and Set
     --
-    function  AddNeuron(net : in out NNet_Interface'Class; activat : ActivationType; connects : InConArray) return NeuronIndex;
-    procedure AddNeuron(net : in out NNet_Interface'Class; activat : ActivationType; connects : InConArray; idx : out NeuronIndex);
-    procedure AddNeuron(net : in out NNet_Interface'Class; activat : ActivationType; connects : InConArray);
+    function  AddNeuron(net : in out NNet_Interface'Class; activat : ActivationType; connects : PN.InConnArray) return NeuronIndex;
+    procedure AddNeuron(net : in out NNet_Interface'Class; activat : ActivationType; connects : PN.InConnArray; idx : out NeuronIndex);
+    procedure AddNeuron(net : in out NNet_Interface'Class; activat : ActivationType; connects : PN.InConnArray);
     -- New plus Set by parameters
     --
-    procedure ResetNeuron(net : in out NNet_Interface'Class; NR : NeuronRec);
-    procedure ResetNeuron(net : in out NNet_Interface'Class; idx  : NeuronIndex; activat : ActivationType; connects : InConArray);
-    procedure ResetNeuron(net : in out NNet_Interface'Class; idx  : NeuronIndex; connects : InConArray);
+    procedure ResetNeuron(net : in out NNet_Interface'Class; NR  : PN.NeuronRec);
+    procedure ResetNeuron(net : in out NNet_Interface'Class; idx : NeuronIndex; activat : ActivationType; connects : PN.InConnArray);
+    procedure ResetNeuron(net : in out NNet_Interface'Class; idx : NeuronIndex; connects : PN.InConnArray);
     -- replaces neuron[idx] parameters, either all or partial
 
     --
@@ -146,7 +116,7 @@ package wann.nets is
     --
     --  Propagation
     --
-    function  ProcessInputs(net : NNet_Interface'Class; inputs : InputArray) return OutputArray;
+    function  ProcessInputs(net : NNet_Interface'Class; inputs : ValueArray) return ValueArray;
     -- forward propagation through trained net
 
 --     procedure Train(net : in out NNet'Class; training_set : TBD);
@@ -170,15 +140,5 @@ private
     procedure PLFMatrix    (net : NNet_Interface'Class; idx : LayerIndex);
     procedure PLFGPU       (net : NNet_Interface'Class; idx : LayerIndex);
 
-
-    type NeuronRepr(Nin : InputIndex; Nout : OutputIndex) is record
-        idx   : NeuronIndex; -- own index in NNet
-        afunc : ActivationType;
-        wghts : WeightsArray(0 .. Nin);
-        ins   : InConArray  (1 .. Nin);
-        outs  : OutConArray (1 .. Nout);
-    end record;
-
-    type NeuronReprPtr is access NeuronRepr;
 
 end wann.nets;

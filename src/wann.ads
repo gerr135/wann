@@ -27,33 +27,57 @@ package wann is
     Debug : Boolean := False;
     --  set this to True to make this lib spit out debug messages (to console)
 
+    UnsetCacheAccess : Exception;
+    -- raised when trying to access a not-yet-set (or already cleared) cached value
+    -- in any of the NNet substructures
 
+
+    --------------------------------------------------------------------------
     -- General conventions
     -- Neural Net (NNet) consists of Nin inputs, Nout outputs and Npts neurons
     -- Connections are tracked by (ConnectionType, index) record, to discriminate between
     -- inputs, outputs and other neurons.
 
-    ----------------------------------
-    --  Common stuff - info passing
     type ActivationType is (Sigmoid, ReLu);
     type ActivationFunction is access function (x : Real) return Real;
+    -- the ready to use functions (activators and derivatives) are defined in wann.functions package
 
-    ------------------------------------------------
-    -- index types (to catch misplaced index errors)
-    -- this one tracks inputs inside neuron
-    type    InputIndex_Base is new Natural;
-    subtype InputIndex is InputIndex_Base range 1 .. InputIndex_Base'Last;
+    -- how we move through layers
+    type PropagationType is
+             (Simple, -- cycle through neurons in layer; for basic use and in case of very sparse connections
+              Matrix, -- compose a common matrix and do vector algebra; the common case
+              GPU);   -- try to do linear algebra in GPU
 
-    type OutputIndex is new Positive;
-
-    -- this one tracks neurons in the NNet
+    ----------------------------
+    -- Global indices
+    --
+    -- NOTE:
+    -- each NNet subunit can have inputs and outputs, so each child package (.neurons, .layers, etc)
+    -- defines its own Input/OuptutIndex type. The goal is to use them to represent
+    -- inputs and outputs as physical entities where appropriate,
+    -- and to catch "wrong index used" errors.
+    -- Besides, having a single Input/Output index created bunch of confusion in design.
+    --
+    -- This one tracks neurons in the NNet - a global reference index
     type    NeuronIndex_Base is new Natural;
     subtype NeuronIndex is NeuronIndex_Base range 1 .. NeuronIndex_Base'Last;
+    --
+    -- Tracking rearranged neuron layers
+    type LayerIndex is new Positive;
+    -- There is always at least one layer;
+    -- However, unlike common neural net libs, there may not be a strict output layer.
+    -- As neural connections can be a real mess containing cycles, a layer can contain
+    -- a mixture of interconnections and "final" output connections.
+    -- In general these will have to be treated on individual basis,
+    -- so, checks should be made based on the ConnectionType of each output.
+
 
     -------------------------------------------------
+    -- Global data representations for passing around
+    --
     --  connection specification
     type ConnectionType is (I, O, N);
-    -- Input, Output, Neuron, but intended to be used in assignment, so shorting it down
+    -- Input, Output, Neuron, but intended to be used in assignment, so shortening down
 
     type ConnectionRec is record
         T : ConnectionType;
@@ -62,43 +86,26 @@ package wann is
         -- and then we cannot make a simple array, as that's an unconstrained type..
     end record;
 
-    type InConArray  is array (InputIndex range <>)  of ConnectionRec;
-    type OutConArray is array (OutputIndex range <>) of ConnectionRec;
-    type NConArray   is array (NeuronIndex range <>) of ConnectionRec;
-    -- 1st two are specirfic for inputs/outputs,
-    -- the last one used throughout neurons
+--     type ConnectionIndex_Base is new Natural;
+--     subtype ConnectionIndex is ConnectionIndex_Base range 1 .. ConnectionIndex_Base'Last;
+--     --
+--     type ConnectionArray   is array (ConnectionIndex range <>) of ConnectionRec;
+--     -- 1st two are specirfic for inputs/outputs,
+--     -- the last one used throughout neurons
 
     --------------------------------------------------
-    -- values to be passed around
-    type ValueArray   is array () of Real;
-    type InputArray   is array (InputIndex  range<>) of Real;
-    type OutputArray  is array (OutputIndex range<>) of Real;
-    type WeightsArray is array (InputIndex_Base range <>) of Real;
-
-
-    -- how we move through layers
-    type PropagationType is
-        (Individual, -- cycle through neurons in layer; for basic tests and in case of very sparce connections
-         Matrix,     -- compose a common matrix and do vector algebra; the common case
-         GPU);       -- try to do linear algebra in GPU
-
-
-    -----------------------------------------------------
-    -- Main record types representing Neuron parameters.
-    -- To be used for storage, IO and as an alphabet to form a linear description,
-    -- a-la DNA/protein sequence. Then the NNet can be simply defined as some linear sequence
-    -- in declaration which can be passed to the NNet constructor.
+    -- value vectors to be passed around
+    -- Used as input/output of neurons and layers
+    -- The tricky part here is relating individual values to proper inputs (of either layers or neurons)
+    -- As NNet structure in this package is not stricktly layer-based.
+    -- In fact NNet can have cycles, neurons can be in multiple layers and connections,
+    -- and even number of neurons, can change dynamically.
+    -- May need another layer of abstraction to handle this in individual packages.
+    -- Some kind of converter between these generic vectors and specific inputs in proper format
+    -- to each subunit..
+    type DataIndex_Base is new Natural;
+    subtype DataIndex is DataIndex_Base range 1 .. DataIndex_Base'Last;
     --
-    -- This is a reference representation of data, using Ada primitives.
-
-    type NeuronRec(Nin : InputIndex) is record
-        idx     : NeuronIndex; -- own index in NNet
-        activat : ActivationType;
-        lag     : Real;    -- delay of result propagation, unused for now
-        weights : WeightsArray(0 .. Nin);
-        inputs  : InConArray  (1 .. Nin);
-    end record;
-    type NeuronRecPtr is access NeuronRec;
-
+    type DataArray is array (DataIndex) of Real;
 
 end wann;

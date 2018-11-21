@@ -1,0 +1,49 @@
+Connection listing for dia1:
+
+neuron: [list of connections]; [list of levels]
+n1: [i1, i2, i4];       [i,  i,  i]        - l1
+n2: [i1, i3, i4];       [i,  i,  i]        - l1
+n3: [n1, n2];           [l1, l1]           - l2
+n4: [i2, n1];           [i,  l1]           - l2
+n5: [i2, i4, n2];       [i,  i,  l1]       - l2
+n6: [n2, n3, n4, n5];   [l1, l2, l2, l2]   - l3
+n7: [n1, n3, n5];       [l1, l2, l3]       - l3
+
+same topology as original - likely to hold without cycles.
+With cycles needs unfolding, until hits outputs, and then may track for time series..
+
+layer connection sets:
+layer: ({inputs}, {outputs})
+l1: ({i1, i2, i3, i4},      {n3, n4, n5, n6, n7})
+l2: ({i2, i4, n1, n2},      {n6, n7})
+l3: ({n1, n2, n3, n4, n5},  {o1, o2})
+
+To represent what goes where we need a layer connection matrix - to represent all layers
+For individual layers, need some connection lists; Better to do in order, unsorted:
+
+layer connection lists - in-order:
+l1: ([i1,i2,i4,i1,i3,i4], ) - simply collate inputs and then remove duplicates
+so
+l1.InputIndex = 1 .. 6
+l1.ConnectionArray = [i1,i2,i4,i1,i3,i4]
+    - turning original input vector into expanded layer input vector
+    - may upscale in the process..
+
+outputs:
+alt1: may create a "compressed" vector - per neuron out, then make another unfolding for next layer..
+this way no need to track outputs
+
+alt2: track outputs per neuron, as NNet gets remodelled,
+then collate outputs of neuron to create layer output vector (unfolded),
+need to make sure it matches inputs of next layer..
+
+Summary - layer handling:
+Depends on propagation algorithm:
+1. basic prop: just cycle over neurons in layer and prop per neuron. Optimization is limited
+to basic parallelization of neuron calls, unlikele to use GPU but may be Ok with MPI.
+
+2. For each layer: Create a vector of inputs and matrix of weights, use stock/optimized
+linear algebra lib (e.g. blas). Naturally parallelizable step, can use GPU. However applying
+activation funcs has to be per-neuron (But O(N), vs O(N^2 for linear algebra)). May not be
+as efficient when W matrix is very sparse (sparse connections from inputs:
+avg Nins << N inputs in layer)..
