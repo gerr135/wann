@@ -94,7 +94,13 @@ package wann.layers is
 
     ----------------------------------
     --  class wide utility
-    procedure PropForward(L : in out Layer_Interface'Class);
+    --
+    --  stateless propagation, no side effects
+    function  PropForward(L : in out Layer_Interface'Class; inputs : ValueArray) return ValueArray;
+
+    -- stateful propagation, only makes sense for some cases.
+--     procedure SetInputs(L : in out Layer_Interface'Class; inputs : ValueArray);
+--     procedure PropForward(L : in out Layer_Interface'Class);
 
 
 end wann.layers;

@@ -185,14 +185,22 @@ package body wann.nets is
     ----------------------------------------
     -- Actual calculations
 
-    function ProcessInputs (net : NNet_Interface'Class; inputs : InputArray) return OutputArray is
+    function  ProcessInputs(net : NNet_Interface'Class; inputs : ValueArray) return ValueArray is
     begin
+        -- check dimensions
+        if inputs.Length != net.GetNInputs then
+            raise DataWidthMismatch;
+        end if;
+        if not net.LayersReady then
+            raise UnsortedNetPropagation;
+        end if;
         -- first set the inputs in net
         for li in 1 .. net.GetNLayers loop
             declare
-                LC : Abstract_Layer'Class := net.GetLayer(li);
+                L : Layer_Interface'Class := net.GetLayer(li);
+                V : PL.ValueArray := L.PropForward()
             begin
-                LC.PropForward;
+                L.PropForward;
             end;
         end loop;
         --  Generated stub: replace with real body!

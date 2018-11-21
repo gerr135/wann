@@ -27,9 +27,16 @@ package wann is
     Debug : Boolean := False;
     --  set this to True to make this lib spit out debug messages (to console)
 
+    ----------------------------
+    -- exceptions
+    DataWidthMismatch : Exception;
+    --  trying to pass data vector to mismatching size inputs/outputs
+
+    UnsortedNetPropagation : Exception;
+    --  trying to propagate through NNet before creating layers
+
     UnsetCacheAccess : Exception;
-    -- raised when trying to access a not-yet-set (or already cleared) cached value
-    -- in any of the NNet substructures
+    --  trying to access a not-yet-set (or already cleared) cached value
 
 
     --------------------------------------------------------------------------

@@ -66,13 +66,17 @@ package wann.nets is
     procedure DelNeuron(net : in out NNet_Interface; idx : NeuronIndex) is null;
     -- remove neuron from NNet_Interface, as with New, only for mutable representation
 
-    -- getter and setter
+    -- neuron getter and setter
     function  GetNeuron(net : NNet_Interface; idx : NeuronIndex) return PN.NeuronCLass_Access is abstract;
     procedure SetNeuron(net : in out NNet_Interface; NA : PN.NeuronClass_Access) is abstract;
 
     -- layer handling
-    function  GetLayer(net : in NNet_Interface;     idx : LayerIndex) return PL.Layer_Interface'Class  is abstract;
-    procedure SetLayer(net : in out NNet_Interface; idx : LayerIndex; L :    PL.Layer_Interface'Class) is abstract;
+    function  LayersReady (net : NNet_Interface) return Boolean is abstract;
+    function  GetLayer(net : NNet_Interface; idx : LayerIndex) return PL.Layer_Interface'Class  is abstract;
+    procedure SetLayer(net : in out NNet_Interface; idx : LayerIndex; L : PL.Layer_Interface'Class) is abstract;
+
+    -- data passage
+    procedure SetInputValues(net : in out NNet_Interface; V : ValueArray) is abstract;
 
 
 
@@ -116,8 +120,14 @@ package wann.nets is
     --
     --  Propagation
     --
-    function  ProcessInputs(net : NNet_Interface'Class; inputs : ValueArray) return ValueArray;
     -- forward propagation through trained net
+    --  Ease of use wrapper: emulate stateless propagation
+    function  ProcessInputs(net : NNet_Interface'Class; inputs : ValueArray) return ValueArray;
+    --  Stateful propagation, representative of real data passage
+    --  NOTE: initial values should be set first with SetInputValues
+    procedure ProcessInputs(net : NNet_Interface'Class);
+    function  ReadOutputs  (net : NNet_Interface'Class) return ValueArray;
+
 
 --     procedure Train(net : in out NNet'Class; training_set : TBD);
 
