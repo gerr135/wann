@@ -35,7 +35,7 @@ package wann is
     UnsortedNetPropagation : Exception;
     --  trying to propagate through NNet before creating layers
 
-    UnsetCacheAccess : Exception;
+    UnsetValueAccess : Exception;
     --  trying to access a not-yet-set (or already cleared) cached value
 
 
@@ -66,9 +66,16 @@ package wann is
     -- and to catch "wrong index used" errors.
     -- Besides, having a single Input/Output index created bunch of confusion in design.
     --
-    -- This one tracks neurons in the NNet - a global reference index
-    type    NeuronIndex_Base is new Natural;
-    subtype NeuronIndex is NeuronIndex_Base range 1 .. NeuronIndex_Base'Last;
+    -- However, there are some common indices to which all subunits need access.
+    -- Specifically, the NNet-wide indexing - global inputs, outputs and NNet neuron index.
+    --
+    type    NNet_NeuronIndex_Base is new Natural;
+    subtype NNet_NeuronIndex is NNet_NeuronIndex_Base range 1 .. NNet_NeuronIndex_Base'Last;
+    --
+    type    NNet_InputIndex_Base is new Natural;
+    subtype NNet_InputIndex is NNet_InputIndex_Base range 1 .. NNet_InputIndex_Base'Last;
+    type    NNet_OutputIndex is new Positive;
+
     --
     -- Tracking rearranged neuron layers
     type LayerIndex is new Positive;
@@ -83,10 +90,27 @@ package wann is
     type ConnectionType is (I, O, N);
     -- Input, Output, Neuron, but intended to be used in assignment, so shortening down
 
-    type ConnectionIdx is record
-        T : ConnectionType;
-        idx : Positive; -- used for text input most often, so its essentially a number
+--     type ConnectionIdx is record
+--         T : ConnectionType;
+--         idx : Positive; -- used for text input most often, so its essentially a number
+--     end record;
+
+    type ConnectionIdx(T : ConnectionType := N) is record
+        case T is
+            when I => Iidx : NNet_InputIndex;
+            when N => Nidx : NNet_NeuronIndex;
+            when O => Oidx : NNet_OutputIndex;
+        end case;
     end record;
+
+    type NNet_InConnArray  is array (NNet_InputIndex  range <>) of ConnectionIdx;
+    type NNet_NConnArray   is array (NNet_NeuronIndex range <>) of ConnectionIdx;
+    type NNet_OutConnArray is array (NNet_OutputIndex range <>) of ConnectionIdx;
+    --
+    -- Input, output and neuron state arrays
+    type NNet_InputArray  is array (NNet_InputIndex  range <>) of Real;
+    type NNet_OutputArray is array (NNet_OutputIndex range <>) of Real;
+    type NNet_ValueArray  is array (NNet_NeuronIndex range <>) of Real;
 
 --     type ConnectionIndex_Base is new Natural;
 --     subtype ConnectionIndex is ConnectionIndex_Base range 1 .. ConnectionIndex_Base'Last;
@@ -98,7 +122,7 @@ package wann is
     --------------------------------------------------
     -- Values to be passed around
     -- Used as data vectors passed between layers, etc
-    -- corresponding arrays or Ada.Containers.Vectors instances should be indexed by 
+    -- corresponding arrays or Ada.Containers.Vectors instances should be indexed by
     -- an appropriate  XXXIndex in a corresponding package..
     type DataPoint is record
         assigned : Boolean;

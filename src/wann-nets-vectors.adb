@@ -5,7 +5,7 @@ package body wann.nets.vectors is
     -- Create --
     ------------
 
-    function Create (Nin : InputIndex; Nout : OutputIndex) return NNet is
+    function Create (Nin : NNet_InputIndex; Nout : NNet_OutputIndex) return NNet is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "Create unimplemented");
@@ -14,25 +14,13 @@ package body wann.nets.vectors is
 
     ----------------
     -- getters
-    overriding 
-    function GetNInputs (net : NNet) return InputIndex is
+    overriding
+    function GetNNeurons (net : NNet) return NNet_NeuronIndex is
     begin
-        return InputIndex(net.inputs.Length);
-    end GetNInputs;
-
-    overriding 
-    function GetNOutputs (net : NNet) return OutputIndex is
-    begin
-        return OutputIndex(net.Outputs.Length);
-    end GetNOutputs;
-
-    overriding 
-    function GetNNeurons (net : NNet) return NeuronIndex is
-    begin
-        return NeuronIndex(net.neurons.Length);
+        return NNet_NeuronIndex(net.neurons.Length);
     end GetNNeurons;
 
-    overriding 
+    overriding
     function GetNLayers (net : NNet) return LayerIndex is
     begin
         --  Generated stub: replace with real body!
@@ -40,12 +28,47 @@ package body wann.nets.vectors is
         return raise Program_Error with "Unimplemented function GetNLayers";
     end GetNLayers;
 
+    -----------------
+    --  data IO
+    overriding
+    function GetInputs (net : NNet) return NNet_InConnArray is
+    begin
+        -- need to reconstruct InConnArray from vector and return that..
+        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
+        return raise Program_Error with "Unimplemented procedure NewNeuron";
+    end GetInputs;
+
+    overriding
+    function GetOutputs (net : NNet) return NNet_OutConnArray is
+    begin
+        -- need to reconstruct OutConnArray from vector and return that..
+        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
+        return raise Program_Error with "Unimplemented procedure NewNeuron";
+    end GetOutputs;
+
+    overriding
+    function  GetInputValues(net : NNet) return NNet_InputArray is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
+        return raise Program_Error with "Unimplemented procedure NewNeuron";
+    end GetInputValues;
+
+    overriding
+    procedure SetInputValues(net : in out NNet; V : NNet_InputArray) is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
+        raise Program_Error with "Unimplemented procedure NewNeuron";
+    end SetInputValues;
+
+
     ---------------
     -- NewNeuron --
     ---------------
 
-    overriding 
-    procedure NewNeuron (net : in out NNet; idx : out NeuronIndex_Base) is
+    overriding
+    procedure NewNeuron (net : in out NNet; idx : out NNet_NeuronIndex_Base) is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
@@ -56,8 +79,8 @@ package body wann.nets.vectors is
     -- DelNeuron --
     ---------------
 
-    overriding 
-    procedure DelNeuron (net : in out NNet; idx : NeuronIndex) is
+    overriding
+    procedure DelNeuron (net : in out NNet; idx : NNet_NeuronIndex) is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "DelNeuron unimplemented");
@@ -68,8 +91,8 @@ package body wann.nets.vectors is
     -- GetNeuron --
     ---------------
 
-    overriding 
-    function GetNeuron (net : NNet; idx : NeuronIndex) return PN.NeuronCLass_Access is 
+    overriding
+    function GetNeuron (net : NNet; idx : NNet_NeuronIndex) return PN.NeuronClass_Access is
         Stub : PN.NeuronRec(Nin=>0) :=
             ( idx => 0, lag => 0.0,
             Nin => 0,
@@ -86,7 +109,7 @@ package body wann.nets.vectors is
     -- SetNeuron --
     ---------------
 
-    overriding 
+    overriding
     procedure SetNeuron (net : in out NNet; neur : PN.NeuronCLass_Access) is
     begin
         --  Generated stub: replace with real body!
@@ -98,7 +121,7 @@ package body wann.nets.vectors is
     -- LayersReady --
     -----------------
 
-    overriding 
+    overriding
     function LayersReady (net : NNet) return Boolean is
     begin
         --  Generated stub: replace with real body!
@@ -110,7 +133,7 @@ package body wann.nets.vectors is
     -- GetLayer --
     --------------
 
-    overriding 
+    overriding
     function GetLayer (net : NNet; idx : LayerIndex) return PL.Layer_Interface'Class is
     begin
         return net.layers.element(idx);
@@ -120,8 +143,8 @@ package body wann.nets.vectors is
     -- SetLayer --
     --------------
 
-    overriding 
-    procedure SetLayer (net : in out NNet; idx : LayerIndex; 
+    overriding
+    procedure SetLayer (net : in out NNet; idx : LayerIndex;
                         LR : PL.Layer_Interface'Class) is
     begin
         --  Generated stub: replace with real body!
@@ -133,22 +156,22 @@ package body wann.nets.vectors is
     -- SetInputValues --
     --------------------
 
-    overriding 
-    procedure SetInputValues (net : in out NNet; V : ValueArray) is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "SetInputValues unimplemented");
-        raise Program_Error with "Unimplemented procedure SetInputValues";
-    end SetInputValues;
+--     overriding
+--     procedure SetInputValues (net : in out NNet; V : NNet_InputArray) is
+--     begin
+--         --  Generated stub: replace with real body!
+--         pragma Compile_Time_Warning (Standard.True, "SetInputValues unimplemented");
+--         raise Program_Error with "Unimplemented procedure SetInputValues";
+--     end SetInputValues;
 
 
     --------------------
     -- some old layers code fore reference
---     function  Length(AL : Layer_SimpleVector) return NeuronIndex_Base is
+--     function  Length(AL : Layer_SimpleVector) return NNet_NeuronIndex_Base is
 --     begin
---         return NeuronIndex_Base(AL.neurons.Length);
+--         return NNet_NeuronIndex_Base(AL.neurons.Length);
 --     end;
--- 
+--
 --     function  Get(AL : Layer_SimpleVector) return LayerRec is
 --         LR : LayerRec(N => AL.Length);
 --     begin
@@ -157,7 +180,7 @@ package body wann.nets.vectors is
 --         end loop;
 --         return LR;
 --     end;
--- 
+--
 --     procedure Set(AL : in out Layer_SimpleVector; LR : LayerRec) is
 --         use Ada.Containers;
 --     begin

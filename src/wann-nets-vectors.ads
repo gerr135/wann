@@ -32,32 +32,39 @@ package wann.nets.vectors is
     type NNet is new NNet_Interface with private;
 
     -- Base constructor, create empty net with set Nin and Nout
-    function Create (Nin : InputIndex; Nout : OutputIndex) return NNet;
+    function Create (Nin : NNet_InputIndex; Nout : NNet_OutputIndex) return NNet;
 
     -- inherited methods
     -- getters
     overriding
-    function GetNInputs (net : NNet) return InputIndex;
-
-    overriding
-    function GetNOutputs(net : NNet) return OutputIndex;
-
-    overriding
-    function GetNNeurons(net : NNet) return NeuronIndex;
+    function GetNNeurons(net : NNet) return NNet_NeuronIndex;
 
     overriding
     function GetNLayers (net : NNet) return LayerIndex;
 
+    -- data IO
+    overriding
+    function GetInputs (net : NNet) return NNet_InConnArray;
+
+    overriding
+    function GetOutputs(net : NNet) return NNet_OutConnArray;
+
+    overriding
+    function  GetInputValues(net : NNet) return NNet_InputArray;
+
+    overriding
+    procedure SetInputValues(net : in out NNet; V : NNet_InputArray);
+
 
     -- neuron handling
     overriding
-    procedure NewNeuron(net : in out NNet; idx : out NeuronIndex_Base);
+    procedure NewNeuron(net : in out NNet; idx : out NNet_NeuronIndex_Base);
 
     overriding
-    procedure DelNeuron(net : in out NNet; idx : NeuronIndex);
+    procedure DelNeuron(net : in out NNet; idx : NNet_NeuronIndex);
 
     overriding
-    function  GetNeuron(net : NNet; idx : NeuronIndex) return PN.NeuronCLass_Access;
+    function  GetNeuron(net : NNet; idx : NNet_NeuronIndex) return PN.NeuronCLass_Access;
 
     overriding
     procedure SetNeuron(net : in out NNet; neur : PN.NeuronCLass_Access);
@@ -71,8 +78,8 @@ package wann.nets.vectors is
     overriding
     procedure SetLayer(net : in out NNet; idx : LayerIndex; LR :   PL.Layer_Interface'Class);
 
-    overriding
-    procedure SetInputValues(net : in out NNet; V : ValueArray);
+--     overriding
+--     procedure SetInputValues(net : in out NNet; V : NNet_InputArray);
 
 
 private
@@ -81,9 +88,9 @@ private
     -- A mutable NNet using Containers.Vectors and Connectors to link neurons and inputs/outputs
     --
     -- first common vector types
-    package IV is new Ada.Containers.Vectors(Index_Type=>InputIndex,  Element_Type=>ConnectionIdx);
-    package OV is new Ada.Containers.Vectors(Index_Type=>OutputIndex, Element_Type=>ConnectionIdx);
-    package NV is new Ada.Containers.Vectors(Index_Type=>NeuronIndex, Element_Type=>ConnectionIdx);
+    package IV is new Ada.Containers.Vectors(Index_Type=>NNet_InputIndex,  Element_Type=>ConnectionIdx);
+    package OV is new Ada.Containers.Vectors(Index_Type=>NNet_OutputIndex, Element_Type=>ConnectionIdx);
+    package NV is new Ada.Containers.Vectors(Index_Type=>NNet_NeuronIndex, Element_Type=>ConnectionIdx);
 
     package LV is new Ada.Containers.Vectors(Index_Type=>LayerIndex,  Element_Type=>PLV.Layer,
                                              "=" => PLV."=");

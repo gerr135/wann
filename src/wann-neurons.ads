@@ -50,7 +50,7 @@ package wann.neurons is
     -- a-la DNA/protein sequence. Then the NNet can be simply defined as some linear sequence
     -- in declaration which can be passed to the NNet constructor.
     type NeuronRec(Nin : InputIndex) is record
-        idx     : NeuronIndex; -- own index in NNet
+        idx     : NNet_NeuronIndex; -- own index in NNet
         activat : ActivationType;
         lag     : Real;    -- delay of result propagation, unused for now
         weights : WeightArray(0 .. Nin);
@@ -90,13 +90,13 @@ package wann.neurons is
     -- Class-wide utility
     --
     -- Additional getters/setters
-    function Index  (NI : Neuron_Interface'Class) return NeuronIndex;
+    function Index  (NI : Neuron_Interface'Class) return NNet_NeuronIndex;
     function Activat(NI : Neuron_Interface'Class) return ActivationType;
     function Weights(NI : Neuron_Interface'Class) return WeightArray;
     function Inputs (NI : Neuron_Interface'Class) return InConnArray;
     function Outputs(NI : Neuron_Interface'Class) return OutConnArray;
 
-    procedure SetIndex  (NI : in out Neuron_Interface'Class; idx : NeuronIndex);
+    procedure SetIndex  (NI : in out Neuron_Interface'Class; idx : NNet_NeuronIndex);
     procedure SetActivat(NI : in out Neuron_Interface'Class; activat : ActivationType);
     procedure SetWeights(NI : in out Neuron_Interface'Class; weights : WeightArray);
     procedure SetInputs (NI : in out Neuron_Interface'Class; inputs  : InConnArray);

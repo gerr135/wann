@@ -139,3 +139,22 @@ text?
 
 # Some links for training
 CIFAR-10 - 32x32x3 images: https://www.cs.toronto.edu/~kriz/cifar.html
+
+
+# Some misc notes, remarks from code
+
+## wann.nets
+On propagation through layers:
+-- NOTE: !!
+-- Layers represent just an ordering - that is, neurons in the same layes
+-- can prop in parallel, but they can connect to arbitrary other layers;
+-- essentially there is no real sequence here,
+-- Therefore, we have to store the state of an entire net.
+-- so we need a net-wide vector to pass around.
+--
+-- We achieve essentially the same result by storing the state
+-- (current output value) in each neuron. So, we can as well do
+-- a statefull propagation.
+-- They are essentially identical. The only difference may be in
+-- ease of parallelization on different platforms..
+

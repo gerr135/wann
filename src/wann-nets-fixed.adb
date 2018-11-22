@@ -3,25 +3,13 @@ package body wann.nets.fixed is
 
     ---------------------------------------------------
     --  Dimension getters
-    overriding 
-    function GetNInputs (net : NNet_Fixed) return InputIndex is
-    begin
-        return net.Nin;
-    end GetNInputs;
-
-    overriding 
-    function GetNOutputs (net : NNet_Fixed) return OutputIndex is
-    begin
-        return net.Nout;
-    end GetNOutputs;
-
-    overriding 
-    function GetNNeurons (net : NNet_Fixed) return NeuronIndex is
+    overriding
+    function GetNNeurons (net : NNet_Fixed) return NNet_NeuronIndex is
     begin
         return net.Npts;
     end GetNNeurons;
 
-    overriding 
+    overriding
     function GetNLayers (net : NNet_Fixed) return LayerIndex is
     begin
         --  Generated stub: replace with real body!
@@ -29,19 +17,49 @@ package body wann.nets.fixed is
         return raise Program_Error with "Unimplemented function GetNLayers";
     end GetNLayers;
 
+    ----------------------
+    --  data IO
+    overriding
+    function GetInputs (net : NNet_Fixed) return NNet_InConnArray is
+    begin
+        return net.inputs;
+    end GetInputs;
+
+    overriding
+    function GetOutputs (net : NNet_Fixed) return NNet_OutConnArray is
+    begin
+        return net.outputs;
+    end GetOutputs;
+
+    overriding
+    function  GetInputValues(net : NNet_Fixed) return NNet_InputArray is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
+        return raise Program_Error with "Unimplemented procedure NewNeuron";
+    end GetInputValues;
+
+    overriding
+    procedure SetInputValues(net : in out NNet_Fixed; V : NNet_InputArray) is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "SetLayer unimplemented");
+        raise Program_Error with "Unimplemented procedure SetLayer";
+    end SetInputValues;
+
 
     ---------------
     -- NewNeuron --
     ---------------
 
-    overriding 
-    procedure NewNeuron (net : in out Nnet_Fixed; idx : out NeuronIndex_Base) is
+    overriding
+    procedure NewNeuron (net : in out Nnet_Fixed; idx : out NNet_NeuronIndex_Base) is
     begin
-        if net.Nassigned >= InputIndex(net.Npts) then
+        if net.Nassigned >= net.Npts then
             raise NetOverflow;
         end if;
         net.Nassigned := net.Nassigned + 1;
-        idx := NeuronIndex(net.Nassigned);
+        idx := net.Nassigned;
         -- here we essentialy create a 1:1 mapping from inner to outer indices
     end NewNeuron;
 
@@ -49,9 +67,9 @@ package body wann.nets.fixed is
     -- GetNeuron --
     ---------------
 
-    overriding 
-    function GetNeuron (net : NNet_Fixed; idx : NeuronIndex) return PN.NeuronClass_Access is
-        Stub : PN.NeuronRec(Nin=>0) := ( 
+    overriding
+    function GetNeuron (net : NNet_Fixed; idx : NNet_NeuronIndex) return PN.NeuronClass_Access is
+        Stub : PN.NeuronRec(Nin=>0) := (
             idx => 0, lag => 0.0,
             Nin => 0,
             activat => Sigmoid,
@@ -67,7 +85,7 @@ package body wann.nets.fixed is
     -- SetNeuron --
     ---------------
 
-    overriding 
+    overriding
     procedure SetNeuron (net : in out Nnet_Fixed; neur : PN.NeuronClass_Access) is
     begin
         --  Generated stub: replace with real body!
@@ -79,7 +97,7 @@ package body wann.nets.fixed is
     -- LayersReady --
     -----------------
 
-    overriding 
+    overriding
     function LayersReady (net : NNet_Fixed) return Boolean is
     begin
         --  Generated stub: replace with real body!
@@ -91,7 +109,7 @@ package body wann.nets.fixed is
     -- GetLayer --
     --------------
 
-    overriding 
+    overriding
     function GetLayer (net : in NNet_Fixed; idx : LayerIndex) return PL.Layer_Interface'Class is
     begin
         --  Generated stub: replace with real body!
@@ -103,7 +121,7 @@ package body wann.nets.fixed is
     -- SetLayer --
     --------------
 
-    overriding 
+    overriding
     procedure SetLayer (net : in out NNet_Fixed; idx : LayerIndex; L : PL.Layer_Interface'Class) is
     begin
         --  Generated stub: replace with real body!
@@ -115,12 +133,12 @@ package body wann.nets.fixed is
     -- SetInputValues --
     --------------------
 
-    overriding 
-    procedure SetInputValues (net : in out NNet_Fixed; V : ValueArray) is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "SetInputValues unimplemented");
-        raise Program_Error with "Unimplemented procedure SetInputValues";
-    end SetInputValues;
+--     overriding
+--     procedure SetInputValues (net : in out NNet_Fixed; V : NNet_InputArray) is
+--     begin
+--         --  Generated stub: replace with real body!
+--         pragma Compile_Time_Warning (Standard.True, "SetInputValues unimplemented");
+--         raise Program_Error with "Unimplemented procedure SetInputValues";
+--     end SetInputValues;
 
 end wann.nets.fixed;
