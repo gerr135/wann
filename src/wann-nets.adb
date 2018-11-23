@@ -155,8 +155,8 @@ package body wann.nets is
         -- this method will defer to GetInputs and will raise UnsetValueAccess
         -- if SetInputValues was not called first.
         -- In a sense it will cease being stateless, but will not create side-effects.
-        outputs : NNet_OutConnArray := net.GetOutputs;
-        inputs  : NNet_InConnArray  := net.GetInputs;
+        outputs : NNet_OutConnArray := net.GetOutputConnections;
+        inputs  : NNet_InConnArray  := net.GetInputConnections;
         results : NNet_OutputArray(1 .. outputs'Last);
     begin
         for i in results'Range loop
@@ -177,7 +177,7 @@ package body wann.nets is
         -- this is a stateless prop version. All intermidiate data kept and updated locally
     begin
         -- check dimensions and if net has already been sorted
-        if V'Length /= net.GetInputs'Length then
+        if V'Length /= net.GetInputConnections'Length then
             raise DataWidthMismatch;
         end if;
         if not net.LayersReady then
@@ -194,6 +194,11 @@ package body wann.nets is
             -- See note in Readme for more details..
             -- Also, with properly sorted net we should not need to check if values
             -- are already assigned. All should happen in proper order, saving us some checks.
+            --
+            -- NOTE 2: not gonna work in present form!!
+            -- as neurons are connected indeed arbitrarily - layer2+ to inputs are possible
+            -- we need to construct and pass around a complete NNet state, including inputs and neurons
+            -- and *that one* needs to be passed to layers, not either inputs or neurons..
         begin
             for li in 2 .. net.GetNLayers loop
                 -- main cycle - just propagate through all layers, updating net state
@@ -206,41 +211,5 @@ package body wann.nets is
         end; -- declare
     end ProcessInputs;
 
-
-    ------------------------------------
-    -- Stateful forward prop; 2 methods
---     procedure ProcessInputs (net : NNet_Interface'Class) is
---         -- NOTE: input data has to be set first!
---     begin
---         if not net.InputValuesSet then
---             raise UnsetValueAccess;
---         end if;
---         if not net.LayersReady then
---             raise UnsortedNetPropagation;
---         end if;
---         --
---         declare
---             -- 1st layer is a special case (as we do not use dumb pass-through neurons as inputs)
---             L : PL.Layer_Interface'Class := net.GetLayer(1);
---             -- there should always be at least 1
---             netState : NNet_ValueArray(1 .. net.GetNNeurons) := L.PropForward();
---             -- NOTE: layers can be interconnected in arbitrary way, to absolutely any neurons,
---             -- so we need to pass a complete state around.
---             -- See note in Readme for more details..
---             -- Also, with properly sorted net we should not need to check if values
---             -- are already assigned. All should happen in proper order, saving us some checks.
---         begin
---             for li in 2 .. net.GetNLayers loop
---                 -- main cycle - just propagate through all layers, updating net state
---                 L := net.GetLayer(li);
---                 netState := L.PropForward(netState);
---             end loop;
---         end; -- declare
---     end ProcessInputs;
---
---     function ReadOutputs (net : NNet_Interface'Class) return NNet_OutputArray is
---     begin
---         return net.calcOutputs(netState);
---     end ReadOutputs;
 
 end wann.nets;

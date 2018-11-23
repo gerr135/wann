@@ -42,7 +42,7 @@ package wann.layers is
     type OutputIndex is new Positive;
 
     -- associated arrray types for holding params
-    type ValueArray   is array (InputIndex range <>)  of DataPoint;
+--     type ValueArray   is array (InputIndex range <>)  of DataPoint;
     type InConnArray  is array (InputIndex range <>)  of ConnectionIdx;
     type OutConnArray is array (OutputIndex range <>) of ConnectionIdx;
     type LayerNeuronsArray is array (LayerNeuronsIndex range <>) of PN.NeuronClass_Access;
@@ -97,7 +97,8 @@ package wann.layers is
     --  class wide utility
     --
     --  stateless propagation, no side effects
-    function  PropForward(L : in out Layer_Interface'Class; inputs : ValueArray) return ValueArray;
+    function  PropForward(L : in out Layer_Interface'Class; inputs : NNet_InputArray) return NNet_ValueArray;
+    function  PropForward(L : in out Layer_Interface'Class; inputs : NNet_ValueArray) return NNet_ValueArray;
 
     -- stateful propagation, only makes sense for some cases.
 --     procedure SetInputs(L : in out Layer_Interface'Class; inputs : ValueArray);

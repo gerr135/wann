@@ -44,16 +44,19 @@ package wann.nets.vectors is
 
     -- data IO
     overriding
-    function GetInputs (net : NNet) return NNet_InConnArray;
+    function GetInputConnections (net : NNet) return NNet_InConnArray;
 
     overriding
-    function GetOutputs(net : NNet) return NNet_OutConnArray;
+    function GetOutputConnections(net : NNet) return NNet_OutConnArray;
 
     overriding
     function  GetInputValues(net : NNet) return NNet_InputArray;
 
     overriding
     procedure SetInputValues(net : in out NNet; V : NNet_InputArray);
+
+    overriding
+    function  GetNeuronValues(net : NNet) return NNet_ValueArray;
 
 
     -- neuron handling

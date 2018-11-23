@@ -49,16 +49,19 @@ package wann.nets.fixed is
 
     -- data IO
     overriding
-    function GetInputs (net : NNet_Fixed) return NNet_InConnArray;
+    function GetInputConnections (net : NNet_Fixed) return NNet_InConnArray;
 
     overriding
-    function GetOutputs(net : NNet_Fixed) return NNet_OutConnArray;
+    function GetOutputConnections(net : NNet_Fixed) return NNet_OutConnArray;
 
     overriding
     function  GetInputValues(net : NNet_Fixed) return NNet_InputArray;
 
     overriding
     procedure SetInputValues(net : in out NNet_Fixed; V : NNet_InputArray);
+
+    overriding
+    function  GetNeuronValues(net : NNet_Fixed) return NNet_ValueArray;
 
 
     -- neuron handling

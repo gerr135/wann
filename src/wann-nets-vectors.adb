@@ -31,20 +31,20 @@ package body wann.nets.vectors is
     -----------------
     --  data IO
     overriding
-    function GetInputs (net : NNet) return NNet_InConnArray is
+    function GetInputConnections (net : NNet) return NNet_InConnArray is
     begin
         -- need to reconstruct InConnArray from vector and return that..
         pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
         return raise Program_Error with "Unimplemented procedure NewNeuron";
-    end GetInputs;
+    end GetInputConnections;
 
     overriding
-    function GetOutputs (net : NNet) return NNet_OutConnArray is
+    function GetOutputConnections (net : NNet) return NNet_OutConnArray is
     begin
         -- need to reconstruct OutConnArray from vector and return that..
         pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
         return raise Program_Error with "Unimplemented procedure NewNeuron";
-    end GetOutputs;
+    end GetOutputConnections;
 
     overriding
     function  GetInputValues(net : NNet) return NNet_InputArray is
@@ -61,6 +61,14 @@ package body wann.nets.vectors is
         pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
         raise Program_Error with "Unimplemented procedure NewNeuron";
     end SetInputValues;
+
+    overriding
+    function  GetNeuronValues(net : NNet) return NNet_ValueArray is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
+        return raise Program_Error with "Unimplemented procedure NewNeuron";
+    end GetNeuronValues;
 
 
     ---------------

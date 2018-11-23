@@ -45,13 +45,16 @@ package wann.nets is
     function GetNNeurons(net : NNet_Interface) return NNet_NeuronIndex is abstract;
     function GetNLayers (net : NNet_Interface) return LayerIndex  is abstract;
 
-    -- data IO handling
-    function  GetInputs (net : NNet_Interface) return NNet_InConnArray  is abstract;
-    function  GetOutputs(net : NNet_Interface) return NNet_OutConnArray is abstract;
+    -- data storage and propagation
+    function  GetInputConnections (net : NNet_Interface) return NNet_InConnArray  is abstract;
+    function  GetOutputConnections(net : NNet_Interface) return NNet_OutConnArray is abstract;
     --
-    function  GetInputValues(net : NNet_Interface) return NNet_InputArray is abstract;
-    procedure SetInputValues(net : in out NNet_Interface; V : NNet_InputArray)   is abstract;
+    function  GetInputValues(net : NNet_Interface)     return NNet_InputArray  is abstract;
+    procedure SetInputValues(net : in out NNet_Interface; V : NNet_InputArray) is abstract;
     -- NOTE: GetInputValues should raise  UnsetValueAccess if called before SetInputValues
+
+    function  GetNeuronValues(net : NNet_Interface) return NNet_ValueArray is abstract;
+    -- only getter, as neuron output data is set via propagaton
 
     --  Neuron handling
     procedure NewNeuron(net : in out NNet_Interface; idx : out NNet_NeuronIndex_Base) is abstract;

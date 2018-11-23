@@ -20,16 +20,16 @@ package body wann.nets.fixed is
     ----------------------
     --  data IO
     overriding
-    function GetInputs (net : NNet_Fixed) return NNet_InConnArray is
+    function GetInputConnections (net : NNet_Fixed) return NNet_InConnArray is
     begin
         return net.inputs;
-    end GetInputs;
+    end GetInputConnections;
 
     overriding
-    function GetOutputs (net : NNet_Fixed) return NNet_OutConnArray is
+    function GetOutputConnections (net : NNet_Fixed) return NNet_OutConnArray is
     begin
         return net.outputs;
-    end GetOutputs;
+    end GetOutputConnections;
 
     overriding
     function  GetInputValues(net : NNet_Fixed) return NNet_InputArray is
@@ -46,6 +46,14 @@ package body wann.nets.fixed is
         pragma Compile_Time_Warning (Standard.True, "SetLayer unimplemented");
         raise Program_Error with "Unimplemented procedure SetLayer";
     end SetInputValues;
+
+    overriding
+    function  GetNeuronValues(net : NNet_Fixed) return NNet_ValueArray is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
+        return raise Program_Error with "Unimplemented procedure NewNeuron";
+    end GetNeuronValues;
 
 
     ---------------
