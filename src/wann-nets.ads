@@ -49,8 +49,8 @@ package wann.nets is
     function  GetInputConnections (net : NNet_Interface) return NNet_InConnArray  is abstract;
     function  GetOutputConnections(net : NNet_Interface) return NNet_OutConnArray is abstract;
     --
-    function  GetInputValues(net : NNet_Interface)     return NNet_InputArray  is abstract;
-    procedure SetInputValues(net : in out NNet_Interface; V : NNet_InputArray) is abstract;
+    function  GetNNetState(net : NNet_Interface)       return NNet_StateVector  is abstract;
+    procedure SetNNetState(net : in out NNet_Interface; NSV : NNet_StateVector) is abstract;
     -- NOTE: GetInputValues should raise  UnsetValueAccess if called before SetInputValues
 
     function  GetNeuronValues(net : NNet_Interface) return NNet_ValueArray is abstract;
@@ -78,6 +78,8 @@ package wann.nets is
     -----------------------------------------
     -- class-wide stuff: main utility
 
+    --
+    -- NNet construction
     --
     -- Neuron manipulation
     --
@@ -116,14 +118,19 @@ package wann.nets is
     --  Propagation
     --
     -- Forward prop through trained net
-    -- first stateless: net state is completely internal to this proc, no side effects
-    function  CalcOutputs  (net : NNet_Interface'Class; V : NNet_ValueArray) return NNet_OutputArray;
-    function  ProcessInputs(net : NNet_Interface'Class; V : NNet_InputArray) return NNet_OutputArray;
-
     --  Stateful propagation:
-    --  initial values should be set first with SetInputValues
---     procedure ProcessInputs(net : NNet_Interface'Class);
---     function  CalcOutputs  (net : NNet_Interface'Class) return NNet_OutputArray;
+    --  initial values should be set first with SetInputValues and then advanced within net,
+    --  no need for passing around intermediate inputs/outputs
+    function  GetInputValues(net : NNet_Interface'Class)      return NNet_InputArray;
+    procedure SetInputValues(net : in out NNet_Interface'Class; IV : NNet_InputArray);
+    --
+    procedure ProcessInputs(net : NNet_Interface'Class);
+    function  CalcOutputs  (net : NNet_Interface'Class) return NNet_OutputArray;
+    --
+    -- stateless propagation net state is completely internal to this proc, no side effects
+    function  CalcOutputs  (net : NNet_Interface'Class; NSV : NNet_StateVector) return NNet_OutputArray;
+    function  ProcessInputs(net : NNet_Interface'Class; IV  : NNet_InputArray)  return NNet_OutputArray;
+
 
 
 --     procedure Train(net : in out NNet'Class; training_set : TBD);

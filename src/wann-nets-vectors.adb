@@ -47,20 +47,20 @@ package body wann.nets.vectors is
     end GetOutputConnections;
 
     overriding
-    function  GetInputValues(net : NNet) return NNet_InputArray is
+    function  GetNNetState(net : NNet) return NNet_StateVector is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
         return raise Program_Error with "Unimplemented procedure NewNeuron";
-    end GetInputValues;
+    end GetNNetState;
 
     overriding
-    procedure SetInputValues(net : in out NNet; V : NNet_InputArray) is
+    procedure SetNNetState(net : in out NNet; NSV : NNet_StateVector) is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
         raise Program_Error with "Unimplemented procedure NewNeuron";
-    end SetInputValues;
+    end SetNNetState;
 
     overriding
     function  GetNeuronValues(net : NNet) return NNet_ValueArray is

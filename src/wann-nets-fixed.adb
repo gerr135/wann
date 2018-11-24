@@ -32,20 +32,20 @@ package body wann.nets.fixed is
     end GetOutputConnections;
 
     overriding
-    function  GetInputValues(net : NNet_Fixed) return NNet_InputArray is
+    function  GetNNetState(net : NNet_Fixed) return NNet_StateVector is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
         return raise Program_Error with "Unimplemented procedure NewNeuron";
-    end GetInputValues;
+    end GetNNetState;
 
     overriding
-    procedure SetInputValues(net : in out NNet_Fixed; V : NNet_InputArray) is
+    procedure SetNNetState(net : in out NNet_Fixed; NSV : NNet_StateVector) is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "SetLayer unimplemented");
         raise Program_Error with "Unimplemented procedure SetLayer";
-    end SetInputValues;
+    end SetNNetState;
 
     overriding
     function  GetNeuronValues(net : NNet_Fixed) return NNet_ValueArray is

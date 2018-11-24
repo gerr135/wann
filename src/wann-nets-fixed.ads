@@ -55,10 +55,10 @@ package wann.nets.fixed is
     function GetOutputConnections(net : NNet_Fixed) return NNet_OutConnArray;
 
     overriding
-    function  GetInputValues(net : NNet_Fixed) return NNet_InputArray;
+    function  GetNNetState(net : NNet_Fixed) return NNet_StateVector;
 
     overriding
-    procedure SetInputValues(net : in out NNet_Fixed; V : NNet_InputArray);
+    procedure SetNNetState(net : in out NNet_Fixed; NSV : NNet_StateVector);
 
     overriding
     function  GetNeuronValues(net : NNet_Fixed) return NNet_ValueArray;

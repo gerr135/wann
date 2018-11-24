@@ -50,10 +50,10 @@ package wann.nets.vectors is
     function GetOutputConnections(net : NNet) return NNet_OutConnArray;
 
     overriding
-    function  GetInputValues(net : NNet) return NNet_InputArray;
+    function  GetNNetState(net : NNet) return NNet_StateVector;
 
     overriding
-    procedure SetInputValues(net : in out NNet; V : NNet_InputArray);
+    procedure SetNNetState(net : in out NNet; NSV : NNet_StateVector);
 
     overriding
     function  GetNeuronValues(net : NNet) return NNet_ValueArray;
