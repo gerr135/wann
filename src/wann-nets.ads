@@ -124,12 +124,12 @@ package wann.nets is
     function  GetInputValues(net : NNet_Interface'Class)      return NNet_InputArray;
     procedure SetInputValues(net : in out NNet_Interface'Class; IV : NNet_InputArray);
     --
-    procedure ProcessInputs(net : NNet_Interface'Class);
+--     procedure ProcessInputs(net : NNet_Interface'Class);
     function  CalcOutputs  (net : NNet_Interface'Class) return NNet_OutputArray;
     --
     -- stateless propagation net state is completely internal to this proc, no side effects
-    function  CalcOutputs  (net : NNet_Interface'Class; NSV : NNet_StateVector) return NNet_OutputArray;
     function  ProcessInputs(net : NNet_Interface'Class; IV  : NNet_InputArray)  return NNet_OutputArray;
+    function  CalcOutputs  (net : NNet_Interface'Class; NSV : NNet_CheckedStateVector) return NNet_OutputArray;
 
 
 

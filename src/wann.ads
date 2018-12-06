@@ -41,7 +41,7 @@ package wann is
 
     --------------------------------------------------------------------------
     -- General conventions
-    -- Neural Net (NNet) consists of Nin inputs, Nout outputs and Npts neurons
+    -- Neural Net (NNet) consists of Ni inputs, No outputs and Nn neurons
     -- Connections are tracked by (ConnectionType, index) record, to discriminate between
     -- inputs, outputs and other neurons.
 
@@ -118,15 +118,15 @@ package wann is
     type NNet_OutputValidityArray is array (NNet_OutputIndex range <>) of Boolean;
     type NNet_ValueValidityArray  is array (NNet_NeuronIndex range <>) of Boolean;
 
-    
+
     -- State of the entire NNet
     --
-    -- in order to provide possibility of data validity checks (e.g. whether data has 
+    -- in order to provide possibility of data validity checks (e.g. whether data has
     -- propagated far enough) we encapsulate the state in a tagged record.
     --
     -- NOTE: most propagation routines should work correctly even without checks
     -- as proper layering should ensure that all the proper values are already availabble, when needed.
-    -- However there is still a risk of silently using unassigned value, especially 
+    -- However there is still a risk of silently using unassigned value, especially
     -- while the lib is in development, or when proper call order is not enforced.
     -- Therefore the safest way to go is to implement all agorithms with in-built checks,
     -- but also provide (after checked code is properly tested) the _unchecked
@@ -137,26 +137,26 @@ package wann is
     -- every point..
     --
     --  Unchecked state vector
-    type NNet_StateVector(Nin : NNet_InputIndex; 
-                          Npts : NNet_NeuronIndex; Nout : NNet_OutputIndex) is record
-        ins  : NNet_InputArray(1 .. Nin);
-        pts  : NNet_ValueArray(1 .. Npts);
-        outs : NNet_OutputArray(1 .. Nout);
+    type NNet_StateVector(Ni : NNet_InputIndex;
+                          Nn : NNet_NeuronIndex; No : NNet_OutputIndex) is record
+        input  : NNet_InputArray (1 .. Ni);
+        neuron : NNet_ValueArray (1 .. Nn);
+        output : NNet_OutputArray(1 .. No);
     end record;
     --
     --  Checked state vector
-    type NNet_CheckedStateVector(Nin : NNet_InputIndex; 
-                          Npts : NNet_NeuronIndex; Nout : NNet_OutputIndex) is record
-        ins  : NNet_InputArray(1 .. Nin);
-        pts  : NNet_ValueArray(1 .. Npts);
-        outs : NNet_OutputArray(1 .. Nout);
-        --
-        inValid  : NNet_InputValidityArray (1 .. Nin);
-        ptValid  : NNet_ValueValidityArray (1 .. Npts);
-        outValid : NNet_OutputValidityArray(1 .. Nout);
+    type NNet_CheckedStateVector(Ni : NNet_InputIndex;
+                          Nn : NNet_NeuronIndex; No : NNet_OutputIndex) is record
+        input  : NNet_InputArray (1 .. Ni);
+        neuron : NNet_ValueArray (1 .. Nn);
+        output : NNet_OutputArray(1 .. No);
+    --
+        validI : NNet_InputValidityArray (1 .. Ni);
+        validN : NNet_ValueValidityArray (1 .. Nn);
+        validO : NNet_OutputValidityArray(1 .. No);
         -- using separate arrays here (rather than array of record with 2 entris)
         -- allows us to assign entire array, rather than copy item by item
-        -- NOTE: passing a reference might be even mor optimal for big nets, 
+        -- NOTE: passing a reference might be even more optimal for big nets,
         -- but better profile first before going with a more involved design
     end record;
 
@@ -164,10 +164,10 @@ package wann is
 --         Ok  : Boolean := False;
 --         val : Real;
 --     end record;
--- 
+--
 --     -- Input, output and neuron state arrays
 --     type NNet_InputDPArray  is array (NNet_InputIndex  range <>) of DataPoint;
 --     type NNet_OutputDPArray is array (NNet_OutputIndex range <>) of DataPoint;
 --     type NNet_ValueDPArray  is array (NNet_NeuronIndex range <>) of DataPoint;
-    
+
 end wann;
