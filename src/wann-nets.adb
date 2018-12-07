@@ -151,47 +151,6 @@ package body wann.nets is
     -- propagators
     ----------------
 
-    ---------------------------
-    -- stateful propagation
-    function  GetInputValues(net : NNet_Interface'Class)      return NNet_InputArray is
-        netState : NNet_StateVector:= net.GetNNetState;
-    begin
-        return netState.input;
-    end;
-
-    procedure SetInputValues(net : in out NNet_Interface'Class; IV : NNet_InputArray) is
-        -- we only reassign the inputs, keep the other values untouched
-        netState : NNet_StateVector:= net.GetNNetState;
-    begin
-        netState.input := IV;
-        net.SetNNetState(netState);
-    end;
-
-    function  CalcOutputs  (net : NNet_Interface'Class) return NNet_OutputArray is
-        outputs : NNet_OutConnArray := net.GetOutputConnections;
-        --         inputs  : NNet_InConnArray  := net.GetInputConnections;
-        results : NNet_OutputArray(1 .. outputs'Last);
-    begin
-        for i in results'Range loop
-            if outputs(i).T = N then
-                if not NSV.validN(outputs(i).Nidx) then
-                    -- replace with Assert?
-                    raise UnsetValueAccess;
-                end if;
-                results(i) := NSV.neuron(outputs(i).Nidx);
-            else
-                if not NSV.validI(outputs(i).Iidx) then
-                    -- replace with Assert?
-                    raise UnsetValueAccess;
-                end if;
-                results(i) := NSV.input(outputs(i).Iidx);
-            end if;
-        end loop;
-        return results;
-    end;
-
-
-
     ----------------------------------------------
     -- Stateless forward prop
     --
@@ -222,10 +181,6 @@ package body wann.nets is
         -- this is a stateless prop version. All intermidiate data kept and updated locally
         -- NOTE: layers can be interconnected in arbitrary way, to absolutely any neurons,
         -- so we need to pass a complete state around.
-        -- See note in Readme for more details..
-        -- Also, with properly sorted net we should not need to check if values
-        -- are already assigned. All should happen in proper order, saving us some checks.
-        netState : NNet_CheckedStateVector(1 .. net.GetNNeurons) := L.PropForward(IV);
     begin
         -- check dimensions and if net has already been sorted
         if IV'Length /= net.GetInputConnections'Length then
@@ -237,8 +192,12 @@ package body wann.nets is
         --
         declare
             -- 1st layer is a special case (as we do not use dumb pass-through neurons as inputs)
-            L : PL.Layer_Interface'Class := net.GetLayer(1) -- with full state can be donne in a proper full cycle (not step 1 then the rest)
             -- there should always be at least 1
+            L : PL.Layer_Interface'Class := net.GetLayer(1);
+            -- we also need a nnet value vector
+            netState : NNet_CheckedStateVector(Ni=>net.GetInputConnections'Length,
+                                               Nn=>net.GetNNeurons,
+                                               No=>net.GetOutputConnections'Length);
         begin
             for li in 2 .. net.GetNLayers loop
                 -- main cycle - just propagate through all layers, updating net state
@@ -250,6 +209,49 @@ package body wann.nets is
             -- to calc it. SHould be at the net level
         end; -- declare
     end ProcessInputs;
+
+
+    ---------------------------
+    -- stateful propagation
+    function  GetInputValues(net : Stateful_NNet_Interface'Class)      return NNet_InputArray is
+        netState : NNet_StateVector:= net.GetNNetState;
+    begin
+        return netState.input;
+    end;
+
+    procedure SetInputValues(net : in out Stateful_NNet_Interface'Class; IV : NNet_InputArray) is
+        -- we only reassign the inputs, keep the other values untouched
+        netState : NNet_StateVector:= net.GetNNetState;
+    begin
+        netState.input := IV;
+        net.SetNNetState(netState);
+    end;
+
+    function  ProcessInputs  (net : Stateful_NNet_Interface'Class) return NNet_OutputArray is
+        outputs : NNet_OutConnArray := net.GetOutputConnections;
+        --         inputs  : NNet_InConnArray  := net.GetInputConnections;
+        results : NNet_OutputArray(1 .. outputs'Last);
+    begin
+        for i in results'Range loop
+            if outputs(i).T = N then
+                if not NSV.validN(outputs(i).Nidx) then
+                    -- replace with Assert?
+                    raise UnsetValueAccess;
+                end if;
+                results(i) := NSV.neuron(outputs(i).Nidx);
+            else
+                if not NSV.validI(outputs(i).Iidx) then
+                    -- replace with Assert?
+                    raise UnsetValueAccess;
+                end if;
+                results(i) := NSV.input(outputs(i).Iidx);
+            end if;
+        end loop;
+        return results;
+    end;
+
+
+
 
 
 end wann.nets;

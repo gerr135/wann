@@ -46,30 +46,6 @@ package body wann.nets.vectors is
         return raise Program_Error with "Unimplemented procedure NewNeuron";
     end GetOutputConnections;
 
-    overriding
-    function  GetNNetState(net : NNet) return NNet_StateVector is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
-        return raise Program_Error with "Unimplemented procedure NewNeuron";
-    end GetNNetState;
-
-    overriding
-    procedure SetNNetState(net : in out NNet; NSV : NNet_StateVector) is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
-        raise Program_Error with "Unimplemented procedure NewNeuron";
-    end SetNNetState;
-
-    overriding
-    function  GetNeuronValues(net : NNet) return NNet_ValueArray is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
-        return raise Program_Error with "Unimplemented procedure NewNeuron";
-    end GetNeuronValues;
-
 
     ---------------
     -- NewNeuron --
@@ -197,6 +173,31 @@ package body wann.nets.vectors is
 --             AL.neurons.Replace_Element(i, LR.neurons(i));
 --         end loop;
 --     end;
+
+    overriding
+    function  GetNNetState(net : Stateful_NNet) return NNet_StateVector is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
+        return raise Program_Error with "Unimplemented procedure NewNeuron";
+    end GetNNetState;
+
+    overriding
+    procedure SetNNetState(net : in out Stateful_NNet; NSV : NNet_StateVector) is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
+        raise Program_Error with "Unimplemented procedure NewNeuron";
+    end SetNNetState;
+
+    overriding
+    function  GetNeuronValues(net : Stateful_NNet) return NNet_ValueArray is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
+        return raise Program_Error with "Unimplemented procedure NewNeuron";
+    end GetNeuronValues;
+
 
 
 end wann.nets.vectors;

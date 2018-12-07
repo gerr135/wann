@@ -49,15 +49,6 @@ package wann.nets.vectors is
     overriding
     function GetOutputConnections(net : NNet) return NNet_OutConnArray;
 
-    overriding
-    function  GetNNetState(net : NNet) return NNet_StateVector;
-
-    overriding
-    procedure SetNNetState(net : in out NNet; NSV : NNet_StateVector);
-
-    overriding
-    function  GetNeuronValues(net : NNet) return NNet_ValueArray;
-
 
     -- neuron handling
     overriding
@@ -85,6 +76,19 @@ package wann.nets.vectors is
 --     procedure SetInputValues(net : in out NNet; V : NNet_InputArray);
 
 
+    type Stateful_NNet is new NNet and Stateful_NNet_Interface with private;
+
+    overriding
+    function  GetNNetState(net : Stateful_NNet) return NNet_StateVector;
+
+    overriding
+    procedure SetNNetState(net : in out Stateful_NNet; NSV : NNet_StateVector);
+
+    overriding
+    function  GetNeuronValues(net : Stateful_NNet) return NNet_ValueArray;
+
+
+
 private
 
     -----------------
@@ -106,5 +110,6 @@ private
         layers  : LV.Vector;
     end record;
 
+    type Stateful_NNet is new NNet and Stateful_NNet_Interface with null record;
 
 end wann.nets.vectors;

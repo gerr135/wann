@@ -79,11 +79,15 @@ package wann.neurons is
     -- The principal users should be Layer or NNet while adding/removeing/reconnecting neurons
     procedure AddOutput(NI : in out Neuron_Interface; Output : ConnectionIdx) is abstract;
     procedure DelOutput(NI : in out Neuron_Interface; Output : ConnectionIdx) is abstract;
-    --
-    -- we also need to cache propagation results
-    -- (calling it result to distinguish from Outputs, which are physical connections)
-    procedure CacheResult(NI : in out Neuron_Interface; Result : Real) is abstract;
-    procedure ClearCache (NI : in out Neuron_Interface) is abstract;
+
+
+    ------------
+    --  stateful version, that keeps current value stored
+    type Stateful_Neuron_Interface is interface and Neuron_Interface;
+
+    function  GetValue(NI : in out Stateful_Neuron_Interface) return Real  is abstract;
+    procedure SetValue(NI : in out Stateful_Neuron_Interface; val :  Real) is abstract;
+    -- just basig getter/setter. Data validity should be handled in implementation
 
 
     ----------
@@ -111,8 +115,8 @@ package wann.neurons is
     --
     -- for basic testing/small nets.
     -- for anything serious, Layer propagators should be used..
-    procedure PropForward (NI : in out Neuron_Interface'Class);
-    procedure PropBackward(NI : in out Neuron_Interface'Class);
+    procedure PropForward (NI : in out Stateful_Neuron_Interface'Class);
+    procedure PropBackward(NI : in out Stateful_Neuron_Interface'Class);
 
 
 end wann.neurons;

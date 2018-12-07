@@ -31,30 +31,6 @@ package body wann.nets.fixed is
         return net.outputs;
     end GetOutputConnections;
 
-    overriding
-    function  GetNNetState(net : NNet_Fixed) return NNet_StateVector is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
-        return raise Program_Error with "Unimplemented procedure NewNeuron";
-    end GetNNetState;
-
-    overriding
-    procedure SetNNetState(net : in out NNet_Fixed; NSV : NNet_StateVector) is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "SetLayer unimplemented");
-        raise Program_Error with "Unimplemented procedure SetLayer";
-    end SetNNetState;
-
-    overriding
-    function  GetNeuronValues(net : NNet_Fixed) return NNet_ValueArray is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
-        return raise Program_Error with "Unimplemented procedure NewNeuron";
-    end GetNeuronValues;
-
 
     ---------------
     -- NewNeuron --
@@ -148,5 +124,31 @@ package body wann.nets.fixed is
 --         pragma Compile_Time_Warning (Standard.True, "SetInputValues unimplemented");
 --         raise Program_Error with "Unimplemented procedure SetInputValues";
 --     end SetInputValues;
+
+    overriding
+    function  GetNNetState(net : Stateful_NNet) return NNet_StateVector is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
+        return raise Program_Error with "Unimplemented procedure NewNeuron";
+    end GetNNetState;
+
+    overriding
+    procedure SetNNetState(net : in out Stateful_NNet; NSV : NNet_StateVector) is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "SetLayer unimplemented");
+        raise Program_Error with "Unimplemented procedure SetLayer";
+    end SetNNetState;
+
+    overriding
+    function  GetNeuronValues(net : Stateful_NNet) return NNet_ValueArray is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
+        return raise Program_Error with "Unimplemented procedure NewNeuron";
+    end GetNeuronValues;
+
+
 
 end wann.nets.fixed;
