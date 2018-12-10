@@ -25,6 +25,8 @@
 -- Will likely contain a list of pointers to neurons - to access the inherent data,
 -- but will not operate on NNet structures.
 
+with Ada.Iterator_Interfaces;
+
 with wann.neurons;
 
 generic
@@ -34,8 +36,8 @@ package wann.layers is
 
     -- Indices;
     -- to track neurons associated with the layer
-    type LayerNeuronsIndex_Base is new Natural;
-    subtype LayerNeuronsIndex is LayerNeuronsIndex_Base range 1 .. LayerNeuronsIndex_Base'Last;
+    type NeuronIndex_Base is new Natural;
+    subtype NeuronIndex is NeuronIndex_Base range 1 .. NeuronIndex_Base'Last;
     -- Inputs/outputs, representative of "physical entiites"; use to catch "wrong index used" errors
     type    InputIndex_Base is new Natural;
     subtype InputIndex is InputIndex_Base range 1 .. InputIndex_Base'Last;
@@ -45,12 +47,12 @@ package wann.layers is
 --     type ValueArray   is array (InputIndex range <>)  of DataPoint;
     type InConnArray  is array (InputIndex range <>)  of ConnectionIdx;
     type OutConnArray is array (OutputIndex range <>) of ConnectionIdx;
-    type LayerNeuronsArray is array (LayerNeuronsIndex range <>) of PN.NeuronClass_Access;
+    type LayerNeuronsArray is array (NeuronIndex range <>) of PN.NeuronClass_Access;
     -- or need NeuronClass_Access?
 
 
     -- representation record, to have common interface to pass data around
-    type LayerRec(N : LayerNeuronsIndex) is record
+    type LayerRec(N : NeuronIndex) is record
         neurons : LayerNeuronsArray(1 .. N);
         -- might get outputs or inputs here, so use generic neuronal array
         --weightMatrix : some matrix;
@@ -86,12 +88,28 @@ package wann.layers is
     procedure FromRec(LI : in out Layer_Interface; LR : LayerRec) is abstract;
 --     procedure Clear  (LI : in out Layer_Interface) is abstract;
     --
-    function  Length(LI : Layer_Interface) return LayerNeuronsIndex_Base is abstract;
+    function  Length(LI : Layer_Interface) return NeuronIndex_Base is abstract;
     procedure AddNeuron(LI : in out Layer_Interface; np : PN.NeuronClass_Access) is abstract;
---     procedure DelNeuron(LI : Layer_Interface; idx : LayerNeuronsIndex) is abstract;
-    function  GetNeuron(LI : Layer_Interface; idx : LayerNeuronsIndex) return PN.NeuronClass_Access is abstract;
---     procedure SetNeuron(LI : Layer_Interface; idx : LayerNeuronsIndex; np : PN.Neuron_Access) is abstract;
+--     procedure DelNeuron(LI : Layer_Interface; idx : NeuronIndex) is abstract;
+    function  GetNeuron(LI : Layer_Interface; idx : NeuronIndex) return PN.NeuronClass_Access is abstract;
+--     procedure SetNeuron(LI : Layer_Interface; idx : NeuronIndex; np : PN.Neuron_Access) is abstract;
 
+
+    -------------------------------------------------
+    -- list of layers, providing iterator interface
+    type LayerList_Interface is interface with 
+        Default_Iterator  => Iterate,
+        Iterator_Element  => Layer_Interface'Class,
+        Constant_Indexing => Element_Value;
+
+    type LL_Cursor is private;
+    function Has_Element (Pos : LL_Cursor) return Boolean;
+
+    package LL_Iterators is new Ada.Iterator_Interfaces(LL_Cursor, Has_Element);
+
+    function Iterate(Container : LayerList_Interface) return LL_Iterators.Forward_Iterator'Class;
+    function Element_Value (Container : LayerList_Interface; Pos : LL_Cursor) return Layer_Interface'Class;
+    -- Could also return a reference type as defined in the Part 1 Gem
 
     ----------------------------------
     --  class wide utility
@@ -104,5 +122,8 @@ package wann.layers is
 --     procedure SetInputs(L : in out Layer_Interface'Class; inputs : ValueArray);
 --     procedure PropForward(L : in out Layer_Interface'Class);
 
+private
+
+    type LL_Cursor is null record;
 
 end wann.layers;

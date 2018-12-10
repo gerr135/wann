@@ -38,15 +38,15 @@ package wann.layers.vectors is
     --
 
     overriding
-    function  Length(L : Layer) return LayerNeuronsIndex_Base;
+    function  Length(L : Layer) return NeuronIndex_Base;
 
     overriding
     procedure AddNeuron(L : in out Layer; np : PN.NeuronCLass_Access);
---     procedure DelNeuron(LI : Layer_Interface; idx : LayerNeuronsIndex) is abstract;
+--     procedure DelNeuron(LI : Layer_Interface; idx : NeuronIndex) is abstract;
 
     overriding
-    function  GetNeuron(L : Layer; idx : LayerNeuronsIndex) return PN.NeuronClass_Access;
---     procedure SetNeuron(LI : Layer_Interface; idx : LayerNeuronsIndex; np : PN.Neuron_Access) is abstract;
+    function  GetNeuron(L : Layer; idx : NeuronIndex) return PN.NeuronClass_Access;
+--     procedure SetNeuron(LI : Layer_Interface; idx : NeuronIndex; np : PN.Neuron_Access) is abstract;
 
 private
 
