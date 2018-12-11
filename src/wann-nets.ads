@@ -46,7 +46,8 @@ package wann.nets is
     --  making it an interface to allow composition (say with Controlled)
     --  also to prototype the data access needs for different variants
     --
-    -- This is the base, stateless version
+    -- This is the base version, consists of stateless neurons (topology and weights only);
+    -- can be used for "light" forwardProp only, initiated from pre-trained net.
     type NNet_Interface is limited Interface;
     type NNet_Access is access NNet_Interface;
 
@@ -69,26 +70,40 @@ package wann.nets is
     -- remove neuron from NNet_Interface, as with New, only for mutable representation
 
     -- neuron getter and setter
-    function  GetNeuron(net : NNet_Interface; idx : NNet_NeuronIndex) return PN.NeuronCLass_Access is abstract;
+    function  GetNeuron(net : NNet_Interface; idx : NNet_NeuronIndex) return PN.NeuronClass_Access is abstract;
     procedure SetNeuron(net : in out NNet_Interface; NA : PN.NeuronClass_Access) is abstract;
 
     -- layer handling
     function  LayersReady (net : NNet_Interface) return Boolean is abstract;
+    function  Layers(net : NNet_Interface) return PL.LayerList_Interface'Class is abstract;
     function  GetLayer(net : NNet_Interface; idx : LayerIndex) return PL.Layer_Interface'Class  is abstract;
     procedure SetLayer(net : in out NNet_Interface; idx : LayerIndex; L : PL.Layer_Interface'Class) is abstract;
 
 
     --------------------
-    --  stateful nnet
+    --  "cached" nnet
+    --  Stores neuron outputs in a state vector, uses base stateless neurons
+    type Cached_NNet_Interface is limited interface and NNet_Interface;
+    type Cached_NNet_Access    is access Cached_NNet_Interface;
+
+    function  GetNNetState(net : Cached_NNet_Interface)       return NNet_StateVector  is abstract;
+    procedure SetNNetState(net : in out Cached_NNet_Interface; NSV : NNet_StateVector) is abstract;
+    -- NOTE: GetInputValues should raise  UnsetValueAccess if called before SetInputValues
+    function  GetNeuronValues(net : Cached_NNet_Interface) return NNet_ValueArray is abstract;
+    -- only getter, as neuron output data is set via propagaton
+
+    --------------------
+    --  Stateful nnet
+    --  Stores neuron outputs neurons themselves, uses stateful neurons
     type Stateful_NNet_Interface is limited interface and NNet_Interface;
     type Stateful_NNet_Access    is access Stateful_NNet_Interface;
 
-    function  GetNNetState(net : Stateful_NNet_Interface)       return NNet_StateVector  is abstract;
-    procedure SetNNetState(net : in out Stateful_NNet_Interface; NSV : NNet_StateVector) is abstract;
-    -- NOTE: GetInputValues should raise  UnsetValueAccess if called before SetInputValues
+    function  GetInputValues(net : Stateful_NNet_Interface) return NNet_InputArray is abstract;
+    procedure SetInputValues(net : in out Stateful_NNet_Interface; IV : NNet_InputArray) is abstract;
+    --
+    function  GetNeuron(net : Stateful_NNet_Interface; idx : NNet_NeuronIndex) return PN.Stateful_NeuronClass_Access is abstract;
 
-    function  GetNeuronValues(net : Stateful_NNet_Interface) return NNet_ValueArray is abstract;
-    -- only getter, as neuron output data is set via propagaton
+
 
     -----------------------------------------
     -- class-wide stuff: main utility
@@ -134,16 +149,21 @@ package wann.nets is
     --
     -- Forward prop through trained net
     -- stateless propagation net state is completely internal to this proc, no side effects
-    function  ProcessInputs(net : NNet_Interface'Class; IV  : NNet_InputArray)  return NNet_OutputArray;
-    function  CalcOutputs  (net : NNet_Interface'Class; NSV : NNet_CheckedStateVector) return NNet_OutputArray;
+    function  PropForward(net : NNet_Interface'Class; IV  : NNet_InputArray)  return NNet_OutputArray;
+    function  CalcOutputs(net : NNet_Interface'Class; NSV : NNet_CheckedStateVector) return NNet_OutputArray;
+    function  CalcOutputs(net : NNet_Interface'Class; NSV : NNet_StateVector) return NNet_OutputArray;
 
     --  Stateful propagation:
     --  initial values should be set first with SetInputValues and then advanced within net,
     --  no need for passing around intermediate inputs/outputs
-    function  GetInputValues(net : Stateful_NNet_Interface'Class)      return NNet_InputArray;
-    procedure SetInputValues(net : in out Stateful_NNet_Interface'Class; IV : NNet_InputArray);
-    --
-    function  ProcessInputs(net : Stateful_NNet_Interface'Class) return NNet_OutputArray;
+
+    -- cached version
+    function  GetInputValues(net : Cached_NNet_Interface'Class)      return NNet_InputArray;
+    procedure SetInputValues(net : in out Cached_NNet_Interface'Class; IV : NNet_InputArray);
+
+    -- full statefull version
+    function  PropForward(net : Stateful_NNet_Interface'Class) return NNet_OutputArray;
+    function  CalcOutputs(net : Stateful_NNet_Interface'Class) return NNet_OutputArray;
 
 --     procedure Train(net : in out NNet'Class; training_set : TBD);
 

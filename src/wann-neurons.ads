@@ -84,10 +84,12 @@ package wann.neurons is
     ------------
     --  stateful version, that keeps current value stored
     type Stateful_Neuron_Interface is interface and Neuron_Interface;
+    type Stateful_NeuronClass_Access is access Stateful_Neuron_Interface'Class;
 
-    function  GetValue(NI : in out Stateful_Neuron_Interface) return Real  is abstract;
     procedure SetValue(NI : in out Stateful_Neuron_Interface; val :  Real) is abstract;
-    -- just basig getter/setter. Data validity should be handled in implementation
+    function  GetValue(NI : Stateful_Neuron_Interface) return Real is abstract;
+    -- just basic getter/setter. Data validity should be handled in implementation
+    function  Valid (NI : Stateful_Neuron_Interface) return Boolean is abstract;
 
 
     ----------
@@ -108,9 +110,9 @@ package wann.neurons is
     -- Inputs/Outputs stand for input/output connections
 
     -- Data processing
-    function  CalcResult(NI : Neuron_Interface'Class; data  : ValueArray) return Real;
+    function  PropForward(NI : Neuron_Interface'Class; data  : ValueArray) return Real;
         -- makes the x*W+bias |-> activation calculation; caches output internally
-    function  StoredResult(NI : Neuron_Interface'Class) return Real;
+--     function  StoredResult(NI : Neuron_Interface'Class) return Real;
         -- returns stored output. Raises UnsetCacheAccess is value has not yet been calculated
     --
     -- for basic testing/small nets.

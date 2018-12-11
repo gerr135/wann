@@ -113,14 +113,16 @@ package body wann.nets.vectors is
         return raise Program_Error with "Unimplemented function LayersReady";
     end LayersReady;
 
-    --------------
-    -- GetLayer --
-    --------------
+    overriding
+    function Layers(net : NNet) return PL.LayerList_Interface'Class is
+    begin
+        return PL.LayerList_Interface'Class(net.myLayers);
+    end Layers;
 
     overriding
     function GetLayer (net : NNet; idx : LayerIndex) return PL.Layer_Interface'Class is
     begin
-        return net.layers.element(idx);
+        return net.myLayers.element(idx);
     end GetLayer;
 
     --------------
@@ -175,7 +177,7 @@ package body wann.nets.vectors is
 --     end;
 
     overriding
-    function  GetNNetState(net : Stateful_NNet) return NNet_StateVector is
+    function  GetNNetState(net : Cached_NNet) return NNet_StateVector is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
@@ -183,7 +185,7 @@ package body wann.nets.vectors is
     end GetNNetState;
 
     overriding
-    procedure SetNNetState(net : in out Stateful_NNet; NSV : NNet_StateVector) is
+    procedure SetNNetState(net : in out Cached_NNet; NSV : NNet_StateVector) is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");
@@ -191,7 +193,7 @@ package body wann.nets.vectors is
     end SetNNetState;
 
     overriding
-    function  GetNeuronValues(net : Stateful_NNet) return NNet_ValueArray is
+    function  GetNeuronValues(net : Cached_NNet) return NNet_ValueArray is
     begin
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "NewNeuron unimplemented");

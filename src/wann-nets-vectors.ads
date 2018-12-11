@@ -67,7 +67,10 @@ package wann.nets.vectors is
     function  LayersReady (net : NNet) return Boolean;
 
     overriding
-    function  GetLayer(net : in NNet;     idx : LayerIndex) return PL.Layer_Interface'Class;
+    function  Layers(net : NNet) return PL.LayerList_Interface'Class;
+
+    overriding
+    function  GetLayer(net : NNet; idx : LayerIndex) return PL.Layer_Interface'Class;
 
     overriding
     procedure SetLayer(net : in out NNet; idx : LayerIndex; LR :   PL.Layer_Interface'Class);
@@ -76,16 +79,16 @@ package wann.nets.vectors is
 --     procedure SetInputValues(net : in out NNet; V : NNet_InputArray);
 
 
-    type Stateful_NNet is new NNet and Stateful_NNet_Interface with private;
+    type Cached_NNet is new NNet and Cached_NNet_Interface with private;
 
     overriding
-    function  GetNNetState(net : Stateful_NNet) return NNet_StateVector;
+    function  GetNNetState(net : Cached_NNet) return NNet_StateVector;
 
     overriding
-    procedure SetNNetState(net : in out Stateful_NNet; NSV : NNet_StateVector);
+    procedure SetNNetState(net : in out Cached_NNet; NSV : NNet_StateVector);
 
     overriding
-    function  GetNeuronValues(net : Stateful_NNet) return NNet_ValueArray;
+    function  GetNeuronValues(net : Cached_NNet) return NNet_ValueArray;
 
 
 
@@ -107,9 +110,9 @@ private
         inputs  : IV.Vector;
         outputs : OV.Vector;
         neurons : NV.Vector;
-        layers  : LV.Vector;
+        myLayers : LV.Vector;
     end record;
 
-    type Stateful_NNet is new NNet and Stateful_NNet_Interface with null record;
+    type Cached_NNet is new NNet and Cached_NNet_Interface with null record;
 
 end wann.nets.vectors;

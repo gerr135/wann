@@ -14,7 +14,8 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 -- all methods in .Unbounded are easy to ident and have unique names, no need to hide visibility
 
 --with wann; with wann.nets;
-with wann.nets.vectors; with wann.nets.fixed;
+with wann.nets.vectors;
+-- with wann.nets.fixed;
 
 
 procedure run_customNN is
@@ -131,10 +132,10 @@ procedure run_customNN is
     package PW is new wann(Real => Float);
     package PN is new PW.nets;
     package PNV is new PN.vectors;
-    package PNF is new PN.fixed;
-    use PW, PN, PNF, PNV;
+--     package PNF is new PN.fixed;
+    use PW, PN, PNV;
     netv : PNV.NNet := Create(Nin=>2, Nout=>1);
-    netf : PNF.NNet_Fixed(Nin=>2, Nout=>1, Npts=>4, maxLayers=>1);
+--     netf : PNF.NNet_Fixed(Nin=>2, Nout=>1, Npts=>4, maxLayers=>1);
 
 
 begin  -- main
@@ -142,10 +143,7 @@ begin  -- main
     Put_Line("basic test");
     --
     netv.AddNeuron(Sigmoid, ((I,1),(I,2)));
-    netf.AddNeuron(Sigmoid, ((I,1),(I,2)));
-    for i in 1 .. 10 loop
-        Null;
-    end loop;
+--     netf.AddNeuron(Sigmoid, ((I,1),(I,2)));
 exception
 	when Finish => null;
 end run_customNN;

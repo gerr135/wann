@@ -97,7 +97,7 @@ package wann.layers is
 
     -------------------------------------------------
     -- list of layers, providing iterator interface
-    type LayerList_Interface is interface with 
+    type LayerList_Interface is interface with
         Default_Iterator  => Iterate,
         Iterator_Element  => Layer_Interface'Class,
         Constant_Indexing => Element_Value;
@@ -107,20 +107,22 @@ package wann.layers is
 
     package LL_Iterators is new Ada.Iterator_Interfaces(LL_Cursor, Has_Element);
 
-    function Iterate(Container : LayerList_Interface) return LL_Iterators.Forward_Iterator'Class;
-    function Element_Value (Container : LayerList_Interface; Pos : LL_Cursor) return Layer_Interface'Class;
+    function Iterate(Container : LayerList_Interface) return LL_Iterators.Forward_Iterator'Class is abstract;
+    function Element_Value (Container : LayerList_Interface; Pos : LL_Cursor) return Layer_Interface'Class is abstract;
     -- Could also return a reference type as defined in the Part 1 Gem
 
     ----------------------------------
     --  class wide utility
     --
     --  stateless propagation, no side effects
-    function  PropForward(L : in out Layer_Interface'Class; inputs : NNet_InputArray) return NNet_ValueArray;
-    function  PropForward(L : in out Layer_Interface'Class; inputs : NNet_ValueArray) return NNet_ValueArray;
+    function  PropForward(L : Layer_Interface'Class; inputs : NNet_StateVector) return NNet_StateVector;
+    function  PropForward(L : Layer_Interface'Class; inputs : NNet_CheckedStateVector) return NNet_CheckedStateVector;
 
     -- stateful propagation, only makes sense for some cases.
 --     procedure SetInputs(L : in out Layer_Interface'Class; inputs : ValueArray);
---     procedure PropForward(L : in out Layer_Interface'Class);
+    procedure PropForward(L : Layer_Interface'Class);
+    -- NOTE: layers only keep references to neurons, which in turn keep weights and do calcs
+    -- no need for in out here. In fact we need in-only parameter here to allow pass-by-reference optimization
 
 private
 
