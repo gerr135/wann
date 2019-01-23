@@ -1,5 +1,5 @@
 --
--- <one line to give the program's name and a brief idea of what it does.>
+-- base test unit declaring and creating small nnets
 --
 -- This program is distributed in the hope that it will be useful,
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -8,38 +8,29 @@
 --
 
 with Ada.Command_Line, GNAT.Command_Line;
-with Ada.Directories, Ada.Environment_Variables;
 with Ada.Text_IO, Ada.Integer_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
--- all methods in .Unbounded are easy to ident and have unique names, no need to hide visibility
 
-with generic_proto_nets;
+with wann;
 
 
 procedure run_customNN is
     procedure printUsage is
         use Ada.Text_IO;
     begin
-        Put_Line ("!!!DESCRIPTION!!!");
+        Put_Line ("wann base tests");
         New_Line;
         Put_Line ("usage:");
-        Put_Line ("   " & Ada.Command_Line.Command_Name & " [-h -g -n: -v]  positional");
+        Put_Line ("   " & Ada.Command_Line.Command_Name & " [-h -n: -v]  positional");
         New_Line;
         Put_Line ("options:");
         --  only short options for now
         Put_Line ("-h      print this help");
-        Put_Line ("-g      turn on debug output");
         Put_Line ("-v      be verbose");
         Put_Line ("-n      enter some number");
     end printUsage;
 
     Finish : exception;  -- normal termination
-    --  Ada doesn't have an analog of sys.exit() in the standard, because of multitasking
-    --  support directly by the language. So just raise this anywhere and catch at the top..
-    --
-    --  If you really miss this function, OS_Exit/OS_Abort are defined in
-    --  GNAT.OS_Lib (one of gnat extensions).  Just be aware that it does not play well with Spawn and other
-    --  process-controll features!!
 
     type ParamRec is record
 		--  mostly the commandline params. DepGraph and USE flags will go as separate vars
@@ -100,25 +91,6 @@ procedure run_customNN is
                 params.name := To_Unbounded_String(S);
             end;
         end loop;
-        --  process env vars
-        declare -- just a visibility wrapper
-            use Ada.Directories;
-        begin
-            if Ada.Environment_Variables.Exists ("ENV_VAR") then
-                params.WorkDir :=
-                    To_Unbounded_String (Ada.Environment_Variables.Value ("ENV_VAR"));
-            else
-                params.WorkDir := To_Unbounded_String (Current_Directory);
-            end if;
-            --
-            if not Exists (To_String (params.WorkDir))
-               or else Kind (To_String (params.WorkDir)) /= Directory
-            then
-                Put_Line
-                   ("The directory " & To_String (params.WorkDir) & " does not exist!");
-                raise Finish;
-            end if;
-        end;
     end processCommandLine;
 
 
@@ -127,9 +99,9 @@ procedure run_customNN is
     use Ada.Text_IO;
 
     -- try constructing nnet
-    package PN is new generic_proto_nets(Real => Float);
-    use PN;
-    C1 : Neuron(Nin=>2);
+--     package PN is new generic_proto_nets(Real => Float);
+--     use PN;
+--     C1 : Neuron(Nin=>2);
 
 
 begin  -- main
