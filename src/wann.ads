@@ -30,13 +30,13 @@ package wann is
     ----------------------------
     -- exceptions
     --
-    DataWidthMismatch : Exception;
+    Data_Width_Mismatch : Exception;
     --  trying to pass data of mismatching size between inputs/outputs/next layer
 
-    UnsortedNetPropagation : Exception;
+    Unsorted_Net_Propagation : Exception;
     --  trying to propagate through NNet before creating layers
 
-    UnsetValueAccess : Exception;
+    Unset_Value_Access : Exception;
     --  trying to access a not-yet-set (or already cleared) cached value
 
 
@@ -54,7 +54,7 @@ package wann is
     -- Here, at top level we define "global" - visible by all indices,
     -- denoting global (nnet) inputs, outputs, neurons, layers, etc..
     --
-    -- NOTE:
+    -- NOTE:  -- may cause problems by hiding "global" indices!!!
     -- each NNet subunit can have inputs and outputs, so each child package (.neurons, .layers, etc)
     -- defines its own Input/OuptutIndex type. The goal is to use them to represent
     -- inputs and outputs as physical entities where appropriate,
@@ -66,17 +66,23 @@ package wann is
     --
     -- For each index type we define _base, usually counting from 0, and subtype xxIndex itself,
     -- counting from 1.
-
-    type    InputIndex_Base is new Natural;
-    subtype InputIndex is InputIndex_Base range 1 .. InputIndex_Base'Last;
     --
-    type    OutputIndex is new Positive;
+    -- NOTE on type naming:
+    -- unlike most other types/identifiers, the Index types are written run-in, 
+    -- i.e. without the '_' between type qualifier and Index.
+    -- This is to easily distinguish the _Base variant.
+
+    type    InputIndex_Base  is new Natural;
+    subtype InputIndex  is InputIndex_Base  range 1 .. InputIndex_Base'Last;
+    --
+    type    OutputIndex_Base is new Natural;
+    subtype OutputIndex is OutputIndex_Base range 1 .. OutputIndex_Base'Last;
     --
     type    NeuronIndex_Base is new Natural;
     subtype NeuronIndex is NeuronIndex_Base range 1 .. NeuronIndex_Base'Last;
     --
-    type    LayerIndex_Base is new Natural;
-    subtype LayerIndex is LayerIndex_Base range 1 .. LayerIndex_Base'Last;
+    type    LayerIndex_Base  is new Natural;
+    subtype LayerIndex  is LayerIndex_Base  range 1 .. LayerIndex_Base'Last;
     -- There is always at least one layer;
     -- However, unlike common neural net libs, there may not be a strict input/output layer
     -- or even well defined layer structure.
@@ -90,10 +96,10 @@ package wann is
     -- Types for keeping/passing around connection info
     --
     -- First the connection type itself
-    type ConnectionType is (I, O, N);
+    type Connection_Type is (I, O, N);
     -- Input, Output, Neuron, but intended to be used in assignment, so shortening down
 
-    type ConnectionIndex(T : ConnectionType := N) is record
+    type ConnectionIndex(T : Connection_Type := N) is record
         case T is
             when I => Iidx : InputIndex;
             when N => Nidx : NeuronIndex;
@@ -102,20 +108,20 @@ package wann is
     end record;
 
     -- now, arrays of connections
-    type InConnArray  is array (InputIndex  range <>) of ConnectionIndex;
-    type NConnArray   is array (NeuronIndex range <>) of ConnectionIndex;
-    type OutConnArray is array (OutputIndex range <>) of ConnectionIndex;
+    type Input_Connection_Array  is array (InputIndex  range <>) of ConnectionIndex;
+    type Neuron_Connection_Array is array (NeuronIndex range <>) of ConnectionIndex;
+    type Output_Connection_Array is array (OutputIndex range <>) of ConnectionIndex;
 
 
     --------------------------------------------------
     -- NNet values.
-    type InputArray  is array (InputIndex  range <>) of Real;
-    type OutputArray is array (OutputIndex range <>) of Real;
-    type ValueArray  is array (NeuronIndex range <>) of Real;
+    type Input_Array  is array (InputIndex  range <>) of Real;
+    type Output_Array is array (OutputIndex range <>) of Real;
+    type Value_Array  is array (NeuronIndex range <>) of Real;
     --  validity
-    type InputValidityArray  is array (InputIndex  range <>) of Boolean;
-    type OutputValidityArray is array (OutputIndex range <>) of Boolean;
-    type ValueValidityArray  is array (NeuronIndex range <>) of Boolean;
+    type Input_Validity_Array  is array (InputIndex  range <>) of Boolean;
+    type Output_Validity_Array is array (OutputIndex range <>) of Boolean;
+    type Value_Validity_Array  is array (NeuronIndex range <>) of Boolean;
 
     -- We need a common type to store/pass around the data.
     --
@@ -135,23 +141,23 @@ package wann is
     -- every point..
     --
     --  Unchecked state vector
-    type StateVector(Ni : InputIndex;
+    type State_Vector(Ni : InputIndex;
                           Nn : NeuronIndex; No : OutputIndex) is record
-        input  : InputArray (1 .. Ni);
-        neuron : ValueArray (1 .. Nn);
-        output : OutputArray(1 .. No);
+        input  : Input_Array (1 .. Ni);
+        neuron : Value_Array (1 .. Nn);
+        output : Output_Array(1 .. No);
     end record;
     --
     --  Checked state vector
-    type CheckedStateVector(Ni : InputIndex;
+    type Checked_State_Vector(Ni : InputIndex;
                                  Nn : NeuronIndex; No : OutputIndex) is record
-        input  : InputArray (1 .. Ni);
-        neuron : ValueArray (1 .. Nn);
-        output : OutputArray(1 .. No);
+        input  : Input_Array (1 .. Ni);
+        neuron : Value_Array (1 .. Nn);
+        output : Output_Array(1 .. No);
         --
-        validI : InputValidityArray (1 .. Ni);
-        validN : ValueValidityArray (1 .. Nn);
-        validO : OutputValidityArray(1 .. No);
+        validI : Input_Validity_Array (1 .. Ni);
+        validN : Value_Validity_Array (1 .. Nn);
+        validO : Output_Validity_Array(1 .. No);
         -- using separate arrays here (rather than array of record with 2 entris)
         -- allows us to assign entire array, rather than copy item by item
         -- NOTE: passing a reference might be even more optimal for big nets,
@@ -163,12 +169,12 @@ package wann is
     ---------------------------------------------------------
     -- Some other (non-topological) parameters.
     -- These will likely be split off to separate child module at some later point, as they grow.
-    type ActivationType is (Sigmoid, ReLu);
-    type ActivationFunction is access function (x : Real) return Real;
+    type Activation_Type is (Sigmoid, ReLu);
+    type Activation_Function is access function (x : Real) return Real;
     -- the ready to use functions (activators and derivatives) are defined in wann.functions package
 
     -- how we move through layers
-    type PropagationType is
+    type Propagation_Type is
              (Simple, -- cycle through neurons in layer; for basic use and in case of very sparse connections
               Matrix, -- compose a common matrix and do vector algebra; the common case
               GPU);   -- try to do linear algebra in GPU

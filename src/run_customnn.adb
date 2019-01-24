@@ -11,7 +11,7 @@ with Ada.Command_Line, GNAT.Command_Line;
 with Ada.Text_IO, Ada.Integer_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
-with wann;
+with wann.neurons;
 
 
 procedure run_customNN is

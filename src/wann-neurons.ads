@@ -30,10 +30,10 @@ package wann.neurons is
 
 
     -- associated arrray types for holding params
-    type InConnArray  is array (InputIndex range <>)  of ConnectionIdx;
-    type OutConnArray is array (OutputIndex range <>) of ConnectionIdx;
-    type WeightArray  is array (InputIndex_Base range <>) of Real;
-    type ValueArray   is array (InputIndex range <>) of Real;
+    type Input_Connection_Array  is array (InputIndex range <>)  of ConnectionIndex;
+    type Output_Connection_Array is array (OutputIndex range <>) of ConnectionIndex;
+    type Weight_Array  is array (InputIndex_Base range <>) of Real;
+    type Value_Array   is array (InputIndex range <>) of Real;
 
 
     -------------------------------------------------
@@ -43,10 +43,10 @@ package wann.neurons is
     -- in declaration which can be passed to the NNet constructor.
     type NeuronRec(Nin : InputIndex) is record
         idx     : NeuronIndex; -- own index in NNet
-        activat : ActivationType;
+        activat : Activation_Type;
         lag     : Real;    -- delay of result propagation, unused for now
-        weights : WeightArray(0 .. Nin);
-        inputs  : InConnArray  (1 .. Nin);
+        weights : Weight_Array(0 .. Nin);
+        inputs  : Input_Connection_Array  (1 .. Nin);
     end record;
     type NeuronRecPtr is access NeuronRec;
 
@@ -68,8 +68,8 @@ package wann.neurons is
     -- Outputs, on the other hand, are not part of primitive Rec,
     -- and will need to be reset individually during rearrangement, so need some primitives for these..
     -- The principal users should be Layer or NNet while adding/removeing/reconnecting neurons
-    procedure AddOutput(NI : in out Neuron_Interface; Output : ConnectionIdx) is abstract;
-    procedure DelOutput(NI : in out Neuron_Interface; Output : ConnectionIdx) is abstract;
+    procedure AddOutput(NI : in out Neuron_Interface; Output : ConnectionIndex) is abstract;
+    procedure DelOutput(NI : in out Neuron_Interface; Output : ConnectionIndex) is abstract;
 
 
     ------------
@@ -87,21 +87,21 @@ package wann.neurons is
     -- Class-wide utility
     --
     -- Additional getters/setters
-    function Index  (NI : Neuron_Interface'Class) return NNet_NeuronIndex;
-    function Activat(NI : Neuron_Interface'Class) return ActivationType;
-    function Weights(NI : Neuron_Interface'Class) return WeightArray;
-    function Inputs (NI : Neuron_Interface'Class) return InConnArray;
-    function Outputs(NI : Neuron_Interface'Class) return OutConnArray;
+    function Index  (NI : Neuron_Interface'Class) return NeuronIndex;
+    function Activat(NI : Neuron_Interface'Class) return Activation_Type;
+    function Weights(NI : Neuron_Interface'Class) return Weight_Array;
+    function Inputs (NI : Neuron_Interface'Class) return Input_Connection_Array;
+    function Outputs(NI : Neuron_Interface'Class) return Output_Connection_Array;
 
-    procedure SetIndex  (NI : in out Neuron_Interface'Class; idx : NNet_NeuronIndex);
-    procedure SetActivat(NI : in out Neuron_Interface'Class; activat : ActivationType);
-    procedure SetWeights(NI : in out Neuron_Interface'Class; weights : WeightArray);
-    procedure SetInputs (NI : in out Neuron_Interface'Class; inputs  : InConnArray);
-    procedure SetOutputs(NI : in out Neuron_Interface'Class; outputs : OutConnArray);
+    procedure SetIndex  (NI : in out Neuron_Interface'Class; idx : NeuronIndex);
+    procedure SetActivat(NI : in out Neuron_Interface'Class; activat : Activation_Type);
+    procedure SetWeights(NI : in out Neuron_Interface'Class; weights : Weight_Array);
+    procedure SetInputs (NI : in out Neuron_Interface'Class; inputs  : Input_Connection_Array);
+    procedure SetOutputs(NI : in out Neuron_Interface'Class; outputs : Output_Connection_Array);
     -- Inputs/Outputs stand for input/output connections
 
     -- Data processing
-    function  PropForward(NI : Neuron_Interface'Class; data  : ValueArray) return Real;
+    function  PropForward(NI : Neuron_Interface'Class; data  : Value_Array) return Real;
         -- makes the x*W+bias |-> activation calculation; caches output internally
 --     function  StoredResult(NI : Neuron_Interface'Class) return Real;
         -- returns stored output. Raises UnsetCacheAccess is value has not yet been calculated
