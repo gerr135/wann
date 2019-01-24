@@ -106,6 +106,7 @@ package wann is
     type NConnArray   is array (NeuronIndex range <>) of ConnectionIndex;
     type OutConnArray is array (OutputIndex range <>) of ConnectionIndex;
 
+
     --------------------------------------------------
     -- NNet values.
     type InputArray  is array (InputIndex  range <>) of Real;
@@ -160,7 +161,7 @@ package wann is
 
 
     ---------------------------------------------------------
-    -- Some other )non-topological) parameters.
+    -- Some other (non-topological) parameters.
     -- These will likely be split off to separate child module at some later point, as they grow.
     type ActivationType is (Sigmoid, ReLu);
     type ActivationFunction is access function (x : Real) return Real;
@@ -172,6 +173,7 @@ package wann is
               Matrix, -- compose a common matrix and do vector algebra; the common case
               GPU);   -- try to do linear algebra in GPU
         -- this will be (most likely) handled through layer types via OOP hierarchy.
+
 
 
 end wann;
