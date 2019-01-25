@@ -17,6 +17,7 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
+with Lists;
 
 generic
 package wann.neurons is
@@ -42,7 +43,7 @@ package wann.neurons is
     -- a-la DNA/protein sequence. Then the NNet can be simply defined as some linear sequence
     -- in declaration which can be passed to the NNet constructor.
     type NeuronRec(Nin : InputIndex) is record
-        idx     : NeuronIndex; -- own index in NNet
+        idx     : NNet_NeuronIndex; -- own index in NNet
         activat : Activation_Type;
         lag     : Real;    -- delay of result propagation, unused for now
         weights : Weight_Array(0 .. Nin);
@@ -87,13 +88,13 @@ package wann.neurons is
     -- Class-wide utility
     --
     -- Additional getters/setters
-    function Index  (NI : Neuron_Interface'Class) return NeuronIndex;
+    function Index  (NI : Neuron_Interface'Class) return NNet_NeuronIndex;
     function Activat(NI : Neuron_Interface'Class) return Activation_Type;
     function Weights(NI : Neuron_Interface'Class) return Weight_Array;
     function Inputs (NI : Neuron_Interface'Class) return Input_Connection_Array;
     function Outputs(NI : Neuron_Interface'Class) return Output_Connection_Array;
 
-    procedure SetIndex  (NI : in out Neuron_Interface'Class; idx : NeuronIndex);
+    procedure SetIndex  (NI : in out Neuron_Interface'Class; idx : NNet_NeuronIndex);
     procedure SetActivat(NI : in out Neuron_Interface'Class; activat : Activation_Type);
     procedure SetWeights(NI : in out Neuron_Interface'Class; weights : Weight_Array);
     procedure SetInputs (NI : in out Neuron_Interface'Class; inputs  : Input_Connection_Array);
@@ -111,5 +112,12 @@ package wann.neurons is
     procedure PropForward (NI : in out Stateful_Neuron_Interface'Class);
     procedure PropBackward(NI : in out Stateful_Neuron_Interface'Class);
 
+
+    ------------------------------------------------------
+    -- List/vector of neurons
+    -- as everywhere else, this module defines interface. Specific implementation is in children
+
+    package PNL is new Lists(NNet_NeuronIndex, Neuron_Interface);
+    type NeuronList_Interface is interface and PNL.List_Interface;
 
 end wann.neurons;

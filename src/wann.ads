@@ -54,35 +54,34 @@ package wann is
     -- Here, at top level we define "global" - visible by all indices,
     -- denoting global (nnet) inputs, outputs, neurons, layers, etc..
     --
-    -- NOTE:  -- may cause problems by hiding "global" indices!!!
-    -- each NNet subunit can have inputs and outputs, so each child package (.neurons, .layers, etc)
-    -- defines its own Input/OuptutIndex type. The goal is to use them to represent
-    -- inputs and outputs as physical entities where appropriate,
-    -- and to catch "wrong index used" errors.
-    -- Besides, having a single Input/Output index created bunch of confusion in design.
-    --
-    -- However, there are some common indices to which all subunits need access.
+    -- NOTE:
+    -- each NNet subunit (actual neuron, layer, etc) can have inputs and outputs,
+    -- so each child package defines its own Input/OuptutIndex types.
+    -- These are used to do internal indexing and are not NNet-wide.
+    -- However, there are some common indices which all subunits need access to.
     -- Specifically, the NNet-wide indexing - global inputs, outputs and NNet neuron index.
+    -- These are defined here and have a NNet_ prefix, to avoid naming conflicts
+    -- (and name masking) in child units.
+    --
+    -- NOTE on type naming:
+    -- unlike most other types/identifiers, the Index types are written run-in,
+    -- i.e. without the '_' between type qualifier and Index.
+    -- This is to easily distinguish the _Base variant.
     --
     -- For each index type we define _base, usually counting from 0, and subtype xxIndex itself,
     -- counting from 1.
-    --
-    -- NOTE on type naming:
-    -- unlike most other types/identifiers, the Index types are written run-in, 
-    -- i.e. without the '_' between type qualifier and Index.
-    -- This is to easily distinguish the _Base variant.
 
-    type    InputIndex_Base  is new Natural;
-    subtype InputIndex  is InputIndex_Base  range 1 .. InputIndex_Base'Last;
+    type    NNet_InputIndex_Base  is new Natural;
+    subtype NNet_InputIndex  is NNet_InputIndex_Base  range 1 .. NNet_InputIndex_Base'Last;
     --
-    type    OutputIndex_Base is new Natural;
-    subtype OutputIndex is OutputIndex_Base range 1 .. OutputIndex_Base'Last;
+    type    NNet_OutputIndex_Base is new Natural;
+    subtype NNet_OutputIndex is NNet_OutputIndex_Base range 1 .. NNet_OutputIndex_Base'Last;
     --
-    type    NeuronIndex_Base is new Natural;
-    subtype NeuronIndex is NeuronIndex_Base range 1 .. NeuronIndex_Base'Last;
+    type    NNet_NeuronIndex_Base is new Natural;
+    subtype NNet_NeuronIndex is NNet_NeuronIndex_Base range 1 .. NNet_NeuronIndex_Base'Last;
     --
-    type    LayerIndex_Base  is new Natural;
-    subtype LayerIndex  is LayerIndex_Base  range 1 .. LayerIndex_Base'Last;
+    type    NNet_LayerIndex_Base  is new Natural;
+    subtype NNet_LayerIndex  is NNet_LayerIndex_Base  range 1 .. NNet_LayerIndex_Base'Last;
     -- There is always at least one layer;
     -- However, unlike common neural net libs, there may not be a strict input/output layer
     -- or even well defined layer structure.
@@ -101,27 +100,27 @@ package wann is
 
     type ConnectionIndex(T : Connection_Type := N) is record
         case T is
-            when I => Iidx : InputIndex;
-            when N => Nidx : NeuronIndex;
-            when O => Oidx : OutputIndex;
+            when I => Iidx : NNet_InputIndex;
+            when N => Nidx : NNet_NeuronIndex;
+            when O => Oidx : NNet_OutputIndex;
         end case;
     end record;
 
     -- now, arrays of connections
-    type Input_Connection_Array  is array (InputIndex  range <>) of ConnectionIndex;
-    type Neuron_Connection_Array is array (NeuronIndex range <>) of ConnectionIndex;
-    type Output_Connection_Array is array (OutputIndex range <>) of ConnectionIndex;
+    type Input_Connection_Array  is array (NNet_InputIndex  range <>) of ConnectionIndex;
+    type Neuron_Connection_Array is array (NNet_NeuronIndex range <>) of ConnectionIndex;
+    type Output_Connection_Array is array (NNet_OutputIndex range <>) of ConnectionIndex;
 
 
     --------------------------------------------------
     -- NNet values.
-    type Input_Array  is array (InputIndex  range <>) of Real;
-    type Output_Array is array (OutputIndex range <>) of Real;
-    type Value_Array  is array (NeuronIndex range <>) of Real;
+    type Input_Array  is array (NNet_InputIndex  range <>) of Real;
+    type Output_Array is array (NNet_OutputIndex range <>) of Real;
+    type Value_Array  is array (NNet_NeuronIndex range <>) of Real;
     --  validity
-    type Input_Validity_Array  is array (InputIndex  range <>) of Boolean;
-    type Output_Validity_Array is array (OutputIndex range <>) of Boolean;
-    type Value_Validity_Array  is array (NeuronIndex range <>) of Boolean;
+    type Input_Validity_Array  is array (NNet_InputIndex  range <>) of Boolean;
+    type Output_Validity_Array is array (NNet_OutputIndex range <>) of Boolean;
+    type Value_Validity_Array  is array (NNet_NeuronIndex range <>) of Boolean;
 
     -- We need a common type to store/pass around the data.
     --
@@ -141,16 +140,16 @@ package wann is
     -- every point..
     --
     --  Unchecked state vector
-    type State_Vector(Ni : InputIndex;
-                          Nn : NeuronIndex; No : OutputIndex) is record
+    type State_Vector(Ni : NNet_InputIndex;
+                      Nn : NNet_NeuronIndex; No : NNet_OutputIndex) is record
         input  : Input_Array (1 .. Ni);
         neuron : Value_Array (1 .. Nn);
         output : Output_Array(1 .. No);
     end record;
     --
     --  Checked state vector
-    type Checked_State_Vector(Ni : InputIndex;
-                                 Nn : NeuronIndex; No : OutputIndex) is record
+    type Checked_State_Vector(Ni : NNet_InputIndex;
+                              Nn : NNet_NeuronIndex; No : NNet_OutputIndex) is record
         input  : Input_Array (1 .. Ni);
         neuron : Value_Array (1 .. Nn);
         output : Output_Array(1 .. No);
