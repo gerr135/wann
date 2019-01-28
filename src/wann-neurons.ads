@@ -27,7 +27,6 @@ package wann.neurons is
     subtype InputIndex is InputIndex_Base range 1 .. InputIndex_Base'Last;
     type OutputIndex is new Positive;
 
-
     -- associated arrray types for holding params
     type Input_Connection_Array  is array (InputIndex range <>)  of ConnectionIndex;
     type Output_Connection_Array is array (OutputIndex range <>) of ConnectionIndex;
@@ -110,12 +109,5 @@ package wann.neurons is
     procedure PropForward (NI : in out Stateful_Neuron_Interface'Class);
     procedure PropBackward(NI : in out Stateful_Neuron_Interface'Class);
 
-
-    ------------------------------------------------------
-    -- List/vector of neurons
-    -- as everywhere else, this module defines interface. Specific implementation is in children
-
-    package PNL is new Lists(NNet_NeuronIndex, Neuron_Interface);
-    type NeuronList_Interface is interface and PNL.List_Interface;
 
 end wann.neurons;

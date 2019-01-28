@@ -140,7 +140,7 @@ package wann is
     -- every point..
     --
     --  Unchecked state vector
-    type State_Vector(Ni : NNet_InputIndex;
+    type NNet_State_Vector(Ni : NNet_InputIndex;
                       Nn : NNet_NeuronIndex; No : NNet_OutputIndex) is record
         input  : Input_Array (1 .. Ni);
         neuron : Value_Array (1 .. Nn);
@@ -148,7 +148,7 @@ package wann is
     end record;
     --
     --  Checked state vector
-    type Checked_State_Vector(Ni : NNet_InputIndex;
+    type NNet_Checked_State_Vector(Ni : NNet_InputIndex;
                               Nn : NNet_NeuronIndex; No : NNet_OutputIndex) is record
         input  : Input_Array (1 .. Ni);
         neuron : Value_Array (1 .. Nn);
