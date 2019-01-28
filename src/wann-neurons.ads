@@ -75,7 +75,7 @@ package wann.neurons is
     type Stateful_NeuronClass_Access is access Stateful_Neuron_Interface'Class;
 
     procedure SetValue(NI : in out Stateful_Neuron_Interface; val :  Real) is abstract;
-    function  GetValue(NI : Stateful_Neuron_Interface) return Real is abstract;
+    function  Value(NI : Stateful_Neuron_Interface) return Real is abstract;
     -- just basic getter/setter. Data validity should be handled in implementation
     function  Valid (NI : Stateful_Neuron_Interface) return Boolean is abstract;
 

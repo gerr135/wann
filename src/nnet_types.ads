@@ -77,10 +77,10 @@ package nnet_types is
     -- Topology
     -- Types for keeping/passing around connection info
     --
-    -- First the connection type itself
+    -- The neuron inter-connection type
     type Connection_Type is (I, O, N);
     -- Input, Output, Neuron, but intended to be used in assignment, so shortening down
-
+    --
     type ConnectionIndex(T : Connection_Type := N) is record
         case T is
             when I => Iidx : InputIndex;

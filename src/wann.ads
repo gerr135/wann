@@ -69,9 +69,9 @@ package wann is
     --  trying to access a not-yet-set (or already cleared) cached value
 
 
-    ---------------------------------------------------------
-    -- Some other (non-topological) parameters.
-    -- These will likely be split off to separate child module at some later point, as they grow.
+    ------------------------------------------------------------
+    -- Some common types; basic and not requiring special naming
+    --
     type Activation_Type is (Sigmoid, ReLu);
     type Activation_Function is access function (x : Real) return Real;
     -- the ready to use functions (activators and derivatives) are defined in wann.functions package
