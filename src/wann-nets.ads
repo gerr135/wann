@@ -50,31 +50,31 @@ package wann.nets is
     type NNet_Access is access NNet_Interface;
 
     -- Dimension getters; the setters are imnplementation-specific,
-    function NNeurons(net : NNet_Interface) return NNet.NeuronIndex is abstract;
-    function NLayers (net : NNet_Interface) return NNet.LayerIndex  is abstract;
+    function NNeurons(net : NNet_Interface) return NN.NeuronIndex is abstract;
+    function NLayers (net : NNet_Interface) return NN.LayerIndex  is abstract;
 
     -- data storage and propagation
-    function  Input_Connections (net : NNet_Interface) return NNet.Input_Connection_Array  is abstract;
-    function  Output_Connections(net : NNet_Interface) return NNet.Output_Connection_Array is abstract;
+    function  Input_Connections (net : NNet_Interface) return NN.Input_Connection_Array  is abstract;
+    function  Output_Connections(net : NNet_Interface) return NN.Output_Connection_Array is abstract;
 
     --  Neuron handling
-    procedure New_Neuron(net : in out NNet_Interface; idx : out NNet.NeuronIndex_Base) is abstract;
+    procedure New_Neuron(net : in out NNet_Interface; idx : out NN.NeuronIndex_Base) is abstract;
     -- create new empty neuron emplacement and return its index
     -- needs overriding in dynamic/mutable net.
     -- Makes no sense for fixed nnet; that one should just return 0 (and do nothing otherwise).
 
-    procedure Del_Neuron(net : in out NNet_Interface; idx : NNet.NeuronIndex) is null;
+    procedure Del_Neuron(net : in out NNet_Interface; idx : NN.NeuronIndex) is null;
     -- remove neuron from NNet_Interface, as with New, only for mutable representation
 
     -- neuron getter and setter
-    function  Neuron(net : NNet_Interface; idx : NNet.NeuronIndex) return PN.NeuronClass_Access is abstract;
+    function  Neuron(net : NNet_Interface; idx : NN.NeuronIndex) return PN.NeuronClass_Access is abstract;
     procedure Set_Neuron(net : in out NNet_Interface; NA : PN.NeuronClass_Access) is abstract;
 
     -- layer handling
     function  Layers_Ready (net : NNet_Interface) return Boolean is abstract;
 --     function  Layers(net : NNet_Interface) return PL.LayerList_Interface'Class is abstract;
-    function  Layer(net : NNet_Interface; idx : NNet.LayerIndex) return PL.Layer_Interface'Class  is abstract;
-    procedure Set_Layer(net : in out NNet_Interface; idx : NNet.LayerIndex; L : PL.Layer_Interface'Class) is abstract;
+    function  Layer(net : NNet_Interface; idx : NN.LayerIndex) return PL.Layer_Interface'Class  is abstract;
+    procedure Set_Layer(net : in out NNet_Interface; idx : NN.LayerIndex; L : PL.Layer_Interface'Class) is abstract;
 
 
     --------------------
@@ -83,10 +83,10 @@ package wann.nets is
     type Cached_NNet_Interface is limited interface and NNet_Interface;
     type Cached_NNet_Access    is access Cached_NNet_Interface;
 
-    function  State(net : Cached_NNet_Interface) return NNet.State_Vector  is abstract;
-    procedure SetState(net : in out Cached_NNet_Interface; NSV : NNet.State_Vector) is abstract;
+    function  State(net : Cached_NNet_Interface) return NN.State_Vector  is abstract;
+    procedure SetState(net : in out Cached_NNet_Interface; NSV : NN.State_Vector) is abstract;
     -- NOTE: GetInputValues should raise  UnsetValueAccess if called before SetInputValues
-    function  NeuronValues(net : Cached_NNet_Interface) return NNet.Value_Array is abstract;
+    function  NeuronValues(net : Cached_NNet_Interface) return NN.Value_Array is abstract;
     -- only getter, as neuron output data is set via propagaton
 
     --------------------
@@ -95,10 +95,10 @@ package wann.nets is
     type Stateful_NNet_Interface is limited interface and NNet_Interface;
     type Stateful_NNet_Access    is access Stateful_NNet_Interface;
 
-    function  Input_Values(net : Stateful_NNet_Interface) return NNet.Input_Array is abstract;
-    procedure Set_Input_Values(net : in out Stateful_NNet_Interface; IV : NNet.Input_Array) is abstract;
+    function  Input_Values(net : Stateful_NNet_Interface) return NN.Input_Array is abstract;
+    procedure Set_Input_Values(net : in out Stateful_NNet_Interface; IV : NN.Input_Array) is abstract;
     --
-    function  Neuron(net : Stateful_NNet_Interface; idx : NNet.NeuronIndex) return PN.Stateful_NeuronClass_Access is abstract;
+    function  Neuron(net : Stateful_NNet_Interface; idx : NN.NeuronIndex) return PN.Stateful_NeuronClass_Access is abstract;
 
 
 
@@ -110,26 +110,26 @@ package wann.nets is
     --
     -- Neuron manipulation
     --
-    function  AddNeuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec) return NNet.NeuronIndex;
-    procedure AddNeuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec; idx : out NNet.NeuronIndex);
+    function  AddNeuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec) return NN.NeuronIndex;
+    procedure AddNeuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec; idx : out NN.NeuronIndex);
     procedure AddNeuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec);
     -- combines New and Set
     --
-    function  AddNeuron(net : in out NNet_Interface'Class; activat : Activation_Type; connects : PN.Input_Connection_Array) return NNet.NeuronIndex;
-    procedure AddNeuron(net : in out NNet_Interface'Class; activat : Activation_Type; connects : PN.Input_Connection_Array; idx : out NNet.NeuronIndex);
+    function  AddNeuron(net : in out NNet_Interface'Class; activat : Activation_Type; connects : PN.Input_Connection_Array) return NN.NeuronIndex;
+    procedure AddNeuron(net : in out NNet_Interface'Class; activat : Activation_Type; connects : PN.Input_Connection_Array; idx : out NN.NeuronIndex);
     procedure AddNeuron(net : in out NNet_Interface'Class; activat : Activation_Type; connects : PN.Input_Connection_Array);
     -- New plus Set by parameters
     --
     procedure ResetNeuron(net : in out NNet_Interface'Class; NR  : PN.NeuronRec);
-    procedure ResetNeuron(net : in out NNet_Interface'Class; idx : NNet.NeuronIndex; activat : Activation_Type; connects : PN.Input_Connection_Array);
-    procedure ResetNeuron(net : in out NNet_Interface'Class; idx : NNet.NeuronIndex; connects : PN.Input_Connection_Array);
+    procedure ResetNeuron(net : in out NNet_Interface'Class; idx : NN.NeuronIndex; activat : Activation_Type; connects : PN.Input_Connection_Array);
+    procedure ResetNeuron(net : in out NNet_Interface'Class; idx : NN.NeuronIndex; connects : PN.Input_Connection_Array);
     -- replaces neuron[idx] parameters, either all or partial
 
     --
     --  Nnet manipulation
     --
-    procedure ReconnectNeuronAtRandom(net : in out NNet_Interface'Class; idx  : NNet.NeuronIndex; maxConnects : PN.InputIndex_Base := 0);
-    procedure PopulateAtRandom (net : in out NNet_Interface'Class; Npts : NNet.NeuronIndex_Base;  maxConnects : PN.InputIndex_Base := 0);
+    procedure ReconnectNeuronAtRandom(net : in out NNet_Interface'Class; idx  : NN.NeuronIndex; maxConnects : PN.InputIndex_Base := 0);
+    procedure PopulateAtRandom (net : in out NNet_Interface'Class; Npts : NN.NeuronIndex_Base;  maxConnects : PN.InputIndex_Base := 0);
     -- populates net with new neurons or resets existing one to random configuration
     -- Npts needs to be passed in case of empty mutable net, otherwise it simply rearranges existing net.
 
@@ -146,21 +146,21 @@ package wann.nets is
     --
     -- Forward prop through trained net
     -- stateless propagation net state is completely internal to this proc, no side effects
-    function  PropForward(net : NNet_Interface'Class; IV  : NNet.Input_Array)  return NNet.Output_Array;
-    function  CalcOutputs(net : NNet_Interface'Class; NSV : NNet.Checked_State_Vector) return NNet.Output_Array;
-    function  CalcOutputs(net : NNet_Interface'Class; NSV : NNet.State_Vector) return NNet.Output_Array;
+    function  PropForward(net : NNet_Interface'Class; IV  : NN.Input_Array)  return NN.Output_Array;
+    function  CalcOutputs(net : NNet_Interface'Class; NSV : NN.Checked_State_Vector) return NN.Output_Array;
+    function  CalcOutputs(net : NNet_Interface'Class; NSV : NN.State_Vector) return NN.Output_Array;
 
     --  Stateful propagation:
     --  initial values should be set first with SetInputValues and then advanced within net,
     --  no need for passing around intermediate inputs/outputs
 
     -- cached version
-    function  GetInputValues(net : Cached_NNet_Interface'Class)      return NNet.Input_Array;
-    procedure SetInputValues(net : in out Cached_NNet_Interface'Class; IV : NNet.Input_Array);
+    function  GetInputValues(net : Cached_NNet_Interface'Class)      return NN.Input_Array;
+    procedure SetInputValues(net : in out Cached_NNet_Interface'Class; IV : NN.Input_Array);
 
     -- full statefull version
-    function  PropForward(net : Stateful_NNet_Interface'Class) return NNet.Output_Array;
-    function  CalcOutputs(net : Stateful_NNet_Interface'Class) return NNet.Output_Array;
+    function  PropForward(net : Stateful_NNet_Interface'Class) return NN.Output_Array;
+    function  CalcOutputs(net : Stateful_NNet_Interface'Class) return NN.Output_Array;
 
     --     procedure Train(net : in out NNet'Class; training_set : TBD);
 

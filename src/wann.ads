@@ -36,6 +36,15 @@
 --
 -- NOTE: All entities are numbered from 1 upwards. For each index type we define _base,
 -- counting from 0, and subtype xxIndex itself, counting from 1.
+--
+-- NOTE: on package naming
+-- Two-lerrer codes are used for instantiated packages throughout:
+--   NN: nnet_types - common NNet types
+--   PN: wann.neurons
+--   PL: wann.layers
+-- NOTE: all instantiations should happen only once!
+-- thus, e.g. NN is instantiated right here, at top level, and used throughout
+-- PN is instantiated in PL and then PL.PN is renamed to PN where necessary.
 --------------------------------------------------------------------------
 
 with nnet_types;
@@ -75,7 +84,6 @@ package wann is
         -- this will be (most likely) handled through layer types via OOP hierarchy.
 
 
-    package NNet is new nnet_types(Real);
-
+    package NN is new nnet_types(Real);
 
 end wann;

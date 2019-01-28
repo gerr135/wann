@@ -11,7 +11,7 @@ with Ada.Command_Line, GNAT.Command_Line;
 with Ada.Text_IO, Ada.Integer_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
-with wann.nets;
+with wann.nets.vectors;
 
 
 procedure run_customNN is
@@ -98,10 +98,9 @@ procedure run_customNN is
 
     use Ada.Text_IO;
 
-    -- try constructing nnet
---     package PN is new generic_proto_nets(Real => Float);
---     use PN;
---     C1 : Neuron(Nin=>2);
+    package PW is new wann(Real => Float);
+    package PN is new PW.nets;
+    package PNV is new PN.vectors;
 
 
 begin  -- main
