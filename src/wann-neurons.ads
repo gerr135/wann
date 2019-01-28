@@ -20,7 +20,6 @@
 generic
 package wann.neurons is
 
-
     -------------------------------------
     --  Local input/output indices
     type    InputIndex_Base is new Natural;
@@ -28,8 +27,8 @@ package wann.neurons is
     type OutputIndex is new Positive;
 
     -- associated arrray types for holding params
-    type Input_Connection_Array  is array (InputIndex range <>)  of ConnectionIndex;
-    type Output_Connection_Array is array (OutputIndex range <>) of ConnectionIndex;
+    type Input_Connection_Array  is array (InputIndex range <>)  of NNet.ConnectionIndex;
+    type Output_Connection_Array is array (OutputIndex range <>) of NNet.ConnectionIndex;
     type Weight_Array  is array (InputIndex_Base range <>) of Real;
     type Value_Array   is array (InputIndex range <>) of Real;
 
@@ -40,7 +39,7 @@ package wann.neurons is
     -- a-la DNA/protein sequence. Then the NNet can be simply defined as some linear sequence
     -- in declaration which can be passed to the NNet constructor.
     type NeuronRec(Nin : InputIndex) is record
-        idx     : NNet_NeuronIndex; -- own index in NNet
+        idx     : NNet.NeuronIndex; -- own index in NNet
         activat : Activation_Type;
         lag     : Real;    -- delay of result propagation, unused for now
         weights : Weight_Array(0 .. Nin);
@@ -66,8 +65,8 @@ package wann.neurons is
     -- Outputs, on the other hand, are not part of primitive Rec,
     -- and will need to be reset individually during rearrangement, so need some primitives for these..
     -- The principal users should be Layer or NNet while adding/removeing/reconnecting neurons
-    procedure AddOutput(NI : in out Neuron_Interface; Output : ConnectionIndex) is abstract;
-    procedure DelOutput(NI : in out Neuron_Interface; Output : ConnectionIndex) is abstract;
+    procedure AddOutput(NI : in out Neuron_Interface; Output : NNet.ConnectionIndex) is abstract;
+    procedure DelOutput(NI : in out Neuron_Interface; Output : NNet.ConnectionIndex) is abstract;
 
 
     ------------
@@ -85,13 +84,13 @@ package wann.neurons is
     -- Class-wide utility
     --
     -- Additional getters/setters
-    function Index  (NI : Neuron_Interface'Class) return NNet_NeuronIndex;
+    function Index  (NI : Neuron_Interface'Class) return NNet.NeuronIndex;
     function Activat(NI : Neuron_Interface'Class) return Activation_Type;
     function Weights(NI : Neuron_Interface'Class) return Weight_Array;
     function Inputs (NI : Neuron_Interface'Class) return Input_Connection_Array;
     function Outputs(NI : Neuron_Interface'Class) return Output_Connection_Array;
 
-    procedure SetIndex  (NI : in out Neuron_Interface'Class; idx : NNet_NeuronIndex);
+    procedure SetIndex  (NI : in out Neuron_Interface'Class; idx : NNet.NeuronIndex);
     procedure SetActivat(NI : in out Neuron_Interface'Class; activat : Activation_Type);
     procedure SetWeights(NI : in out Neuron_Interface'Class; weights : Weight_Array);
     procedure SetInputs (NI : in out Neuron_Interface'Class; inputs  : Input_Connection_Array);

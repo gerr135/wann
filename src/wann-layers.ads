@@ -34,8 +34,8 @@ package wann.layers is
     subtype NeuronIndex is NeuronIndex_Base range 1 .. NeuronIndex_Base'Last;
 
     -- associated arrray types for holding params
-    type Input_Connection_Array  is array (InputIndex range <>)  of ConnectionIndex;
-    type Output_Connection_Array is array (OutputIndex range <>) of ConnectionIndex;
+    type Input_Connection_Array  is array (InputIndex range <>)  of NNet.ConnectionIndex;
+    type Output_Connection_Array is array (OutputIndex range <>) of NNet.ConnectionIndex;
     type Neuron_Array is array (NeuronIndex range <>) of PN.NeuronClass_Access;
 
 
@@ -87,8 +87,8 @@ package wann.layers is
     --  class wide utility
     --
     --  stateless propagation, no side effects
-    function  PropForward(L : Layer_Interface'Class; inputs : NNet_State_Vector) return NNet_State_Vector;
-    function  PropForward(L : Layer_Interface'Class; inputs : NNet_Checked_State_Vector) return NNet_Checked_State_Vector;
+    function  PropForward(L : Layer_Interface'Class; inputs : NNet.State_Vector) return NNet.State_Vector;
+    function  PropForward(L : Layer_Interface'Class; inputs : NNet.Checked_State_Vector) return NNet.Checked_State_Vector;
 
     -- stateful propagation, only makes sense for some cases.
     --     procedure SetInputs(L : in out Layer_Interface'Class; inputs : ValueArray);

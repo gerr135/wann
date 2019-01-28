@@ -18,10 +18,30 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
+-----------------------------------------------------------------------
+-- General conventions
+-- Neural Net (NNet) consists of Ni inputs, No outputs and Nn neurons
+-- Connections are tracked by (ConnectionType, index) record, to discriminate between
+-- inputs, outputs and other neurons.
+--
+-- Neurons are organized into layers. Can be added arbitrarely and sorted later.
+-- Sort is "automatic" by invoking a corresponding method that performs topological sort.
+-- All entities are defined in corresponding child modules and are indexed by corresponding indices.
+-- Thus in each module we are going to have InputIndex, OutputIndex and SomeentryIndex.
+-- Use the module.type notation to discriminate, this gives automatic dereference and readability.
+--
+-- NOTE: NNet-wide primitive types are defined in nnet_types which, logically, could be
+-- a part of wann.nets. This separation is done to break cyclic dependncies and to avoid
+-- name clashing while keeping common type naming scheme.
+--
+-- NOTE: All entities are numbered from 1 upwards. For each index type we define _base,
+-- counting from 0, and subtype xxIndex itself, counting from 1.
+--------------------------------------------------------------------------
+
+with nnet_types;
 
 generic
     type Real is digits <>;
---     with function Img(E : Key_Type) return String;
 package wann is
 
     Debug : Boolean := False;
@@ -40,131 +60,6 @@ package wann is
     --  trying to access a not-yet-set (or already cleared) cached value
 
 
-    --------------------------------------------------------------------------
-    -- General conventions
-    -- Neural Net (NNet) consists of Ni inputs, No outputs and Nn neurons
-    -- Connections are tracked by (ConnectionType, index) record, to discriminate between
-    -- inputs, outputs and other neurons.
-    --
-    -- Neurons are organized into layers. Can be added arbitrarely and sorted later.
-    -- Sort is "automatic" by invoking a corresponding method that performs topological sort.
-    -- All entities are defined in corresponding child modules and are indexed by corresponding indices.
-    -- Thus in each module we are going to have InputIndex, OutputIndex and SomeentryIndex.
-    -- Use the module.Index notation to discriminate, this gives automatic dereference and readability.
-    -- Here, at top level we define "global" - visible by all indices,
-    -- denoting global (nnet) inputs, outputs, neurons, layers, etc..
-    --
-    -- NOTE:
-    -- each NNet subunit (actual neuron, layer, etc) can have inputs and outputs,
-    -- so each child package defines its own Input/OuptutIndex types.
-    -- These are used to do internal indexing and are not NNet-wide.
-    -- However, there are some common indices which all subunits need access to.
-    -- Specifically, the NNet-wide indexing - global inputs, outputs and NNet neuron index.
-    -- These are defined here and have a NNet_ prefix, to avoid naming conflicts
-    -- (and name masking) in child units.
-    --
-    -- NOTE on type naming:
-    -- unlike most other types/identifiers, the Index types are written run-in,
-    -- i.e. without the '_' between type qualifier and Index.
-    -- This is to easily distinguish the _Base variant.
-    --
-    -- For each index type we define _base, usually counting from 0, and subtype xxIndex itself,
-    -- counting from 1.
-
-    type    NNet_InputIndex_Base  is new Natural;
-    subtype NNet_InputIndex  is NNet_InputIndex_Base  range 1 .. NNet_InputIndex_Base'Last;
-    --
-    type    NNet_OutputIndex_Base is new Natural;
-    subtype NNet_OutputIndex is NNet_OutputIndex_Base range 1 .. NNet_OutputIndex_Base'Last;
-    --
-    type    NNet_NeuronIndex_Base is new Natural;
-    subtype NNet_NeuronIndex is NNet_NeuronIndex_Base range 1 .. NNet_NeuronIndex_Base'Last;
-    --
-    type    NNet_LayerIndex_Base  is new Natural;
-    subtype NNet_LayerIndex  is NNet_LayerIndex_Base  range 1 .. NNet_LayerIndex_Base'Last;
-    -- There is always at least one layer;
-    -- However, unlike common neural net libs, there may not be a strict input/output layer
-    -- or even well defined layer structure.
-    -- As neural connections can be a real mess containing cycles, a layer can contain
-    -- a mixture of interconnections and "final" output connections.
-    -- In general these will have to be treated on individual basis,
-    -- so, checks should be made based on the ConnectionType of each output.
-
-    --------------------------------------------------
-    -- Topology
-    -- Types for keeping/passing around connection info
-    --
-    -- First the connection type itself
-    type Connection_Type is (I, O, N);
-    -- Input, Output, Neuron, but intended to be used in assignment, so shortening down
-
-    type ConnectionIndex(T : Connection_Type := N) is record
-        case T is
-            when I => Iidx : NNet_InputIndex;
-            when N => Nidx : NNet_NeuronIndex;
-            when O => Oidx : NNet_OutputIndex;
-        end case;
-    end record;
-
-    -- now, arrays of connections
-    type Input_Connection_Array  is array (NNet_InputIndex  range <>) of ConnectionIndex;
-    type Neuron_Connection_Array is array (NNet_NeuronIndex range <>) of ConnectionIndex;
-    type Output_Connection_Array is array (NNet_OutputIndex range <>) of ConnectionIndex;
-
-
-    --------------------------------------------------
-    -- NNet values.
-    type Input_Array  is array (NNet_InputIndex  range <>) of Real;
-    type Output_Array is array (NNet_OutputIndex range <>) of Real;
-    type Value_Array  is array (NNet_NeuronIndex range <>) of Real;
-    --  validity
-    type Input_Validity_Array  is array (NNet_InputIndex  range <>) of Boolean;
-    type Output_Validity_Array is array (NNet_OutputIndex range <>) of Boolean;
-    type Value_Validity_Array  is array (NNet_NeuronIndex range <>) of Boolean;
-
-    -- We need a common type to store/pass around the data.
-    --
-    -- in order to provide possibility of data validity checks (e.g. whether data has
-    -- propagated far enough) we encapsulate the state in a tagged record.
-    --
-    -- NOTE: most propagation routines should work correctly even without checks
-    -- as proper layering should ensure that all the proper values are already availabble, when needed.
-    -- However there is still a risk of silently using unassigned value, especially
-    -- while the lib is in development, or when proper call order is not enforced.
-    -- Therefore the safest way to go is to implement all agorithms with in-built checks,
-    -- but also provide (after checked code is properly tested) the _unchecked
-    -- version for the more critical/commonly used routines.
-    --
-    -- NOTE 2: as we allow completely arbitrary connections, we cannot check once per layer/block
-    -- (which could be really cheap). So we need to provide a possibility to check
-    -- every point..
-    --
-    --  Unchecked state vector
-    type NNet_State_Vector(Ni : NNet_InputIndex;
-                      Nn : NNet_NeuronIndex; No : NNet_OutputIndex) is record
-        input  : Input_Array (1 .. Ni);
-        neuron : Value_Array (1 .. Nn);
-        output : Output_Array(1 .. No);
-    end record;
-    --
-    --  Checked state vector
-    type NNet_Checked_State_Vector(Ni : NNet_InputIndex;
-                              Nn : NNet_NeuronIndex; No : NNet_OutputIndex) is record
-        input  : Input_Array (1 .. Ni);
-        neuron : Value_Array (1 .. Nn);
-        output : Output_Array(1 .. No);
-        --
-        validI : Input_Validity_Array (1 .. Ni);
-        validN : Value_Validity_Array (1 .. Nn);
-        validO : Output_Validity_Array(1 .. No);
-        -- using separate arrays here (rather than array of record with 2 entris)
-        -- allows us to assign entire array, rather than copy item by item
-        -- NOTE: passing a reference might be even more optimal for big nets,
-        -- but better profile first before going with a more involved design
-    end record;
-
-
-
     ---------------------------------------------------------
     -- Some other (non-topological) parameters.
     -- These will likely be split off to separate child module at some later point, as they grow.
@@ -179,6 +74,8 @@ package wann is
               GPU);   -- try to do linear algebra in GPU
         -- this will be (most likely) handled through layer types via OOP hierarchy.
 
+
+    package NNet is new nnet_types(Real);
 
 
 end wann;
