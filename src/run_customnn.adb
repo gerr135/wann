@@ -102,10 +102,15 @@ procedure run_customNN is
     package PN is new PW.nets;
     package PNV is new PN.vectors;
 
+    use PW; use NN;
+
+    singleNeur : PNV.NNet := PNV.Create(Nin=>2, Nout=>1);
+
 
 begin  -- main
-    processCommandLine (params);
-    Put_Line("basic test");
+--     processCommandLine (params);
+    Put_Line("creating basic 1-neuron network");
+    singleNeur.Add_Neuron(Sigmoid, ((I,1),(I,2)));
 exception
 	when Finish => null;
 end run_customNN;

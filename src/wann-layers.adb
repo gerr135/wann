@@ -5,10 +5,8 @@ package body wann.layers is
    -- PropForward --
    -----------------
 
-   function PropForward
-     (L : Layer_Interface'Class;
-      inputs : NN.State_Vector)
-      return NN.State_Vector
+    function PropForward (L : Layer_Interface'Class; inputs : NN.State_Vector;
+                          pType : Propagation_Type) return NN.State_Vector
    is
    begin
       --  Generated stub: replace with real body!
@@ -20,10 +18,8 @@ package body wann.layers is
    -- PropForward --
    -----------------
 
-   function PropForward
-     (L : Layer_Interface'Class;
-      inputs : NN.Checked_State_Vector)
-      return NN.Checked_State_Vector
+   function PropForward (L : Layer_Interface'Class; inputs : NN.Checked_State_Vector;
+                         pType : Propagation_Type) return NN.Checked_State_Vector
    is
    begin
       --  Generated stub: replace with real body!
@@ -35,7 +31,7 @@ package body wann.layers is
    -- PropForward --
    -----------------
 
-   procedure PropForward (L : Layer_Interface'Class) is
+   procedure PropForward (L : Layer_Interface'Class; pType : Propagation_Type) is
    begin
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "PropForward unimplemented");

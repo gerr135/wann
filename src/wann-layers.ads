@@ -77,9 +77,9 @@ package wann.layers is
     --     procedure Clear  (LI : in out Layer_Interface) is abstract;
     --
     function  Length(LI : Layer_Interface) return NeuronIndex_Base is abstract;
-    procedure AddNeuron(LI : in out Layer_Interface; np : PN.NeuronClass_Access) is abstract;
+    procedure Add_Neuron(LI : in out Layer_Interface; np : PN.NeuronClass_Access) is abstract;
     --     procedure DelNeuron(LI : Layer_Interface; idx : NeuronIndex) is abstract;
-    function  GetNeuron(LI : Layer_Interface; idx : NeuronIndex) return PN.NeuronClass_Access is abstract;
+    function  Get_Neuron(LI : Layer_Interface; idx : NeuronIndex) return PN.NeuronClass_Access is abstract;
     --     procedure SetNeuron(LI : Layer_Interface; idx : NeuronIndex; np : PN.Neuron_Access) is abstract;
 
 
@@ -87,17 +87,15 @@ package wann.layers is
     --  class wide utility
     --
     --  stateless propagation, no side effects
-    function  PropForward(L : Layer_Interface'Class; inputs : NN.State_Vector) return NN.State_Vector;
-    function  PropForward(L : Layer_Interface'Class; inputs : NN.Checked_State_Vector) return NN.Checked_State_Vector;
+    function  PropForward(L : Layer_Interface'Class; inputs : NN.State_Vector;
+                          pType : Propagation_Type) return NN.State_Vector;
+    function  PropForward(L : Layer_Interface'Class; inputs : NN.Checked_State_Vector;
+                          pType : Propagation_Type) return NN.Checked_State_Vector;
 
     -- stateful propagation, only makes sense for some cases.
     --     procedure SetInputs(L : in out Layer_Interface'Class; inputs : ValueArray);
-    procedure PropForward(L : Layer_Interface'Class);
+    procedure PropForward(L : Layer_Interface'Class; pType : Propagation_Type);
     -- NOTE: layers only keep references to neurons, which in turn keep weights and do calcs
     -- no need for in out here. In fact we need in-only parameter here to allow pass-by-reference optimization
-
-private
-
-    type LL_Cursor is null record;
 
 end wann.layers;

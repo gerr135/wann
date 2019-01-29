@@ -110,31 +110,34 @@ package wann.nets is
     --
     -- Neuron manipulation
     --
-    function  AddNeuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec) return NN.NeuronIndex;
-    procedure AddNeuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec; idx : out NN.NeuronIndex);
-    procedure AddNeuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec);
+    function  Add_Neuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec) return NN.NeuronIndex;
+    procedure Add_Neuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec; idx : out NN.NeuronIndex);
+    procedure Add_Neuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec);
     -- combines New and Set
     --
-    function  AddNeuron(net : in out NNet_Interface'Class; activat : Activation_Type; connects : PN.Input_Connection_Array) return NN.NeuronIndex;
-    procedure AddNeuron(net : in out NNet_Interface'Class; activat : Activation_Type; connects : PN.Input_Connection_Array; idx : out NN.NeuronIndex);
-    procedure AddNeuron(net : in out NNet_Interface'Class; activat : Activation_Type; connects : PN.Input_Connection_Array);
+    function  Add_Neuron(net : in out NNet_Interface'Class; activat : Activation_Type;
+                         connects : PN.Input_Connection_Array) return NN.NeuronIndex;
+    procedure Add_Neuron(net : in out NNet_Interface'Class; activat : Activation_Type;
+                         connects : PN.Input_Connection_Array; idx : out NN.NeuronIndex);
+    procedure Add_Neuron(net : in out NNet_Interface'Class; activat : Activation_Type;
+                         connects : PN.Input_Connection_Array);
     -- New plus Set by parameters
     --
-    procedure ResetNeuron(net : in out NNet_Interface'Class; NR  : PN.NeuronRec);
-    procedure ResetNeuron(net : in out NNet_Interface'Class; idx : NN.NeuronIndex; activat : Activation_Type; connects : PN.Input_Connection_Array);
-    procedure ResetNeuron(net : in out NNet_Interface'Class; idx : NN.NeuronIndex; connects : PN.Input_Connection_Array);
+    procedure Reset_Neuron(net : in out NNet_Interface'Class; NR  : PN.NeuronRec);
+    procedure Reset_Neuron(net : in out NNet_Interface'Class; idx : NN.NeuronIndex; activat : Activation_Type; connects : PN.Input_Connection_Array);
+    procedure Reset_Neuron(net : in out NNet_Interface'Class; idx : NN.NeuronIndex; connects : PN.Input_Connection_Array);
     -- replaces neuron[idx] parameters, either all or partial
 
     --
     --  Nnet manipulation
     --
-    procedure ReconnectNeuronAtRandom(net : in out NNet_Interface'Class; idx  : NN.NeuronIndex; maxConnects : PN.InputIndex_Base := 0);
-    procedure PopulateAtRandom (net : in out NNet_Interface'Class; Npts : NN.NeuronIndex_Base;  maxConnects : PN.InputIndex_Base := 0);
+    procedure Reconnect_Neuron_At_Random(net : in out NNet_Interface'Class; idx  : NN.NeuronIndex; maxConnects : PN.InputIndex_Base := 0);
+    procedure Populate_At_Random (net : in out NNet_Interface'Class; Npts : NN.NeuronIndex_Base;  maxConnects : PN.InputIndex_Base := 0);
     -- populates net with new neurons or resets existing one to random configuration
     -- Npts needs to be passed in case of empty mutable net, otherwise it simply rearranges existing net.
 
-    procedure SortForward (net : in out NNet_Interface'Class);
-    procedure SortBackward(net : in out NNet_Interface'Class);
+    procedure Sort_Forward (net : in out NNet_Interface'Class);
+    procedure Sort_Backward(net : in out NNet_Interface'Class);
     -- perform a topological sort, (re-)creating layers tracking the connections,
     -- to allow optimizations (parallel computation, use of GPU).
     --
@@ -146,7 +149,9 @@ package wann.nets is
     --
     -- Forward prop through trained net
     -- stateless propagation net state is completely internal to this proc, no side effects
-    function  PropForward(net : NNet_Interface'Class; IV  : NN.Input_Array)  return NN.Output_Array;
+    function  PropForward(net : NNet_Interface'Class; IV  : NN.Input_Array;
+                          pType : Propagation_Type)  return NN.Output_Array;
+    --
     function  CalcOutputs(net : NNet_Interface'Class; NSV : NN.Checked_State_Vector) return NN.Output_Array;
     function  CalcOutputs(net : NNet_Interface'Class; NSV : NN.State_Vector) return NN.Output_Array;
 
@@ -159,7 +164,9 @@ package wann.nets is
     procedure SetInputValues(net : in out Cached_NNet_Interface'Class; IV : NN.Input_Array);
 
     -- full statefull version
-    function  PropForward(net : Stateful_NNet_Interface'Class) return NN.Output_Array;
+    function  PropForward(net : Stateful_NNet_Interface'Class;
+                          pType : Propagation_Type) return NN.Output_Array;
+    --
     function  CalcOutputs(net : Stateful_NNet_Interface'Class) return NN.Output_Array;
 
     --     procedure Train(net : in out NNet'Class; training_set : TBD);

@@ -75,14 +75,14 @@ connections itself. Initial fit can be performed with a very small network. Then
 network should be allowed to grow to fit the training data better. Genetic algorithms can
 be employed to produce a more optimal network.
 
-## NNet inner layout
+## NNet indexing
 The most straightforward approach would be to intermix inputs, outputs and neurons, say
 reserving 1 .. Nin indices for inputs, Nin+1 .. Nin+Nout for outputs and the rest for
 actual neurons. This is how it is done commonly and how I attempted it initially. However
-this only works
-for the fixed nnets. At the very least, Nin and Nout have to be fixed, otherwise any
-change to inputs/outputs would require a complete reindexing of all connections. An
-alternative would be to use a separate Connector type, that can attach to all 3 classes.
+this only works for the fixed nnets. At the very least, Nin and Nout have to be fixed,
+otherwise any change to inputs/outputs would require a complete reindexing of all connections.
+
+An alternative would be to use a separate Connector type, that can attach to all 3 classes.
 This might allow a more streamlined type abstraction and inheritance, but may be less
 efficiant than reindexing all the neurons. To summarize, 2 appoaches:
 
@@ -110,6 +110,25 @@ for LSTMs or other RNN/other advanced structures..
 So, considering all this, I will likely go with the Connector approach, at least with the
 mutable nets. Might try to do a fixed index approach with fixed nnets first, just to get
 the formulas verified..
+
+## NNet structure and organization
+Major points:
+NNet contains:
+    - list of Neurons, indexed by NeuronIndex
+    - list of layers, created/assigned by sort procedure
+  attributes:
+    - sorted: set to True by sort procedure. Add_Neuron methods should update layers too when sorted.
+
+Layer contains:
+    - list of neurons - needs also a way to access neuron info. Also wann.nets withs wann.layers
+      so, to break up the cyclic deps layers contain list of Neuron_Accesses..
+    - (optional/optimization) transition matrix?
+
+Layers are constructed by NNet. NNet contains layers and neurons and operates on both. So,
+layers are passed neur'Access at creation/modification and operate on those. This gives layers
+access to neuron idx's as well as their input/optput connections.
+The values are stored in a global data rec - either external or owned by NNet. This rec is
+passed to neurons/layers to be updated as needed..
 
 ## NNet linear representation formats
 Two are envisioned:
@@ -162,7 +181,7 @@ On propagation through layers:
 NNet state can be stored either in "state record" or in neurons themselves.
 In the 1st case, neurons only store connection topology, and we use separate record/vector
 for forward propagation of values. In the 2nd case topolgy and passed values are mixed.
-It is unclear t this point which approach is "better" (and what "better" even means).
+It is unclear at this point which approach is "better" (and what "better" even means).
 Backpropagation updates weights as well, so storing w's separately would require a much
 larger structure - an entire matrix, plus this would separate topology from weights and
 may make it harder to trace the correspondence, or at least less readable. So, the 2nd way might be preferred in view of this.

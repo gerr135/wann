@@ -5,10 +5,7 @@ package body wann.layers.vectors is
    -- ToRec --
    -----------
 
-   overriding function ToRec
-     (L : Layer)
-      return LayerRec
-   is
+   overriding function ToRec (L : Layer) return LayerRec is
    begin
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "ToRec unimplemented");
@@ -19,10 +16,7 @@ package body wann.layers.vectors is
    -- FromRec --
    -------------
 
-   overriding procedure FromRec
-     (L : in out Layer;
-      LR : LayerRec)
-   is
+   overriding procedure FromRec (L : in out Layer; LR : LayerRec) is
    begin
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "FromRec unimplemented");
@@ -33,10 +27,7 @@ package body wann.layers.vectors is
    -- Length --
    ------------
 
-   overriding function Length
-     (L : Layer)
-      return NeuronIndex_Base
-   is
+   overriding function Length (L : Layer) return NeuronIndex_Base is
    begin
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "Length unimplemented");
@@ -47,29 +38,25 @@ package body wann.layers.vectors is
    -- AddNeuron --
    ---------------
 
-   overriding procedure AddNeuron
-     (L : in out Layer;
-      np : PN.NeuronCLass_Access)
-   is
+   overriding
+   procedure Add_Neuron (L : in out Layer; np : PN.NeuronCLass_Access) is
    begin
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
       raise Program_Error with "Unimplemented procedure AddNeuron";
-   end AddNeuron;
+   end Add_Neuron;
 
    ---------------
    -- GetNeuron --
    ---------------
 
-   overriding function GetNeuron
-     (L : Layer;
-      idx : NeuronIndex)
-      return PN.NeuronClass_Access
-   is
+   overriding
+   function Get_Neuron (L : Layer; idx : NeuronIndex)
+   return PN.NeuronClass_Access is
    begin
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "GetNeuron unimplemented");
       return raise Program_Error with "Unimplemented function GetNeuron";
-   end GetNeuron;
+   end Get_Neuron;
 
 end wann.layers.vectors;

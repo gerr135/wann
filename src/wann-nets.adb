@@ -1,201 +1,169 @@
 pragma Ada_2012;
 package body wann.nets is
 
-   ---------------
-   -- AddNeuron --
-   ---------------
+    -- basic utility
 
-   function AddNeuron
-     (net : in out NNet_Interface'Class;
-      NR : PN.NeuronRec)
-      return NN.NeuronIndex
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
-      return raise Program_Error with "Unimplemented function AddNeuron";
-   end AddNeuron;
+    -----------------
+    -- Add_Neuron   --
+    -----------------
 
-   ---------------
-   -- AddNeuron --
-   ---------------
+    function Add_Neuron (net : in out NNet_Interface'Class; NR : PN.NeuronRec) return NN.NeuronIndex is
+        idx : NN.NeuronIndex_Base;
+    begin
+        net.Add_Neuron(NR,idx);
+        return idx;
+    end Add_Neuron;
 
-   procedure AddNeuron
-     (net : in out NNet_Interface'Class;
-      NR : PN.NeuronRec;
-      idx : out NN.NeuronIndex)
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
-      raise Program_Error with "Unimplemented procedure AddNeuron";
-   end AddNeuron;
+    procedure Add_Neuron (net : in out NNet_Interface'Class; NR : PN.NeuronRec; idx : out NN.NeuronIndex) is
+        newNR : PN.NeuronRec := NR;
+    begin
+        net.New_Neuron(idx);
+        newNR.idx := idx;
+        -- net.SetNeuron(newNR);
+        pragma Compile_Time_Warning (Standard.True, "Add_Neuron unimplemented");
+        raise Program_Error with "Unimplemented function Add_Neuron";
+    end Add_Neuron;
 
-   ---------------
-   -- AddNeuron --
-   ---------------
+    procedure Add_Neuron (net : in out NNet_Interface'Class; NR : PN.NeuronRec) is
+        -- keep the code centralized: just call above variant and discard extra index
+        idx : NN.NeuronIndex_Base;
+    begin
+        net.Add_Neuron(NR, idx);
+    end Add_Neuron;
 
-   procedure AddNeuron
-     (net : in out NNet_Interface'Class;
-      NR : PN.NeuronRec)
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
-      raise Program_Error with "Unimplemented procedure AddNeuron";
-   end AddNeuron;
+    function Add_Neuron
+       (net : in out NNet_Interface'Class;
+        activat : Activation_Type;
+        connects : PN.Input_Connection_Array)  return NN.NeuronIndex
+    is
+        --
+        idx : NN.NeuronIndex_Base;
+    begin
+        net.Add_Neuron(activat,connects,idx);
+        return idx;
+    end Add_Neuron;
 
-   ---------------
-   -- AddNeuron --
-   ---------------
+    procedure Add_Neuron
+        (net : in out NNet_Interface'Class;
+        activat : Activation_Type;
+        connects : PN.Input_Connection_Array;
+        idx : out NN.NeuronIndex)
+    is
+        --
+        NR : PN.NeuronRec(Nin=>connects'Last) :=
+            (idx=>1, lag=>0.0, Nin => connects'Last,
+            activat=>activat, weights => (others=>0.0), inputs  => connects );
+    begin
+        net.Add_Neuron(NR,idx);
+    end Add_Neuron;
 
-   function AddNeuron
-     (net : in out NNet_Interface'Class;
-      activat : Activation_Type;
-      connects : PN.Input_Connection_Array)
-      return NN.NeuronIndex
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
-      return raise Program_Error with "Unimplemented function AddNeuron";
-   end AddNeuron;
-
-   ---------------
-   -- AddNeuron --
-   ---------------
-
-   procedure AddNeuron
-     (net : in out NNet_Interface'Class;
-      activat : Activation_Type;
-      connects : PN.Input_Connection_Array;
-      idx : out NN.NeuronIndex)
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
-      raise Program_Error with "Unimplemented procedure AddNeuron";
-   end AddNeuron;
-
-   ---------------
-   -- AddNeuron --
-   ---------------
-
-   procedure AddNeuron
-     (net : in out NNet_Interface'Class;
-      activat : Activation_Type;
-      connects : PN.Input_Connection_Array)
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
-      raise Program_Error with "Unimplemented procedure AddNeuron";
-   end AddNeuron;
+    procedure Add_Neuron
+        (net : in out NNet_Interface'Class;
+        activat : Activation_Type;
+        connects : PN.Input_Connection_Array)
+    is
+        idx : NN.NeuronIndex_Base;
+    begin
+        net.Add_Neuron(activat, connects,idx);
+    end Add_Neuron;
 
    -----------------
-   -- ResetNeuron --
+   -- Reset_Neuron --
    -----------------
+    procedure Reset_Neuron
+        (net : in out NNet_Interface'Class;
+        NR  : PN.NeuronRec)
+    is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "Reset_Neuron unimplemented");
+        raise Program_Error with "Unimplemented procedure Reset_Neuron";
+    end Reset_Neuron;
 
-   procedure ResetNeuron
-     (net : in out NNet_Interface'Class;
-      NR  : PN.NeuronRec)
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "ResetNeuron unimplemented");
-      raise Program_Error with "Unimplemented procedure ResetNeuron";
-   end ResetNeuron;
+    procedure Reset_Neuron (net : in out NNet_Interface'Class;
+        idx : NN.NeuronIndex; activat : Activation_Type;
+        connects : PN.Input_Connection_Array)
+    is
+        --
+        NR : PN.NeuronRec(Nin=>connects'Last) := (
+            idx=>idx, lag=>0.0, Nin => connects'Last,
+            activat=>activat, weights => (others=>0.0),
+            inputs  => connects );
+    begin
+        net.Reset_Neuron(NR);
+    end Reset_Neuron;
 
-   -----------------
-   -- ResetNeuron --
-   -----------------
+    procedure Reset_Neuron (net : in out NNet_Interface'Class;
+        idx : NN.NeuronIndex; connects : PN.Input_Connection_Array)
+    is
+        --
+        NR : PN.NeuronRec(Nin=>connects'Last) := (
+            idx => idx, lag => 0.0, Nin => connects'Last,
+            activat => net.Neuron(idx).activat, weights => (others=>0.0),
+            inputs  => connects );
+    begin
+        net.Reset_Neuron(NR);
+    end Reset_Neuron;
 
-   procedure ResetNeuron
-     (net : in out NNet_Interface'Class;
-      idx : NN.NeuronIndex;
-      activat : Activation_Type;
-      connects : PN.Input_Connection_Array)
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "ResetNeuron unimplemented");
-      raise Program_Error with "Unimplemented procedure ResetNeuron";
-   end ResetNeuron;
+   --------------------------------
+   -- Reconnect_Neuron_At_Random --
+   --------------------------------
 
-   -----------------
-   -- ResetNeuron --
-   -----------------
-
-   procedure ResetNeuron
-     (net : in out NNet_Interface'Class;
-      idx : NN.NeuronIndex;
-      connects : PN.Input_Connection_Array)
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "ResetNeuron unimplemented");
-      raise Program_Error with "Unimplemented procedure ResetNeuron";
-   end ResetNeuron;
-
-   -----------------------------
-   -- ReconnectNeuronAtRandom --
-   -----------------------------
-
-   procedure ReconnectNeuronAtRandom
+   procedure Reconnect_Neuron_At_Random
      (net : in out NNet_Interface'Class;
       idx  : NN.NeuronIndex;
       maxConnects : PN.InputIndex_Base := 0)
    is
    begin
       --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "ReconnectNeuronAtRandom unimplemented");
-      raise Program_Error with "Unimplemented procedure ReconnectNeuronAtRandom";
-   end ReconnectNeuronAtRandom;
+      pragma Compile_Time_Warning (Standard.True, "Reconnect_Neuron_At_Random unimplemented");
+      raise Program_Error with "Unimplemented procedure Reconnect_Neuron_At_Random";
+   end Reconnect_Neuron_At_Random;
 
    ----------------------
-   -- PopulateAtRandom --
+   -- Populate_At_Random --
    ----------------------
 
-   procedure PopulateAtRandom
+   procedure Populate_At_Random
      (net : in out NNet_Interface'Class;
       Npts : NN.NeuronIndex_Base;
       maxConnects : PN.InputIndex_Base := 0)
    is
    begin
       --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "PopulateAtRandom unimplemented");
-      raise Program_Error with "Unimplemented procedure PopulateAtRandom";
-   end PopulateAtRandom;
+      pragma Compile_Time_Warning (Standard.True, "Populate_At_Random unimplemented");
+      raise Program_Error with "Unimplemented procedure Populate_At_Random";
+   end Populate_At_Random;
 
    -----------------
-   -- SortForward --
+   -- Sort_Forward --
    -----------------
 
-   procedure SortForward (net : in out NNet_Interface'Class) is
+   procedure Sort_Forward (net : in out NNet_Interface'Class) is
    begin
       --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "SortForward unimplemented");
-      raise Program_Error with "Unimplemented procedure SortForward";
-   end SortForward;
+      pragma Compile_Time_Warning (Standard.True, "Sort_Forward unimplemented");
+      raise Program_Error with "Unimplemented procedure Sort_Forward";
+   end Sort_Forward;
 
    ------------------
-   -- SortBackward --
+   -- Sort_Backward --
    ------------------
 
-   procedure SortBackward (net : in out NNet_Interface'Class) is
+   procedure Sort_Backward (net : in out NNet_Interface'Class) is
    begin
       --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "SortBackward unimplemented");
-      raise Program_Error with "Unimplemented procedure SortBackward";
-   end SortBackward;
+      pragma Compile_Time_Warning (Standard.True, "Sort_Backward unimplemented");
+      raise Program_Error with "Unimplemented procedure Sort_Backward";
+   end Sort_Backward;
 
 
 
     ---------------------------------------------
     -- Stateless propagation
     --
-    function PropForward (net : NNet_Interface'Class; IV  : NN.Input_Array)
-            return NN.Output_Array is
+   function PropForward (net : NNet_Interface'Class; IV  : NN.Input_Array;
+                         pType : Propagation_Type) return NN.Output_Array is
         -- this is a stateless prop version. All intermidiate data are kept and updated locally
         -- NOTE: layers can be interconnected in arbitrary way, to absolutely any neurons,
         -- or even inputs/outputs directly, so we need to pass a complete state around.
@@ -221,7 +189,7 @@ package body wann.nets is
             for li in 2 .. net.NLayers loop
                 -- main cycle - just propagate through all layers, updating net state
                 L := net.Layer(li);
-                netState := L.PropForward(netState);
+                netState := L.PropForward(netState, pType);
             end loop;
             return net.calcOutputs(netState);
             -- outputs can be connected to arbitrary layer, so we cannot simply ask last layer
@@ -294,12 +262,14 @@ package body wann.nets is
    ----------------------------------
    -- Stateful propagation
 
-    function PropForward (net : Stateful_NNet_Interface'Class) return NN.Output_Array is
+    function PropForward (net : Stateful_NNet_Interface'Class; pType : Propagation_Type)
+        return NN.Output_Array
+    is
         L : PL.Layer_Interface'Class := net.Layer(1); -- use access?
     begin
         for li in 2 .. net.NLayers loop
             L := net.Layer(li);
-            L.PropForward;
+            L.PropForward(pType);
         end loop;
         return net.CalcOutputs;
     end PropForward;
