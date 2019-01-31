@@ -136,37 +136,66 @@ package body wann.neurons is
    -- PropForward --
    -----------------
 
-   function PropForward
-     (NI : Neuron_Interface'Class;
-      data  : Value_Array)
-      return Real
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "PropForward unimplemented");
-      return raise Program_Error with "Unimplemented function PropForward";
-   end PropForward;
+    function Prop_Forward (neur : Neuron_Interface'Class; data  : Value_Array) return Real is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "PropForward unimplemented");
+        return raise Program_Error with "Unimplemented function PropForward";
+    end Prop_Forward;
 
-   -----------------
-   -- PropForward --
-   -----------------
+    function  Prop_Forward(neur : Neuron_Interface'Class; inputs : NN.State_Vector)
+        return NN.State_Vector
+    is
+        outputs : NN.State_Vector := inputs;
+        Ni : InputIndex := neur.NInputs;
+        data : Value_Array(1 .. Ni);
+        result : Real;
+    begin
+        for i in 1 .. Ni loop
+            data(i) := Get_Value(inputs, neur.Input(i));
+        end loop;
+        result := neur.Prop_Forward(data);
+        for o in 1 .. neur.NOutputs loop
+            Set_Value(outputs,neur.Output(o), result);
+        end loop;
+        return outputs;
+    end;
 
-   procedure PropForward (NI : in out Stateful_Neuron_Interface'Class) is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "PropForward unimplemented");
-      raise Program_Error with "Unimplemented procedure PropForward";
-   end PropForward;
+    function  Prop_Forward(neur : Neuron_Interface'Class; inputs : NN.Checked_State_Vector)
+        return NN.Checked_State_Vector
+    is
+        outputs : NN.Checked_State_Vector := inputs;
+        Ni : InputIndex := neur.NInputs;
+        data : Value_Array(1 .. Ni);
+        result : Real;
+    begin
+        for i in 1 .. Ni loop
+            data(i) := Get_Value(inputs, neur.Input(i));
+        end loop;
+        result := neur.Prop_Forward(data);
+        for o in 1 .. neur.NOutputs loop
+            Set_Value(outputs,neur.Output(o), result);
+        end loop;
+        return outputs;
+    end;
+
+
+    -- stateful
+    procedure Prop_Forward (neur : in out Stateful_Neuron_Interface'Class) is begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "PropForward unimplemented");
+        raise Program_Error with "Unimplemented procedure PropForward";
+    end Prop_Forward;
 
    ------------------
    -- PropBackward --
    ------------------
 
-   procedure PropBackward (NI : in out Stateful_Neuron_Interface'Class) is
+   procedure Prop_Backward (neur : in out Stateful_Neuron_Interface'Class) is
    begin
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "PropBackward unimplemented");
       raise Program_Error with "Unimplemented procedure PropBackward";
-   end PropBackward;
+   end Prop_Backward;
 
 end wann.neurons;

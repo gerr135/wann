@@ -58,17 +58,30 @@ package wann.layers is
     -- leaving the representations details to children.
     -- (also to defer the representation choice, as I am not sure ATM what would work better)
     --
-    -- Initial attempt to use a simple discriminated record would explode variants way too fast
-    -- (multiple PropagationType's x multiple possible storage paradigms)
-    -- So, use Interface with primitives here to keep it all sane.
-    --
     -- At the bare level, Layer can be a simple list of neurons, with propagation done
-    -- in a simple cycle (or parallel invocation) per-neuron.
-    -- More advanced propagators may create (local?) vectors of values and weight matrices,
+    -- in a simple loop (possibly parallelizable) per-neuron.
+    -- More advanced propagators use vectors of values and weight matrices,
     -- to try to parallelize this via mpi or GPU use..
-    -- I guess one sane design would us Layer.children packages for representation and pass
-    -- propagators as separate objects. Propagators would be in their own package then..
-    type Layer_Interface is interface;
+    -- To tie it all together an OOP paradigm is used, as the most natural representation.
+    -- The base type, called below Layer_Interface, provides only basic interface and functionality,
+    -- with Matrix_Layer_Interface and others overriding it to provide more elaborate propagators.
+    -- (with the notion that their derived types would hold additional data, thus they would expose
+    -- additional primitives too).
+    --
+    -- NOTE: layer type should be set at net creation type, as different layr types in hierarchy
+    -- would have different (extra) data. Thus it would be impossible anyway to run an optimized
+    -- (e.g. Matrix) prop on a net constructed from basic layers..
+    -- The other way around can be possible, but does not make much sense. But if it is
+    -- really desired, use of basic (inherited) propagator can be forced in a usual OOP way
+    -- (by performing a type view conversion).
+    --
+    -- Also, to provide a common interface for propagator calls, and since Ada does not support
+    -- overridable interface primitives (only class-wide methods of interfaces can contain code),
+    -- Layer_Interface has to be an (abstract) type. Keeping it an interface might provide more
+    -- flexibility but will duplicate the ADT code (we would have to mirror each interface
+    -- first with abstract type and then derive specific types holding data from that).
+
+    type Layer_Interface is abstract tagged private;
     type LayerClass_Access is access Layer_Interface'Class;
 
     -- primitives
@@ -79,23 +92,41 @@ package wann.layers is
     function  Length(LI : Layer_Interface) return NeuronIndex_Base is abstract;
     procedure Add_Neuron(LI : in out Layer_Interface; np : PN.NeuronClass_Access) is abstract;
     --     procedure DelNeuron(LI : Layer_Interface; idx : NeuronIndex) is abstract;
-    function  Get_Neuron(LI : Layer_Interface; idx : NeuronIndex) return PN.NeuronClass_Access is abstract;
+    function  Neuron(LI : Layer_Interface; idx : NeuronIndex) return PN.NeuronClass_Access is abstract;
     --     procedure SetNeuron(LI : Layer_Interface; idx : NeuronIndex; np : PN.Neuron_Access) is abstract;
 
-
-    ----------------------------------
-    --  class wide utility
+    --------------
+    -- propagators
+    -- As we go with the abstract type instead of interface here, no need for
+    -- class-wide methods to keep actual code and glue primitives.
     --
     --  stateless propagation, no side effects
-    function  PropForward(L : Layer_Interface'Class; inputs : NN.State_Vector;
-                          pType : Propagation_Type) return NN.State_Vector;
-    function  PropForward(L : Layer_Interface'Class; inputs : NN.Checked_State_Vector;
-                          pType : Propagation_Type) return NN.Checked_State_Vector;
+    function  Prop_Forward(L : Layer_Interface; inputs : NN.State_Vector) return NN.State_Vector;
+    function  Prop_Forward(L : Layer_Interface; inputs : NN.Checked_State_Vector) return NN.Checked_State_Vector;
 
     -- stateful propagation, only makes sense for some cases.
     --     procedure SetInputs(L : in out Layer_Interface'Class; inputs : ValueArray);
-    procedure PropForward(L : Layer_Interface'Class; pType : Propagation_Type);
+    procedure Prop_Forward(L : Layer_Interface);
     -- NOTE: layers only keep references to neurons, which in turn keep weights and do calcs
-    -- no need for in out here. In fact we need in-only parameter here to allow pass-by-reference optimization
+    -- no need for "in out"" here. In fact we need in-only parameter here to allow pass-by-reference optimization
+
+
+    ---------------------------------------------
+    -- Layer with linear algebra (wLA) - provides additional optimization capability
+    type Matrix_Layer_Interface   is abstract new Layer_Interface with private;
+    type Matrix_LayerClass_Access is access Matrix_Layer_Interface'Class;
+
+    --  stateless propagation, no side effects
+    function  Prop_Forward(L : Matrix_Layer_Interface; inputs : NN.State_Vector) return NN.State_Vector;
+    function  Prop_Forward(L : Matrix_Layer_Interface; inputs : NN.Checked_State_Vector) return NN.Checked_State_Vector;
+
+    -- stateful propagation, only makes sense for some cases.
+    procedure Prop_Forward_Basic(L : Matrix_Layer_Interface);
+
+private
+
+    type Layer_Interface is abstract tagged null record;
+
+    type Matrix_Layer_Interface is abstract new Layer_Interface with null record;
 
 end wann.layers;

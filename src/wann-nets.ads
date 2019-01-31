@@ -149,8 +149,7 @@ package wann.nets is
     --
     -- Forward prop through trained net
     -- stateless propagation net state is completely internal to this proc, no side effects
-    function  PropForward(net : NNet_Interface'Class; IV  : NN.Input_Array;
-                          pType : Propagation_Type)  return NN.Output_Array;
+    function  PropForward(net : NNet_Interface'Class; inputs : NN.Input_Array)  return NN.Output_Array;
     --
     function  CalcOutputs(net : NNet_Interface'Class; NSV : NN.Checked_State_Vector) return NN.Output_Array;
     function  CalcOutputs(net : NNet_Interface'Class; NSV : NN.State_Vector) return NN.Output_Array;
@@ -164,8 +163,7 @@ package wann.nets is
     procedure SetInputValues(net : in out Cached_NNet_Interface'Class; IV : NN.Input_Array);
 
     -- full statefull version
-    function  PropForward(net : Stateful_NNet_Interface'Class;
-                          pType : Propagation_Type) return NN.Output_Array;
+    function  PropForward(net : Stateful_NNet_Interface'Class) return NN.Output_Array;
     --
     function  CalcOutputs(net : Stateful_NNet_Interface'Class) return NN.Output_Array;
 

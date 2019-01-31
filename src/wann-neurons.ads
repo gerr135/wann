@@ -56,9 +56,10 @@ package wann.neurons is
 
     -- primitives
     -- basic getters and setters; individual fields can be reset in a class-wide utility
-    -- by calling basic Get/Set pair.
-    -- Neurons are going to be modded much rarer than other calcs (notably forward/back-prop),
-    -- so better minimize code to override and don't worry much about efficiency of rare methods.
+    -- by calling basic Get/Set pair, but this is likely much less efficient, because
+    -- large arrays will be often copied and discarded..
+    -- Still, this is useful for setters, as neurons are going to be modded much less often
+    -- than they would be used (notably for forward/back-prop). So this is still usefull for code minimization.
     function  ToRec  (NI : Neuron_Interface) return NeuronRec is abstract;
     procedure FromRec(NI : in out Neuron_Interface; LR : NeuronRec) is abstract;
     --
@@ -68,19 +69,27 @@ package wann.neurons is
     procedure AddOutput(NI : in out Neuron_Interface; Output : NN.ConnectionIndex) is abstract;
     procedure DelOutput(NI : in out Neuron_Interface; Output : NN.ConnectionIndex) is abstract;
 
+    -- Still, it is better to provide direct getters for frequently used fields
+    function NInputs (neur : Neuron_Interface) return InputIndex  is abstract;
+    function NOutputs(neur : Neuron_Interface) return OutputIndex is abstract;
+    --
+    function Input (neur : Neuron_Interface; idx : InputIndex)  return NN.ConnectionIndex is abstract;
+    function Output(neur : Neuron_Interface; idx : OutputIndex) return NN.ConnectionIndex is abstract;
 
-    ------------
-    --  stateful version, that keeps current value stored
+    ------------------------------------------------------------
+    --  stateful version, values are stored in the neuron itself
+    --  only the output value is stored (as well as the "set" flag), inputs are looked up
+    --  as outputs of incoming connections
     type Stateful_Neuron_Interface is interface and Neuron_Interface;
     type Stateful_NeuronClass_Access is access Stateful_Neuron_Interface'Class;
 
     procedure SetValue(NI : in out Stateful_Neuron_Interface; val :  Real) is abstract;
     function  Value(NI : Stateful_Neuron_Interface) return Real is abstract;
     -- just basic getter/setter. Data validity should be handled in implementation
-    function  Valid (NI : Stateful_Neuron_Interface) return Boolean is abstract;
+    function  Valid(NI : Stateful_Neuron_Interface) return Boolean is abstract;
 
 
-    ----------
+    ----------------------
     -- Class-wide utility
     --
     -- Additional getters/setters
@@ -98,15 +107,25 @@ package wann.neurons is
     -- Inputs/Outputs stand for input/output connections
 
     -- Data processing
-    function  PropForward(NI : Neuron_Interface'Class; data  : Value_Array) return Real;
-        -- makes the x*W+bias |-> activation calculation; caches output internally
---     function  StoredResult(NI : Neuron_Interface'Class) return Real;
-        -- returns stored output. Raises UnsetCacheAccess is value has not yet been calculated
+    -- NOTE: these are for simple cases/small nets. For efficient calculations on large nets
+    -- optimized layer-based propagators should be used instead.
     --
-    -- for basic testing/small nets.
-    -- for anything serious, Layer propagators should be used..
-    procedure PropForward (NI : in out Stateful_Neuron_Interface'Class);
-    procedure PropBackward(NI : in out Stateful_Neuron_Interface'Class);
+    -- basic ops, calcs use pre-picked (and repackages if needed) values
+    function  Prop_Forward(neur : Neuron_Interface'Class; data  : Value_Array) return Real;
+        -- makes the x*W+bias |-> activation calculation; caches output internally
+
+    -- Utility wrappers for propagators
+    --  prepare repackaged data arrays by picking corresponding values from global Net_State
+    --  and pass those to basic calculators
+    --
+    -- stateless
+    function  Prop_Forward(neur : Neuron_Interface'Class; inputs : NN.State_Vector)
+        return NN.State_Vector;
+    function  Prop_Forward(neur : Neuron_Interface'Class; inputs : NN.Checked_State_Vector)
+        return NN.Checked_State_Vector;
+    -- stateful
+    procedure Prop_Forward (neur : in out Stateful_Neuron_Interface'Class);
+    procedure Prop_Backward(neur : in out Stateful_Neuron_Interface'Class);
 
 
 end wann.neurons;

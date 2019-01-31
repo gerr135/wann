@@ -130,6 +130,26 @@ access to neuron idx's as well as their input/optput connections.
 The values are stored in a global data rec - either external or owned by NNet. This rec is
 passed to neurons/layers to be updated as needed..
 
+### More on layers
+(from the comments in the code):
+At the bare level, Layer can be a simple list of neurons, with propagation done
+in a simple loop (possibly parallelizable) per-neuron.
+More advanced propagators use vectors of values and weight matrices,
+to try to parallelize this via mpi or GPU use..
+To tie it all together an OOP paradigm is used, as the most natural representation.
+The base type, called below Layer_Interface, provides only basic interface and functionality,
+with Matrix_Layer_Interface and others overriding it to provide more elaborate propagators.
+(with the notion that their derived types would hold additional data, thus they would expose
+additional primitives too).
+
+NOTE: layer type should be set at net creation type, as different layr types in hierarchy
+would have different (extra) data. Thus it would be impossible anyway to run an optimized
+(e.g. Matrix) prop on a net constructed from basic layers..
+The other way around can be possible, but does not make much sense. But if it is
+really desired, use of basic (inherited) propagator can be forced in a usual OOP way
+(by performing a type view conversion).
+
+
 ## NNet linear representation formats
 Two are envisioned:
 1. human-readable string representation. Two variants:

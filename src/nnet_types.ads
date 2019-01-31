@@ -129,7 +129,10 @@ package nnet_types is
         neuron : Value_Array (1 .. Nn);
         output : Output_Array(1 .. No);
     end record;
-    --
+
+    function State_Value(SV : State_Vector; idx : ConnectionIndex) return Real with Inline;
+
+
     --  Checked state vector
     type Checked_State_Vector(Ni : InputIndex;
                               Nn : NeuronIndex; No : OutputIndex) is record
@@ -146,5 +149,7 @@ package nnet_types is
         -- but better profile first before going with a more involved design
     end record;
 
+    function Is_Valid(SV : Checked_State_Vector; idx : ConnectionIndex)
+        return Boolean with Inline;
 
 end nnet_types;

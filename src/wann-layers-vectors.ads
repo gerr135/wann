@@ -45,7 +45,7 @@ package wann.layers.vectors is
     --     procedure DelNeuron(LI : Layer_Interface; idx : NeuronIndex) is abstract;
 
     overriding
-    function  Get_Neuron(L : Layer; idx : NeuronIndex) return PN.NeuronClass_Access;
+    function  Neuron(L : Layer; idx : NeuronIndex) return PN.NeuronClass_Access;
     --     procedure SetNeuron(LI : Layer_Interface; idx : NeuronIndex; np : PN.Neuron_Access) is abstract;
 
 private

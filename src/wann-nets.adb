@@ -162,16 +162,16 @@ package body wann.nets is
     ---------------------------------------------
     -- Stateless propagation
     --
-   function PropForward (net : NNet_Interface'Class; IV  : NN.Input_Array;
-                         pType : Propagation_Type) return NN.Output_Array is
+   function PropForward (net : NNet_Interface'Class; inputs : NN.Input_Array) return NN.Output_Array is
         -- this is a stateless prop version. All intermidiate data are kept and updated locally
         -- NOTE: layers can be interconnected in arbitrary way, to absolutely any neurons,
         -- or even inputs/outputs directly, so we need to pass a complete state around.
-        Ni : NN.InputIndex := net.Input_Connections'Length;
+        Ni : NN.InputIndex  := net.Input_Connections'Length;
+        No : NN.OutputIndex := net.Output_Connections'Length;
         use type NN.InputIndex;
     begin
         -- check dimensions and if net has already been sorted
-        if IV'Length /= Ni then
+        if inputs'Length /= Ni then
             raise Data_Width_Mismatch;
         end if;
         if not net.Layers_Ready then
@@ -183,13 +183,12 @@ package body wann.nets is
             -- there should always be at least 1
             L : PL.Layer_Interface'Class := net.Layer(1);
             -- we also need a nnet value vector
-            netState : NN.Checked_State_Vector(Ni=>Ni, Nn=>net.NNeurons,
-                                               No=>net.Output_Connections'Length);
+            netState : NN.Checked_State_Vector(Ni=>Ni, Nn=>net.NNeurons, No=>No);
         begin
             for li in 2 .. net.NLayers loop
                 -- main cycle - just propagate through all layers, updating net state
                 L := net.Layer(li);
-                netState := L.PropForward(netState, pType);
+                netState := L.Prop_Forward(netState);
             end loop;
             return net.calcOutputs(netState);
             -- outputs can be connected to arbitrary layer, so we cannot simply ask last layer
@@ -262,14 +261,13 @@ package body wann.nets is
    ----------------------------------
    -- Stateful propagation
 
-    function PropForward (net : Stateful_NNet_Interface'Class; pType : Propagation_Type)
-        return NN.Output_Array
+    function PropForward (net : Stateful_NNet_Interface'Class) return NN.Output_Array
     is
         L : PL.Layer_Interface'Class := net.Layer(1); -- use access?
     begin
         for li in 2 .. net.NLayers loop
             L := net.Layer(li);
-            L.PropForward(pType);
+            L.Prop_Forward;
         end loop;
         return net.CalcOutputs;
     end PropForward;

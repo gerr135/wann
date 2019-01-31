@@ -86,4 +86,20 @@ package wann is
 
     package NN is new nnet_types(Real);
 
+    function  Get_Value(SV : NN.State_Vector; idx : NN.ConnectionIndex)
+        return Real with Inline;
+    --
+    procedure Set_Value(SV : in out NN.State_Vector; idx : NN.ConnectionIndex;
+                        value : Real) with Inline;
+    --
+    function Is_Valid(SV : NN.Checked_State_Vector; idx : NN.ConnectionIndex)
+        return Boolean with Inline;
+    --
+    function  Get_Value(SV : NN.Checked_State_Vector; idx : NN.ConnectionIndex)
+        return Real with Inline;
+    --
+    procedure Set_Value(SV : in out NN.Checked_State_Vector; idx : NN.ConnectionIndex;
+                        value : Real) with Inline;
+
+
 end wann;

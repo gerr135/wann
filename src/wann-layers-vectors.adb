@@ -51,12 +51,12 @@ package body wann.layers.vectors is
    ---------------
 
    overriding
-   function Get_Neuron (L : Layer; idx : NeuronIndex)
+   function Neuron (L : Layer; idx : NeuronIndex)
    return PN.NeuronClass_Access is
    begin
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "GetNeuron unimplemented");
       return raise Program_Error with "Unimplemented function GetNeuron";
-   end Get_Neuron;
+   end Neuron;
 
 end wann.layers.vectors;
