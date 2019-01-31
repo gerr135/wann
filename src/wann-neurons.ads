@@ -39,7 +39,7 @@ package wann.neurons is
     -- a-la DNA/protein sequence. Then the NNet can be simply defined as some linear sequence
     -- in declaration which can be passed to the NNet constructor.
     type NeuronRec(Nin : InputIndex) is record
-        idx     : NN.NeuronIndex; -- own index in NNet
+        idx     : NN.NeuronIndex_Base; -- own index in NNet
         activat : Activation_Type;
         lag     : Real;    -- delay of result propagation, unused for now
         weights : Weight_Array(0 .. Nin);
@@ -123,6 +123,10 @@ package wann.neurons is
         return NN.State_Vector;
     function  Prop_Forward(neur : Neuron_Interface'Class; inputs : NN.Checked_State_Vector)
         return NN.Checked_State_Vector;
+    --
+    -- procedural form (avoids recreating State_Vector all the time)
+    procedure Prop_Forward(neur : Neuron_Interface'Class; SV : in out NN.State_Vector);
+    procedure Prop_Forward(neur : Neuron_Interface'Class; SV : in out NN.Checked_State_Vector);
     -- stateful
     procedure Prop_Forward (neur : in out Stateful_Neuron_Interface'Class);
     procedure Prop_Backward(neur : in out Stateful_Neuron_Interface'Class);

@@ -62,6 +62,11 @@ package wann.nets is
     -- create new empty neuron emplacement and return its index
     -- needs overriding in dynamic/mutable net.
     -- Makes no sense for fixed nnet; that one should just return 0 (and do nothing otherwise).
+    --
+    -- ATTN!! Need to change the logic here!
+    -- As we have multiple neuron implementations, specific neurons should be created
+    -- by their appropriate constructors and passed to Add_Neuron method.
+    -- There should be no New_Neuron methods per se, we may need the Next_free_Idx function though..
 
     procedure Del_Neuron(net : in out NNet_Interface; idx : NN.NeuronIndex) is null;
     -- remove neuron from NNet_Interface, as with New, only for mutable representation

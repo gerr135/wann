@@ -5,82 +5,58 @@ package body wann.nets.vectors is
    -- Create --
    ------------
 
-   function Create (Nin : NN.InputIndex; Nout : NN.OutputIndex) return NNet is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Create unimplemented");
-      return raise Program_Error with "Unimplemented function Create";
-   end Create;
+    function Create (Nin : NN.InputIndex; Nout : NN.OutputIndex) return NNet is
+        net : NNet;
+    begin
+        return net;
+        -- all ACV.Vectors are initialized empty by default, not much else to do for now
+    end Create;
 
-   --------------
-   -- NNeurons --
-   --------------
+    overriding
+    function NNeurons (net : NNet) return NN.NeuronIndex is
+    begin
+        return NN.NeuronIndex_Base(net.neurons.Length);
+    end NNeurons;
 
-   overriding function NNeurons
-     (net : NNet)
-      return NN.NeuronIndex
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "NNeurons unimplemented");
-      return raise Program_Error with "Unimplemented function NNeurons";
-   end NNeurons;
-
-   -------------
-   -- NLayers --
-   -------------
-
-   overriding function NLayers
-     (net : NNet)
-      return NN.LayerIndex
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "NLayers unimplemented");
-      return raise Program_Error with "Unimplemented function NLayers";
-   end NLayers;
+    overriding
+    function NLayers (net : NNet) return NN.LayerIndex is
+    begin
+        return NN.LayerIndex_Base(net.layers.Length);
+    end NLayers;
 
    -----------------------
    -- Input_Connections --
-   -----------------------
-
-   overriding function Input_Connections
-     (net : NNet)
-      return NN.Input_Connection_Array
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Input_Connections unimplemented");
-      return raise Program_Error with "Unimplemented function Input_Connections";
-   end Input_Connections;
+    overriding
+    function Input_Connections (net : NNet) return NN.Input_Connection_Array is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "Input_Connections unimplemented");
+        return raise Program_Error with "Unimplemented function Input_Connections";
+    end Input_Connections;
 
    ------------------------
    -- Output_Connections --
    ------------------------
 
-   overriding function Output_Connections
-     (net : NNet)
-      return NN.Output_Connection_Array
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Output_Connections unimplemented");
-      return raise Program_Error with "Unimplemented function Output_Connections";
-   end Output_Connections;
+    overriding
+    function Output_Connections (net : NNet) return NN.Output_Connection_Array is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "Output_Connections unimplemented");
+        return raise Program_Error with "Unimplemented function Output_Connections";
+    end Output_Connections;
 
-   ----------------
-   -- New_Neuron --
-   ----------------
-
-   overriding procedure New_Neuron
-     (net : in out NNet;
-      idx : out NN.NeuronIndex_Base)
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "New_Neuron unimplemented");
-      raise Program_Error with "Unimplemented procedure New_Neuron";
-   end New_Neuron;
+    ----------------
+    -- New_Neuron --
+    overriding
+    procedure New_Neuron (net : in out NNet; idx : out NN.NeuronIndex_Base) is
+        use type Ada.Containers.Count_Type;
+    begin
+        idx := NN.NeuronIndex(net.neurons.Length + 1);
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "New_Neuron unimplemented");
+        raise Program_Error with "Unimplemented procedure New_Neuron";
+    end New_Neuron;
 
    ----------------
    -- Del_Neuron --

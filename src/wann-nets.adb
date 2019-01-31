@@ -51,7 +51,7 @@ package body wann.nets is
     is
         --
         NR : PN.NeuronRec(Nin=>connects'Last) :=
-            (idx=>1, lag=>0.0, Nin => connects'Last,
+            (idx=>0, lag=>0.0, Nin => connects'Last,
             activat=>activat, weights => (others=>0.0), inputs  => connects );
     begin
         net.Add_Neuron(NR,idx);

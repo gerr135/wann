@@ -104,13 +104,13 @@ procedure run_customNN is
 
     use PW; use NN;
 
-    singleNeur : PNV.NNet := PNV.Create(Nin=>2, Nout=>1);
+    net1_singleNeur : PNV.NNet := PNV.Create(Nin=>2, Nout=>1);
 
 
 begin  -- main
 --     processCommandLine (params);
     Put_Line("creating basic 1-neuron network");
-    singleNeur.Add_Neuron(Sigmoid, ((I,1),(I,2)));
+    net1_singleNeur.Add_Neuron(Sigmoid, ((I,1),(I,2)));
 exception
 	when Finish => null;
 end run_customNN;

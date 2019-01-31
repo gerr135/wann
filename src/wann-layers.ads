@@ -103,6 +103,11 @@ package wann.layers is
     --  stateless propagation, no side effects
     function  Prop_Forward(L : Layer_Interface; inputs : NN.State_Vector) return NN.State_Vector;
     function  Prop_Forward(L : Layer_Interface; inputs : NN.Checked_State_Vector) return NN.Checked_State_Vector;
+    --
+    -- these (procedural form) should be much more efficient, as the State_Vector is modified directly
+    -- instead of being recreated all the time..
+    procedure Prop_Forward(L : Layer_Interface; SV : in out NN.State_Vector);
+    procedure Prop_Forward(L : Layer_Interface; SV : in out NN.Checked_State_Vector);
 
     -- stateful propagation, only makes sense for some cases.
     --     procedure SetInputs(L : in out Layer_Interface'Class; inputs : ValueArray);

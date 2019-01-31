@@ -179,6 +179,34 @@ package body wann.neurons is
         return outputs;
     end;
 
+    procedure Prop_Forward(neur : Neuron_Interface'Class; SV : in out NN.State_Vector) is
+        data : Value_Array(1 .. neur.NInputs);
+        result : Real;
+    begin
+        for i in 1 .. neur.NInputs loop
+            data(i) := Get_Value(SV, neur.Input(i));
+        end loop;
+        result := neur.Prop_Forward(data);
+        for o in 1 .. neur.NOutputs loop
+            Set_Value(SV,neur.Output(o), result);
+        end loop;
+    end;
+
+    procedure Prop_Forward(neur : Neuron_Interface'Class; SV : in out NN.Checked_State_Vector) is
+        data : Value_Array(1 .. neur.NInputs);
+        result : Real;
+    begin
+        for i in 1 .. neur.NInputs loop
+            data(i) := Get_Value(SV, neur.Input(i));
+            -- extra (validity) checks are performed by overloaded Get_Value function here
+            -- otherwise the code is identical (to non-checked version)
+        end loop;
+        result := neur.Prop_Forward(data);
+        for o in 1 .. neur.NOutputs loop
+            Set_Value(SV,neur.Output(o), result);
+        end loop;
+    end;
+
 
     -- stateful
     procedure Prop_Forward (neur : in out Stateful_Neuron_Interface'Class) is begin

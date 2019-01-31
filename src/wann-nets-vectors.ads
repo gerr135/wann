@@ -108,7 +108,7 @@ private
         inputs  : IV.Vector;
         outputs : OV.Vector;
         neurons : NV.Vector;
-        myLayers : LV.Vector;
+        layers : LV.Vector;
     end record;
 
     type Cached_NNet is new NNet and Cached_NNet_Interface with null record;
