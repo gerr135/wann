@@ -53,27 +53,24 @@ package wann.nets is
     function NNeurons(net : NNet_Interface) return NN.NeuronIndex is abstract;
     function NLayers (net : NNet_Interface) return NN.LayerIndex  is abstract;
 
-    -- data storage and propagation
+    -- net topology (connection info)
     function  Input_Connections (net : NNet_Interface) return NN.Input_Connection_Array  is abstract;
     function  Output_Connections(net : NNet_Interface) return NN.Output_Connection_Array is abstract;
 
     --  Neuron handling
-    procedure New_Neuron(net : in out NNet_Interface; idx : out NN.NeuronIndex_Base) is abstract;
-    -- create new empty neuron emplacement and return its index
-    -- needs overriding in dynamic/mutable net.
-    -- Makes no sense for fixed nnet; that one should just return 0 (and do nothing otherwise).
-    --
-    -- ATTN!! Need to change the logic here!
     -- As we have multiple neuron implementations, specific neurons should be created
     -- by their appropriate constructors and passed to Add_Neuron method.
     -- There should be no New_Neuron methods per se, we may need the Next_free_Idx function though..
-
+    procedure Add_Neuron(net : in out NNet_Interface;
+                         neur : PN.Neuron_Interface'Class; -- gotta be neuron itself, not reference, as NNet is essentially a container
+                         idx : out NN.NeuronIndex) is abstract;
+    --
     procedure Del_Neuron(net : in out NNet_Interface; idx : NN.NeuronIndex) is null;
     -- remove neuron from NNet_Interface, as with New, only for mutable representation
 
     -- neuron getter and setter
     function  Neuron(net : NNet_Interface; idx : NN.NeuronIndex) return PN.NeuronClass_Access is abstract;
-    procedure Set_Neuron(net : in out NNet_Interface; NA : PN.NeuronClass_Access) is abstract;
+--     procedure Set_Neuron(net : in out NNet_Interface; NA : PN.NeuronClass_Access) is abstract;
 
     -- layer handling
     function  Layers_Ready (net : NNet_Interface) return Boolean is abstract;
@@ -109,32 +106,8 @@ package wann.nets is
 
     -----------------------------------------
     -- class-wide stuff: main utility
-
     --
-    -- NNet construction
-    --
-    -- Neuron manipulation
-    --
-    function  Add_Neuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec) return NN.NeuronIndex;
-    procedure Add_Neuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec; idx : out NN.NeuronIndex);
-    procedure Add_Neuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec);
-    -- combines New and Set
-    --
-    function  Add_Neuron(net : in out NNet_Interface'Class; activat : Activation_Type;
-                         connects : PN.Input_Connection_Array) return NN.NeuronIndex;
-    procedure Add_Neuron(net : in out NNet_Interface'Class; activat : Activation_Type;
-                         connects : PN.Input_Connection_Array; idx : out NN.NeuronIndex);
-    procedure Add_Neuron(net : in out NNet_Interface'Class; activat : Activation_Type;
-                         connects : PN.Input_Connection_Array);
-    -- New plus Set by parameters
-    --
-    procedure Reset_Neuron(net : in out NNet_Interface'Class; NR  : PN.NeuronRec);
-    procedure Reset_Neuron(net : in out NNet_Interface'Class; idx : NN.NeuronIndex; activat : Activation_Type; connects : PN.Input_Connection_Array);
-    procedure Reset_Neuron(net : in out NNet_Interface'Class; idx : NN.NeuronIndex; connects : PN.Input_Connection_Array);
-    -- replaces neuron[idx] parameters, either all or partial
-
-    --
-    --  Nnet manipulation
+    --  NNet manipulation
     --
     procedure Reconnect_Neuron_At_Random(net : in out NNet_Interface'Class; idx  : NN.NeuronIndex; maxConnects : PN.InputIndex_Base := 0);
     procedure Populate_At_Random (net : in out NNet_Interface'Class; Npts : NN.NeuronIndex_Base;  maxConnects : PN.InputIndex_Base := 0);

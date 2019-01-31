@@ -99,18 +99,21 @@ procedure run_customNN is
     use Ada.Text_IO;
 
     package PW is new wann(Real => Float);
-    package PN is new PW.nets;
+    package PN is new PW.neurons;
     package PNV is new PN.vectors;
+    package PNn is new PW.nets;
+    package PNnV is new PN.vectors;
 
     use PW; use NN;
 
+    neur1 : PNV.Neuron := Create(Sigmoid, ((I,1),(I,2)));
     net1_singleNeur : PNV.NNet := PNV.Create(Nin=>2, Nout=>1);
 
 
 begin  -- main
 --     processCommandLine (params);
     Put_Line("creating basic 1-neuron network");
-    net1_singleNeur.Add_Neuron(Sigmoid, ((I,1),(I,2)));
+    net1_singleNeur.Add_Neuron();
 exception
 	when Finish => null;
 end run_customNN;

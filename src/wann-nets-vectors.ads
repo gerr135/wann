@@ -50,7 +50,8 @@ package wann.nets.vectors is
 
     -- neuron handling
     overriding
-    procedure New_Neuron(net : in out NNet; idx : out NN.NeuronIndex_Base);
+    procedure Add_Neuron(net : in out NNet; neur : PN.Neuron_Interface'Class;
+                         idx : out NN.NeuronIndex);
 
     overriding
     procedure Del_Neuron(net : in out NNet; idx : NN.NeuronIndex);
@@ -59,8 +60,8 @@ package wann.nets.vectors is
     overriding
     function  Neuron(net : NNet; idx : NN.NeuronIndex) return PN.NeuronClass_Access;
 
-    overriding
-    procedure Set_Neuron(net : in out NNet; NA : PN.NeuronClass_Access);
+--     overriding
+--     procedure Set_Neuron(net : in out NNet; NA : PN.NeuronClass_Access);
 
     overriding
     function  Layers_Ready (net : NNet) return Boolean;
