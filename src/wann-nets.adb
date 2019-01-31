@@ -7,65 +7,12 @@ package body wann.nets is
     -- Add_Neuron   --
     -----------------
 
-    function Add_Neuron (net : in out NNet_Interface'Class; NR : PN.NeuronRec) return NN.NeuronIndex is
-        idx : NN.NeuronIndex_Base;
-    begin
-        net.Add_Neuron(NR,idx);
-        return idx;
-    end Add_Neuron;
-
-    procedure Add_Neuron (net : in out NNet_Interface'Class; NR : PN.NeuronRec; idx : out NN.NeuronIndex) is
-        newNR : PN.NeuronRec := NR;
-    begin
-        net.New_Neuron(idx);
-        newNR.idx := idx;
-        -- net.SetNeuron(newNR);
-        pragma Compile_Time_Warning (Standard.True, "Add_Neuron unimplemented");
-        raise Program_Error with "Unimplemented function Add_Neuron";
-    end Add_Neuron;
-
-    procedure Add_Neuron (net : in out NNet_Interface'Class; NR : PN.NeuronRec) is
-        -- keep the code centralized: just call above variant and discard extra index
+    procedure Add_Neuron(net : in out NNet_Interface'Class; neur : PN.Neuron_Interface'Class) is
         idx : NN.NeuronIndex_Base;
     begin
         net.Add_Neuron(NR, idx);
     end Add_Neuron;
 
-    function Add_Neuron
-       (net : in out NNet_Interface'Class;
-        activat : Activation_Type;
-        connects : PN.Input_Connection_Array)  return NN.NeuronIndex
-    is
-        --
-        idx : NN.NeuronIndex_Base;
-    begin
-        net.Add_Neuron(activat,connects,idx);
-        return idx;
-    end Add_Neuron;
-
-    procedure Add_Neuron
-        (net : in out NNet_Interface'Class;
-        activat : Activation_Type;
-        connects : PN.Input_Connection_Array;
-        idx : out NN.NeuronIndex)
-    is
-        --
-        NR : PN.NeuronRec(Nin=>connects'Last) :=
-            (idx=>0, lag=>0.0, Nin => connects'Last,
-            activat=>activat, weights => (others=>0.0), inputs  => connects );
-    begin
-        net.Add_Neuron(NR,idx);
-    end Add_Neuron;
-
-    procedure Add_Neuron
-        (net : in out NNet_Interface'Class;
-        activat : Activation_Type;
-        connects : PN.Input_Connection_Array)
-    is
-        idx : NN.NeuronIndex_Base;
-    begin
-        net.Add_Neuron(activat, connects,idx);
-    end Add_Neuron;
 
    -----------------
    -- Reset_Neuron --

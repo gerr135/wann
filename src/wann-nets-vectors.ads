@@ -18,7 +18,7 @@
 --
 
 with Ada.Containers.Vectors;
-with Ada.Containers.Indefinite_Vectors;
+-- with Ada.Containers.Indefinite_Vectors;
 
 with wann.layers.vectors;
 
@@ -30,7 +30,7 @@ package wann.nets.vectors is
     type NNet is new NNet_Interface with private;
 
     -- Base constructor, create empty net with set Nin and Nout
-    function Create (Nin : NN.InputIndex; Nout : NN.OutputIndex) return NNet;
+    function Create(Nin : NN.InputIndex; Nout : NN.OutputIndex) return NNet;
 
     -- inherited methods
     -- getters
@@ -50,8 +50,8 @@ package wann.nets.vectors is
 
     -- neuron handling
     overriding
-    procedure Add_Neuron(net : in out NNet; neur : PN.Neuron_Interface'Class;
-                         idx : out NN.NeuronIndex);
+    procedure Add_Neuron(net : in out NNet; neur : PN.Neuron_Interface'Class);
+--                          idx : out NN.NeuronIndex);
 
     overriding
     procedure Del_Neuron(net : in out NNet; idx : NN.NeuronIndex);

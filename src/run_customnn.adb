@@ -12,7 +12,7 @@ with Ada.Text_IO, Ada.Integer_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 with wann.nets.vectors;
-
+with wann.neurons.vectors;
 
 procedure run_customNN is
     procedure printUsage is
@@ -102,18 +102,18 @@ procedure run_customNN is
     package PN is new PW.neurons;
     package PNV is new PN.vectors;
     package PNn is new PW.nets;
-    package PNnV is new PN.vectors;
+    package PNnV is new PNn.vectors;
 
     use PW; use NN;
 
-    neur1 : PNV.Neuron := Create(Sigmoid, ((I,1),(I,2)));
-    net1_singleNeur : PNV.NNet := PNV.Create(Nin=>2, Nout=>1);
+    neur1 : PNV.Neuron := PNV.Create(Sigmoid, ((I,1),(I,2)));
+    net1_singleNeur : PNnV.NNet := PNnV.Create(Nin=>2, Nout=>1);
 
 
 begin  -- main
 --     processCommandLine (params);
     Put_Line("creating basic 1-neuron network");
-    net1_singleNeur.Add_Neuron();
+    net1_singleNeur.Add_Neuron(neur1);
 exception
 	when Finish => null;
 end run_customNN;

@@ -17,6 +17,8 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
+with Ada.Containers.Vectors;
+
 generic
 package wann.neurons.vectors is
 
@@ -24,40 +26,51 @@ package wann.neurons.vectors is
 
     -- inherited primitives
     overriding
-    function  ToRec  (NI : Neuron_Interface) return NeuronRec;
+    function  ToRec  (NI : Neuron) return NeuronRec;
     overriding
-    procedure FromRec(NI : in out Neuron_Interface; LR : NeuronRec);
+    procedure FromRec(NI : in out Neuron; LR : NeuronRec);
     --
     overriding
-    procedure AddOutput(NI : in out Neuron_Interface; Output : NN.ConnectionIndex);
+    procedure AddOutput(NI : in out Neuron; Output : NN.ConnectionIndex);
     overriding
-    procedure DelOutput(NI : in out Neuron_Interface; Output : NN.ConnectionIndex);
+    procedure DelOutput(NI : in out Neuron; Output : NN.ConnectionIndex);
 
     -- Still, it is better to provide direct getters for frequently used fields
     overriding
-    function NInputs (neur : Neuron_Interface) return InputIndex ;
+    function NInputs (neur : Neuron) return InputIndex ;
     overriding
-    function NOutputs(neur : Neuron_Interface) return OutputIndex;
+    function NOutputs(neur : Neuron) return OutputIndex;
     --
     overriding
-    function Input (neur : Neuron_Interface; idx : InputIndex)  return NN.ConnectionIndex;
+    function Input (neur : Neuron; idx : InputIndex)  return NN.ConnectionIndex;
     overriding
-    function Output(neur : Neuron_Interface; idx : OutputIndex) return NN.ConnectionIndex;
+    function Output(neur : Neuron; idx : OutputIndex) return NN.ConnectionIndex;
 
     -----------
     -- constructors
     not overriding
-    function Create()
+    function Create(NR : NeuronRec) return Neuron;
 
-        -- old interface to be reintegrated here
-        function  AddNeuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec) return NNet_NeuronIndex;
-        procedure AddNeuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec; idx : out NNet_NeuronIndex);
-        procedure AddNeuron(net : in out NNet_Interface'Class; NR : PN.NeuronRec);
-        -- combines New and Set
-        --
-        function  AddNeuron(net : in out NNet_Interface'Class; activat : ActivationType; connects : PN.InConnArray) return NNet_NeuronIndex;
-        procedure AddNeuron(net : in out NNet_Interface'Class; activat : ActivationType; connects : PN.InConnArray; idx : out NNet_NeuronIndex);
-        procedure AddNeuron(net : in out NNet_Interface'Class; activat : ActivationType; connects : PN.InConnArray);
+    not overriding
+    function Create(activation : Activation_Type; connections : NN.Input_Connection_Array) return Neuron;
+
+
+private
+
+    -- needed vector types
+    use type NN.ConnectionIndex;
+    package IV is new Ada.Containers.Vectors(Index_Type=>NN.InputIndex,  Element_Type=>NN.ConnectionIndex);
+    package OV is new Ada.Containers.Vectors(Index_Type=>NN.OutputIndex, Element_Type=>NN.ConnectionIndex);
+    package WV is new Ada.Containers.Vectors(Index_Type=>NN.InputIndex_Base, Element_Type=>Real);
+
+    type Neuron is new Neuron_Interface with record
+        idx     : NN.NeuronIndex_Base; -- own index in NNet
+        activat : Activation_Type;
+        lag     : Real;    -- delay of result propagation, unused for now
+        inputs  : IV.Vector;
+        outputs : OV.Vector;
+        weights : WV.Vector;
+    end record;
 
 
 end wann.neurons.vectors;
