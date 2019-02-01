@@ -70,7 +70,9 @@ package wann.nets is
     -- remove neuron from NNet_Interface, as with New, only for mutable representation
 
     -- neuron getter and setter
-    function  Neuron(net : NNet_Interface; idx : NN.NeuronIndex) return PN.NeuronClass_Access is abstract;
+    function  Neuron(net : NNet_Interface; idx : NN.NeuronIndex) return PN.Neuron_Interface'Class is abstract;
+    -- tagged types are passed by reference, so no need for 'Access here.
+    -- NNet is conceptually a container anyway
 --     procedure Set_Neuron(net : in out NNet_Interface; NA : PN.NeuronClass_Access) is abstract;
 
     -- layer handling

@@ -18,7 +18,7 @@
 --
 
 with Ada.Containers.Vectors;
--- with Ada.Containers.Indefinite_Vectors;
+with Ada.Containers.Indefinite_Vectors;
 
 with wann.layers.vectors;
 
@@ -51,7 +51,7 @@ package wann.nets.vectors is
     function NLayers (net : Proto_NNet) return NN.LayerIndex;
 
     overriding
-    function  Neuron(net : Proto_NNet; idx : NN.NeuronIndex) return PN.NeuronClass_Access;
+    function  Neuron(net : Proto_NNet; idx : NN.NeuronIndex) return PN.Neuron_Interface'Class;
     -- we *can* existing one, this code should be common
 
     overriding
@@ -64,32 +64,34 @@ package wann.nets.vectors is
     procedure Set_Layer(net : in out Proto_NNet; idx : NN.LayerIndex; L : PL.Layer_Interface'Class);
 
 
-    --------------------------------------------------------------------
-    --  Cached_NNet
-    type Cached_Proto_NNet is abstract new Proto_NNet and Cached_NNet_Interface with private;
+    -- these two types below break compiler for some reason
+--     --------------------------------------------------------------------
+--     --  Cached_NNet
+--     type Cached_Proto_NNet is abstract new Proto_NNet and Cached_NNet_Interface with private;
+--
+--     overriding
+--     function  State(net : Cached_Proto_NNet) return NN.State_Vector;
+--
+--     overriding
+--     procedure Set_State(net : in out Cached_Proto_NNet; NSV : NN.State_Vector);
 
-    overriding
-    function  State(net : Cached_Proto_NNet) return NN.State_Vector;
 
-    overriding
-    procedure Set_State(net : in out Cached_Proto_NNet; NSV : NN.State_Vector);
-
-
-    type Cached_Checked_Proto_NNet is abstract new Proto_NNet and Cached_Checked_NNet_Interface with private;
-
-    overriding
-    function  State(net : Cached_Checked_Proto_NNet) return NN.Checked_State_Vector;
-
-    overriding
-    procedure Set_State(net : in out Cached_Checked_Proto_NNet; NSV : NN.Checked_State_Vector);
+--     type Cached_Checked_Proto_NNet is abstract new Proto_NNet and Cached_Checked_NNet_Interface with private;
+--
+--     overriding
+--     function  State(net : Cached_Checked_Proto_NNet) return NN.Checked_State_Vector;
+--
+--     overriding
+--     procedure Set_State(net : in out Cached_Checked_Proto_NNet; NSV : NN.Checked_State_Vector);
 
 
 
 private
 
     -- utilized vector types
-    use type NN.ConnectionIndex;
-    package NV is new Ada.Containers.Vectors(Index_Type=>NN.NeuronIndex, Element_Type=>NN.ConnectionIndex);
+    use type PN.Neuron_Interface;
+    package NV is new Ada.Containers.Indefinite_Vectors (
+            Index_Type=>NN.NeuronIndex, Element_Type=>PN.Neuron_Interface'Class);
 
     package PLV is new PL.vectors;
     use type PLV.Layer;
@@ -99,11 +101,12 @@ private
     type Proto_NNet is abstract new NNet_Interface with record
         neurons : NV.Vector;
         layers  : LV.Vector;
+        Layers_Ready : Boolean := False;
     end record;
 
-    type Cached_Proto_NNet is abstract new Proto_NNet and Cached_NNet_Interface with null record;
+--     type Cached_Proto_NNet is abstract new Proto_NNet and Cached_NNet_Interface with null record;
 
-    type Cached_Checked_Proto_NNet is abstract new Proto_NNet and Cached_Checked_NNet_Interface with null record;
+--     type Cached_Checked_Proto_NNet is abstract new Proto_NNet and Cached_Checked_NNet_Interface with null record;
 
 end wann.nets.vectors;
 

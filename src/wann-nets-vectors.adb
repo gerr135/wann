@@ -24,12 +24,10 @@ package body wann.nets.vectors is
     ------------
     overriding
     function Neuron (net : Proto_NNet; idx : NN.NeuronIndex)
-        return PN.NeuronClass_Access
+        return PN.Neuron_Interface'Class
     is
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Neuron unimplemented");
-        return raise Program_Error with "Unimplemented function Neuron";
+        return net.neurons.Element(idx);
     end Neuron;
 
     ------------------
@@ -37,9 +35,7 @@ package body wann.nets.vectors is
     overriding
     function Layers_Ready (net : Proto_NNet) return Boolean is
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Layers_Ready unimplemented");
-        return raise Program_Error with "Unimplemented function Layers_Ready";
+        return net.Layers_Ready;
     end Layers_Ready;
 
     -----------
@@ -49,9 +45,7 @@ package body wann.nets.vectors is
         return PL.Layer_Interface'Class
     is
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Layer unimplemented");
-        return raise Program_Error with "Unimplemented function Layer";
+        return net.layers.Element(idx);
     end Layer;
 
     ---------------
@@ -66,56 +60,56 @@ package body wann.nets.vectors is
         raise Program_Error with "Unimplemented procedure Set_Layer";
     end Set_Layer;
 
-    -----------
-    -- State --
-    overriding
-    function State (net : Cached_Proto_NNet) return NN.State_Vector is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "State unimplemented");
-        return raise Program_Error with "Unimplemented function State";
-    end State;
+--     ---------------------
+--     -- Cached_Proto_NNet
+--
+--     overriding
+--     function State (net : Cached_Proto_NNet) return NN.State_Vector is
+--     begin
+--         --  Generated stub: replace with real body!
+--         pragma Compile_Time_Warning (Standard.True, "State unimplemented");
+--         return raise Program_Error with "Unimplemented function State";
+--     end State;
+--
+--     ---------------
+--     -- Set_State --
+--     ---------------
+--
+--     overriding procedure Set_State
+--         (net : in out Cached_Proto_NNet;
+--         NSV : NN.State_Vector)
+--     is
+--     begin
+--         --  Generated stub: replace with real body!
+--         pragma Compile_Time_Warning (Standard.True, "Set_State unimplemented");
+--         raise Program_Error with "Unimplemented procedure Set_State";
+--     end Set_State;
 
-    ---------------
-    -- Set_State --
-    ---------------
-
-    overriding procedure Set_State
-        (net : in out Cached_Proto_NNet;
-        NSV : NN.State_Vector)
-    is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Set_State unimplemented");
-        raise Program_Error with "Unimplemented procedure Set_State";
-    end Set_State;
-
-    -----------
-    -- State --
-    -----------
-
-    overriding function State
-        (net : Cached_Checked_Proto_NNet)
-        return NN.Checked_State_Vector
-    is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "State unimplemented");
-        return raise Program_Error with "Unimplemented function State";
-    end State;
-
-    ---------------
-    -- Set_State --
-    ---------------
-
-    overriding procedure Set_State
-        (net : in out Cached_Checked_Proto_NNet;
-        NSV : NN.Checked_State_Vector)
-    is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Set_State unimplemented");
-        raise Program_Error with "Unimplemented procedure Set_State";
-    end Set_State;
+--     ----------------------------
+--     -- Cached_Checked_Proto_NNet
+--
+--     overriding function State
+--         (net : Cached_Checked_Proto_NNet)
+--         return NN.Checked_State_Vector
+--     is
+--     begin
+--         --  Generated stub: replace with real body!
+--         pragma Compile_Time_Warning (Standard.True, "State unimplemented");
+--         return raise Program_Error with "Unimplemented function State";
+--     end State;
+--
+--     ---------------
+--     -- Set_State --
+--     ---------------
+--
+--     overriding procedure Set_State
+--         (net : in out Cached_Checked_Proto_NNet;
+--         NSV : NN.Checked_State_Vector)
+--     is
+--     begin
+--         --  Generated stub: replace with real body!
+--         pragma Compile_Time_Warning (Standard.True, "Set_State unimplemented");
+--         raise Program_Error with "Unimplemented procedure Set_State";
+--     end Set_State;
 
 end wann.nets.vectors;
