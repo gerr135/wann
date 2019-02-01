@@ -152,4 +152,7 @@ package nnet_types is
     function Is_Valid(SV : Checked_State_Vector; idx : ConnectionIndex)
         return Boolean with Inline;
 
+    function Inputs_are_valid (SV : Checked_State_Vector) return Boolean;
+    function Outputs_are_valid(SV : Checked_State_Vector) return Boolean;
+
 end nnet_types;

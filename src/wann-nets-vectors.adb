@@ -1,190 +1,121 @@
 pragma Ada_2012;
 package body wann.nets.vectors is
 
-   ------------
-   -- Create --
-   ------------
-
-    function Create (Nin : NN.InputIndex; Nout : NN.OutputIndex) return NNet is
-        net : NNet;
-    begin
-        return net;
-        -- all ACV.Vectors are initialized empty by default, not much else to do for now
-    end Create;
-
+    --------------
+    -- NNeurons --
+    --------------
     overriding
-    function NNeurons (net : NNet) return NN.NeuronIndex is
+    function NNeurons (net : Proto_NNet) return NN.NeuronIndex is
     begin
         return NN.NeuronIndex_Base(net.neurons.Length);
     end NNeurons;
 
+    -------------
+    -- NLayers --
+    -------------
     overriding
-    function NLayers (net : NNet) return NN.LayerIndex is
+    function NLayers (net : Proto_NNet) return NN.LayerIndex is
     begin
         return NN.LayerIndex_Base(net.layers.Length);
     end NLayers;
 
-   -----------------------
-   -- Input_Connections --
+    ------------
+    -- Neuron --
+    ------------
     overriding
-    function Input_Connections (net : NNet) return NN.Input_Connection_Array is
+    function Neuron (net : Proto_NNet; idx : NN.NeuronIndex)
+        return PN.NeuronClass_Access
+    is
     begin
         --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Input_Connections unimplemented");
-        return raise Program_Error with "Unimplemented function Input_Connections";
-    end Input_Connections;
+        pragma Compile_Time_Warning (Standard.True, "Neuron unimplemented");
+        return raise Program_Error with "Unimplemented function Neuron";
+    end Neuron;
 
-   ------------------------
-   -- Output_Connections --
-   ------------------------
-
+    ------------------
+    -- Layers_Ready --
     overriding
-    function Output_Connections (net : NNet) return NN.Output_Connection_Array is
+    function Layers_Ready (net : Proto_NNet) return Boolean is
     begin
         --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Output_Connections unimplemented");
-        return raise Program_Error with "Unimplemented function Output_Connections";
-    end Output_Connections;
+        pragma Compile_Time_Warning (Standard.True, "Layers_Ready unimplemented");
+        return raise Program_Error with "Unimplemented function Layers_Ready";
+    end Layers_Ready;
 
-    ----------------
-    -- New_Neuron --
+    -----------
+    -- Layer --
     overriding
-    procedure New_Neuron (net : in out NNet; idx : out NN.NeuronIndex_Base) is
-        use type Ada.Containers.Count_Type;
+    function Layer (net : Proto_NNet; idx : NN.LayerIndex)
+        return PL.Layer_Interface'Class
+    is
     begin
-        idx := NN.NeuronIndex(net.neurons.Length + 1);
         --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "New_Neuron unimplemented");
-        raise Program_Error with "Unimplemented procedure New_Neuron";
-    end New_Neuron;
+        pragma Compile_Time_Warning (Standard.True, "Layer unimplemented");
+        return raise Program_Error with "Unimplemented function Layer";
+    end Layer;
 
-   ----------------
-   -- Del_Neuron --
-   ----------------
+    ---------------
+    -- Set_Layer --
+    overriding
+    procedure Set_Layer (net : in out Proto_NNet; idx : NN.LayerIndex;
+                         L : PL.Layer_Interface'Class)
+    is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "Set_Layer unimplemented");
+        raise Program_Error with "Unimplemented procedure Set_Layer";
+    end Set_Layer;
 
-   overriding procedure Del_Neuron
-     (net : in out NNet;
-      idx : NN.NeuronIndex)
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Del_Neuron unimplemented");
-      raise Program_Error with "Unimplemented procedure Del_Neuron";
-   end Del_Neuron;
+    -----------
+    -- State --
+    overriding
+    function State (net : Cached_Proto_NNet) return NN.State_Vector is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "State unimplemented");
+        return raise Program_Error with "Unimplemented function State";
+    end State;
 
-   ------------
-   -- Neuron --
-   ------------
+    ---------------
+    -- Set_State --
+    ---------------
 
-   overriding function Neuron
-     (net : NNet;
-      idx : NN.NeuronIndex)
-      return PN.NeuronClass_Access
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Neuron unimplemented");
-      return raise Program_Error with "Unimplemented function Neuron";
-   end Neuron;
+    overriding procedure Set_State
+        (net : in out Cached_Proto_NNet;
+        NSV : NN.State_Vector)
+    is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "Set_State unimplemented");
+        raise Program_Error with "Unimplemented procedure Set_State";
+    end Set_State;
 
-   ----------------
-   -- Set_Neuron --
-   ----------------
+    -----------
+    -- State --
+    -----------
 
-   overriding procedure Set_Neuron
-     (net : in out NNet;
-      NA : PN.NeuronClass_Access)
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Set_Neuron unimplemented");
-      raise Program_Error with "Unimplemented procedure Set_Neuron";
-   end Set_Neuron;
+    overriding function State
+        (net : Cached_Checked_Proto_NNet)
+        return NN.Checked_State_Vector
+    is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "State unimplemented");
+        return raise Program_Error with "Unimplemented function State";
+    end State;
 
-   ------------------
-   -- Layers_Ready --
-   ------------------
+    ---------------
+    -- Set_State --
+    ---------------
 
-   overriding function Layers_Ready
-     (net : NNet)
-      return Boolean
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Layers_Ready unimplemented");
-      return raise Program_Error with "Unimplemented function Layers_Ready";
-   end Layers_Ready;
-
-   -----------
-   -- Layer --
-   -----------
-
-   overriding function Layer
-     (net : NNet;
-      idx : NN.LayerIndex)
-      return PL.Layer_Interface'Class
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Layer unimplemented");
-      return raise Program_Error with "Unimplemented function Layer";
-   end Layer;
-
-   ---------------
-   -- Set_Layer --
-   ---------------
-
-   overriding procedure Set_Layer
-     (net : in out NNet;
-      idx : NN.LayerIndex;
-      L : PL.Layer_Interface'Class)
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Set_Layer unimplemented");
-      raise Program_Error with "Unimplemented procedure Set_Layer";
-   end Set_Layer;
-
-   -----------
-   -- State --
-   -----------
-
-   overriding function State
-     (net : Cached_NNet)
-      return NN.State_Vector
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "State unimplemented");
-      return raise Program_Error with "Unimplemented function State";
-   end State;
-
-   --------------
-   -- SetState --
-   --------------
-
-   overriding procedure SetState
-     (net : in out Cached_NNet;
-      NSV : NN.State_Vector)
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "SetState unimplemented");
-      raise Program_Error with "Unimplemented procedure SetState";
-   end SetState;
-
-   ------------------
-   -- NeuronValues --
-   ------------------
-
-   overriding function NeuronValues
-     (net : Cached_NNet)
-      return NN.Value_Array
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "NeuronValues unimplemented");
-      return raise Program_Error with "Unimplemented function NeuronValues";
-   end NeuronValues;
+    overriding procedure Set_State
+        (net : in out Cached_Checked_Proto_NNet;
+        NSV : NN.Checked_State_Vector)
+    is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "Set_State unimplemented");
+        raise Program_Error with "Unimplemented procedure Set_State";
+    end Set_State;
 
 end wann.nets.vectors;

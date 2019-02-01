@@ -38,7 +38,7 @@ package wann.nets.vectors is
 
     ------------------------------
     -- Proto_NNet
-    -- an ADT handling neurons and layers only, base for further derivation
+    -- an ADT handling neurons only, base for further derivation
     type Proto_NNet is abstract new NNet_Interface with private;
 
     -- only a few of abstract methods make sense at this level,
@@ -75,35 +75,99 @@ package wann.nets.vectors is
     procedure Set_State(net : in out Cached_Proto_NNet; NSV : NN.State_Vector);
 
 
-    type Cached_Checked_Proto_NNet is abstract new Proto_NNet and Cached_Checked_NNet_Interface with private;
+
+    ----------------------------------
+    -- A mutable NNet with fixed IO
+    type FixedIO_NNet(Ni : NN.InputIndex; No : NN.OutputIndex) is new Proto_NNet with private;
+
+    -- Base constructor, create empty net with set Nin and Nout
+    function Create return FixedIO_NNet;
+
+    -- inherited methods, the rest that needs overriding
+    -- getters
+    overriding
+    function Input_Connections (net : FixedIO_NNet) return NN.Input_Connection_Array;
 
     overriding
-    function  State(net : Cached_Checked_Proto_NNet) return NN.Checked_State_Vector;
+    function Output_Connections(net : FixedIO_NNet) return NN.Output_Connection_Array;
+
+
+    -- neuron handling
+    overriding
+    procedure Add_Neuron(net : in out FixedIO_NNet; neur : PN.Neuron_Interface'Class;
+                         idx : out NN.NeuronIndex);
 
     overriding
-    procedure Set_State(net : in out Cached_Checked_Proto_NNet; NSV : NN.Checked_State_Vector);
+    procedure Del_Neuron(net : in out FixedIO_NNet; idx : NN.NeuronIndex);
+
+    overriding
+    procedure Set_Layer(net : in out FixedIO_NNet; idx : NN.LayerIndex; L : PL.Layer_Interface'Class);
+
+
+
+    ----------------------------------
+    -- A mutable NNet with mutable IO
+    type MutableIO_NNet is new Proto_NNet with private;
+
+    -- Base constructor, create empty net with some Nin and Nout
+    function Create(Ni : NN.InputIndex; No : NN.OutputIndex) return MutableIO_NNet;
+
+    -- inherited methods, the rest that needs overriding
+    -- getters
+    overriding
+    function Input_Connections (net : MutableIO_NNet) return NN.Input_Connection_Array;
+
+    overriding
+    function Output_Connections(net : MutableIO_NNet) return NN.Output_Connection_Array;
+
+    overriding
+    procedure Add_Neuron(net : in out MutableIO_NNet; neur : PN.Neuron_Interface'Class;
+                         idx : out NN.NeuronIndex);
+
+    overriding
+    procedure Del_Neuron(net : in out MutableIO_NNet; idx : NN.NeuronIndex);
+
+    overriding
+    procedure Set_Layer(net : in out MutableIO_NNet; idx : NN.LayerIndex; L : PL.Layer_Interface'Class);
+
+
+
 
 
 
 private
 
-    -- utilized vector types
+    -----------------
+    -- A mutable NNet using Containers.Vectors and Connectors to link neurons and inputs/outputs
+    --
+    -- first common vector types
     use type NN.ConnectionIndex;
+    package IV is new Ada.Containers.Vectors(Index_Type=>NN.InputIndex,  Element_Type=>NN.ConnectionIndex);
+    package OV is new Ada.Containers.Vectors(Index_Type=>NN.OutputIndex, Element_Type=>NN.ConnectionIndex);
     package NV is new Ada.Containers.Vectors(Index_Type=>NN.NeuronIndex, Element_Type=>NN.ConnectionIndex);
 
     package PLV is new PL.vectors;
     use type PLV.Layer;
     package LV is new Ada.Containers.Vectors(Index_Type=>NN.LayerIndex,  Element_Type=>PLV.Layer);
 
-    -- the Proto_NNet types themselves
+
     type Proto_NNet is abstract new NNet_Interface with record
         neurons : NV.Vector;
         layers  : LV.Vector;
     end record;
 
+
     type Cached_Proto_NNet is abstract new Proto_NNet and Cached_NNet_Interface with null record;
 
-    type Cached_Checked_Proto_NNet is abstract new Proto_NNet and Cached_Checked_NNet_Interface with null record;
+
+    type FixedIO_NNet(Ni : NN.InputIndex; No : NN.OutputIndex) is new Proto_NNet with null record;
+
+
+    -- Finally the NNet
+    type MutableIO_NNet is new Proto_NNet with record
+        inputs  : IV.Vector;
+        outputs : OV.Vector;
+    end record;
 
 end wann.nets.vectors;
 

@@ -26,4 +26,26 @@ package body nnet_types is
         end case;
     end Is_Valid;
 
+
+    function Inputs_are_valid (SV : Checked_State_Vector) return Boolean is
+    begin
+        for i in 1 .. SV.Ni loop
+            if not SV.validI(i) then
+                return False;
+            end if;
+        end loop;
+        return True;
+    end;
+
+
+    function Outputs_are_valid(SV : Checked_State_Vector) return Boolean is
+    begin
+        for o in 1 .. SV.No loop
+            if not SV.validO(o) then
+                return False;
+            end if;
+        end loop;
+        return True;
+    end;
+
 end nnet_types;
