@@ -31,9 +31,9 @@ package wann.neurons.vectors is
     procedure FromRec(NI : in out Neuron; LR : NeuronRec);
     --
     overriding
-    procedure AddOutput(NI : in out Neuron; Output : NN.ConnectionIndex);
+    procedure Add_Output(NI : in out Neuron; Output : NN.ConnectionIndex);
     overriding
-    procedure DelOutput(NI : in out Neuron; Output : NN.ConnectionIndex);
+    procedure Del_Output(NI : in out Neuron; Output : NN.ConnectionIndex);
 
     -- Still, it is better to provide direct getters for frequently used fields
     overriding
@@ -46,13 +46,22 @@ package wann.neurons.vectors is
     overriding
     function Output(neur : Neuron; idx : OutputIndex) return NN.ConnectionIndex;
 
-    -----------
+    ---------------
     -- constructors
+    --
     not overriding
     function Create(NR : NeuronRec) return Neuron;
 
     not overriding
-    function Create(activation : Activation_Type; connections : NN.Input_Connection_Array) return Neuron;
+    function Create(activation : Activation_Type;
+                    connections : Input_Connection_Array;
+                    weights  : Weight_Array) return Neuron;
+
+    not overriding
+    function Create(activation : Activation_Type;
+                    connections : NN.Input_Connection_Array;
+                    maxWeight : Real) return Neuron;
+    -- Create with weight uniformly distributed in [0 .. maxWeight]
 
 
 private

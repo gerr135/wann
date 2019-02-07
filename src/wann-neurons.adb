@@ -1,114 +1,73 @@
 pragma Ada_2012;
 package body wann.neurons is
 
-   -----------
-   -- Index --
-   -----------
+    --------------------------------------------------
+    -- basic getters/setters (wrappers around FromRec)
+    --
+    function Index (NI : Neuron_Interface'Class) return NN.NeuronIndex is
+    begin
+        return NI.ToRec.idx;
+    end Index;
 
-   function Index (NI : Neuron_Interface'Class) return NN.NeuronIndex is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Index unimplemented");
-      return raise Program_Error with "Unimplemented function Index";
-   end Index;
+    function Activation (NI : Neuron_Interface'Class) return Activation_Type is
+    begin
+        return NI.ToRec.activat;
+    end Activation;
 
-   -------------
-   -- Activat --
-   -------------
+    function Weights (NI : Neuron_Interface'Class) return Weight_Array is
+    begin
+        return NI.ToRec.weights;
+    end Weights;
 
-   function Activat (NI : Neuron_Interface'Class) return Activation_Type is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Activat unimplemented");
-      return raise Program_Error with "Unimplemented function Activat";
-   end Activat;
-
-   -------------
-   -- Weights --
-   -------------
-
-   function Weights (NI : Neuron_Interface'Class) return Weight_Array is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Weights unimplemented");
-      return raise Program_Error with "Unimplemented function Weights";
-   end Weights;
-
-   ------------
-   -- Inputs --
-   ------------
-
-   function Inputs
-     (NI : Neuron_Interface'Class)
-      return Input_Connection_Array
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Inputs unimplemented");
-      return raise Program_Error with "Unimplemented function Inputs";
-   end Inputs;
-
-   -------------
-   -- Outputs --
-   -------------
-
-   function Outputs
-     (NI : Neuron_Interface'Class)
-      return Output_Connection_Array
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Outputs unimplemented");
-      return raise Program_Error with "Unimplemented function Outputs";
-   end Outputs;
+    function Inputs (NI : Neuron_Interface'Class) return Input_Connection_Array is
+    begin
+        return NI.ToRec.inputs;
+    end Inputs;
 
    --------------
    -- SetIndex --
    --------------
 
-   procedure SetIndex
-     (NI : in out Neuron_Interface'Class;
-      idx : NN.NeuronIndex)
+   procedure Set_Index (NI : in out Neuron_Interface'Class;
+        idx : NN.NeuronIndex)
    is
    begin
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "SetIndex unimplemented");
       raise Program_Error with "Unimplemented procedure SetIndex";
-   end SetIndex;
+   end Set_Index;
 
    ----------------
    -- SetActivat --
    ----------------
 
-   procedure SetActivat
-     (NI : in out Neuron_Interface'Class;
-      activat : Activation_Type)
+   procedure Set_Activation (NI : in out Neuron_Interface'Class;
+                             activat : Activation_Type)
    is
    begin
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "SetActivat unimplemented");
       raise Program_Error with "Unimplemented procedure SetActivat";
-   end SetActivat;
+   end Set_Activation;
 
    ----------------
    -- SetWeights --
    ----------------
 
-   procedure SetWeights
-     (NI : in out Neuron_Interface'Class;
-      weights : Weight_Array)
+   procedure Set_Weights (NI : in out Neuron_Interface'Class;
+                        weights : Weight_Array)
    is
    begin
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "SetWeights unimplemented");
       raise Program_Error with "Unimplemented procedure SetWeights";
-   end SetWeights;
+   end Set_Weights;
 
    ---------------
    -- SetInputs --
    ---------------
 
-   procedure SetInputs
+   procedure Set_Inputs
      (NI : in out Neuron_Interface'Class;
       inputs  : Input_Connection_Array)
    is
@@ -116,21 +75,8 @@ package body wann.neurons is
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "SetInputs unimplemented");
       raise Program_Error with "Unimplemented procedure SetInputs";
-   end SetInputs;
+   end Set_Inputs;
 
-   ----------------
-   -- SetOutputs --
-   ----------------
-
-   procedure SetOutputs
-     (NI : in out Neuron_Interface'Class;
-      outputs : Output_Connection_Array)
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "SetOutputs unimplemented");
-      raise Program_Error with "Unimplemented procedure SetOutputs";
-   end SetOutputs;
 
    -----------------
    -- PropForward --

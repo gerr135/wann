@@ -54,6 +54,11 @@ package wann.neurons is
 --     type Neuron_Access is access Neuron_Interface;  -- should not ever be needed
     type NeuronClass_Access is access all Neuron_Interface'Class;
 
+    -- NOTE on construction:
+    -- Neurons are created with empty output list, to be populated by Add_Output calls..
+    -- This should normally happen during insertion of Neuron into NNet and
+    -- handled by the appropriate nnet type..
+
     -- primitives
     -- basic getters and setters; individual fields can be reset in a class-wide utility
     -- by calling basic Get/Set pair, but this is likely much less efficient, because
@@ -66,8 +71,10 @@ package wann.neurons is
     -- Outputs, on the other hand, are not part of primitive Rec,
     -- and will need to be reset individually during rearrangement, so need some primitives for these..
     -- The principal users should be Layer or NNet while adding/removeing/reconnecting neurons
-    procedure AddOutput(NI : in out Neuron_Interface; Output : NN.ConnectionIndex) is abstract;
-    procedure DelOutput(NI : in out Neuron_Interface; Output : NN.ConnectionIndex) is abstract;
+    procedure Add_Output(NI : in out Neuron_Interface; Output : NN.ConnectionIndex) is abstract;
+    procedure Del_Output(NI : in out Neuron_Interface; Output : NN.ConnectionIndex) is abstract;
+    --     function  Outputs(NI : Neuron_Interface'Class) return Output_Connection_Array  is abstract;
+    -- use individual indexed output primitive instead for less overhead.
 
     -- Still, it is better to provide direct getters for frequently used fields
     function NInputs (neur : Neuron_Interface) return InputIndex  is abstract;
@@ -83,7 +90,7 @@ package wann.neurons is
     type Stateful_Neuron_Interface is interface and Neuron_Interface;
     type Stateful_NeuronClass_Access is access Stateful_Neuron_Interface'Class;
 
-    procedure SetValue(NI : in out Stateful_Neuron_Interface; val :  Real) is abstract;
+    procedure Set_Value(NI : in out Stateful_Neuron_Interface; val :  Real) is abstract;
     function  Value(NI : Stateful_Neuron_Interface) return Real is abstract;
     -- just basic getter/setter. Data validity should be handled in implementation
     function  Valid(NI : Stateful_Neuron_Interface) return Boolean is abstract;
@@ -93,17 +100,16 @@ package wann.neurons is
     -- Class-wide utility
     --
     -- Additional getters/setters
-    function Index  (NI : Neuron_Interface'Class) return NN.NeuronIndex;
-    function Activat(NI : Neuron_Interface'Class) return Activation_Type;
-    function Weights(NI : Neuron_Interface'Class) return Weight_Array;
-    function Inputs (NI : Neuron_Interface'Class) return Input_Connection_Array;
-    function Outputs(NI : Neuron_Interface'Class) return Output_Connection_Array;
+    -- mostly wrappers around FromRec, so inline them right here..
+    function Index  (NI : Neuron_Interface'Class) return NN.NeuronIndex with Inline;
+    function Activation(NI : Neuron_Interface'Class) return Activation_Type with Inline;
+    function Weights(NI : Neuron_Interface'Class) return Weight_Array with Inline;
+    function Inputs (NI : Neuron_Interface'Class) return Input_Connection_Array with Inline;
 
-    procedure SetIndex  (NI : in out Neuron_Interface'Class; idx : NN.NeuronIndex);
-    procedure SetActivat(NI : in out Neuron_Interface'Class; activat : Activation_Type);
-    procedure SetWeights(NI : in out Neuron_Interface'Class; weights : Weight_Array);
-    procedure SetInputs (NI : in out Neuron_Interface'Class; inputs  : Input_Connection_Array);
-    procedure SetOutputs(NI : in out Neuron_Interface'Class; outputs : Output_Connection_Array);
+    procedure Set_Index  (NI : in out Neuron_Interface'Class; idx : NN.NeuronIndex);
+    procedure Set_Activation(NI : in out Neuron_Interface'Class; activat : Activation_Type);
+    procedure Set_Weights(NI : in out Neuron_Interface'Class; weights : Weight_Array);
+    procedure Set_Inputs (NI : in out Neuron_Interface'Class; inputs  : Input_Connection_Array);
     -- Inputs/Outputs stand for input/output connections
 
     -- Data processing
