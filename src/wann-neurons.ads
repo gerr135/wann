@@ -24,7 +24,8 @@ package wann.neurons is
     --  Local input/output indices
     type    InputIndex_Base is new Natural;
     subtype InputIndex is InputIndex_Base range 1 .. InputIndex_Base'Last;
-    type OutputIndex is new Positive;
+    type    OutputIndex_Base is new Natural;
+    subtype OutputIndex is OutputIndex_Base range 1 .. OutputIndex_Base'Last;
 
     -- associated arrray types for holding params
     type Input_Connection_Array  is array (InputIndex range <>)  of NN.ConnectionIndex;

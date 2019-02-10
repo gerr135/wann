@@ -31,9 +31,9 @@ package wann.neurons.vectors is
     procedure FromRec(NI : in out Neuron; LR : NeuronRec);
     --
     overriding
-    procedure Add_Output(NI : in out Neuron; Output : NN.ConnectionIndex);
+    procedure Add_Output(neur : in out Neuron; Output : NN.ConnectionIndex);
     overriding
-    procedure Del_Output(NI : in out Neuron; Output : NN.ConnectionIndex);
+    procedure Del_Output(neur : in out Neuron; Output : NN.ConnectionIndex);
 
     -- Still, it is better to provide direct getters for frequently used fields
     overriding
@@ -68,9 +68,9 @@ private
 
     -- needed vector types
     use type NN.ConnectionIndex;
-    package IV is new Ada.Containers.Vectors(Index_Type=>NN.InputIndex,  Element_Type=>NN.ConnectionIndex);
-    package OV is new Ada.Containers.Vectors(Index_Type=>NN.OutputIndex, Element_Type=>NN.ConnectionIndex);
-    package WV is new Ada.Containers.Vectors(Index_Type=>NN.InputIndex_Base, Element_Type=>Real);
+    package IV is new Ada.Containers.Vectors(Index_Type=>InputIndex,  Element_Type=>NN.ConnectionIndex);
+    package OV is new Ada.Containers.Vectors(Index_Type=>OutputIndex, Element_Type=>NN.ConnectionIndex);
+    package WV is new Ada.Containers.Vectors(Index_Type=>InputIndex_Base, Element_Type=>Real);
 
     type Neuron is new Neuron_Interface with record
         idx     : NN.NeuronIndex_Base; -- own index in NNet

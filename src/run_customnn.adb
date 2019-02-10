@@ -27,7 +27,7 @@ procedure run_customNN is
 
     use PW; use NN;
 
-    neur1 : PNV.Neuron := PNV.Create(Sigmoid, ((I,1),(I,2)));
+    neur1 : PNV.Neuron := PNV.Create(Sigmoid, ((I,1),(I,2)), 1.0);
     net1  : PNetVF.NNet(Ni=>2, No=>1);
 
 
