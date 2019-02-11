@@ -50,9 +50,11 @@ package wann.nets.vectors is
     overriding
     function NLayers (net : Proto_NNet) return NN.LayerIndex;
 
+--     overriding
+--     function  Neuron(net : Proto_NNet; idx : NN.NeuronIndex) return PN.Neuron_Interface'Class;
+
     overriding
-    function  Neuron(net : Proto_NNet; idx : NN.NeuronIndex) return PN.Neuron_Interface'Class;
-    -- we *can* existing one, this code should be common
+    function  Neuron(net : Proto_NNet; idx : NN.NeuronIndex) return PN.Neuron_Reference;
 
     overriding
     function  Layers_Ready (net : Proto_NNet) return Boolean;

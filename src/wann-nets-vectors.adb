@@ -22,12 +22,21 @@ package body wann.nets.vectors is
     ------------
     -- Neuron --
     ------------
+--     overriding
+--     function Neuron (net : Proto_NNet; idx : NN.NeuronIndex)
+--         return PN.Neuron_Interface'Class
+--     is
+--     begin
+--         return net.neurons.Element(idx);
+--     end Neuron;
+
     overriding
     function Neuron (net : Proto_NNet; idx : NN.NeuronIndex)
-        return PN.Neuron_Interface'Class
+        return PN.Neuron_Reference
     is
+        NR : PN.Neuron_Reference(net.neurons.Element(idx)'Access);
     begin
-        return net.neurons.Element(idx);
+        return NR;
     end Neuron;
 
     ------------------

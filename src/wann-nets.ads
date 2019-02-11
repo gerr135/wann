@@ -62,8 +62,9 @@ package wann.nets is
     function  Output_Connections(net : NNet_Interface) return NN.Output_Connection_Array is abstract;
 
     --  Neuron handling
+    -- NNet is conceptually a container. So we store/remove neurons with Add/Del_Neuron.
     -- As we have multiple neuron implementations, specific neurons should be created
-    -- by their appropriate constructors and passed to Add_Neuron method.
+    -- by their appropriate constructors and passed to the Add_Neuron method.
     -- There should be no New_Neuron methods per se, we may need the Next_free_Idx function though..
     procedure Add_Neuron(net  : in out NNet_Interface;
                          neur : in out PN.Neuron_Interface'Class; -- gotta be neuron itself, not reference, as NNet is essentially a container
@@ -76,11 +77,12 @@ package wann.nets is
     -- remove neuron from NNet_Interface,
     -- as with Add, should update connections of affected entities and reset Layers_Sorted or autosort
 
-    -- neuron getter and setter
-    function  Neuron(net : NNet_Interface; idx : NN.NeuronIndex) return PN.Neuron_Interface'Class is abstract;
-    -- tagged types are passed by reference, so no need for 'Access here.
-    -- NNet is conceptually a container anyway
---     procedure Set_Neuron(net : in out NNet_Interface; NA : PN.NeuronClass_Access) is abstract;
+    -- neuron getters
+--     function  Neuron(net : NNet_Interface; idx : NN.NeuronIndex) return PN.Neuron_Interface'Class is abstract;
+        -- this provides read-only access, passing by reference (tagged record)
+    function  Neuron(net : NNet_Interface; idx : NN.NeuronIndex) return PN.Neuron_Reference is abstract;
+        -- this provides read-write access via Accessor trick
+    
 
     -- layer handling
     -- the (abstract) primitives
@@ -129,7 +131,7 @@ package wann.nets is
     -- class-wide stuff: main utility
     --
     -- Neuron handling utility
-    procedure Add_Neuron(net : in out NNet_Interface'Class; neur : in PN.Neuron_Interface'Class);
+    procedure Add_Neuron(net : in out NNet_Interface'Class; neur : in out PN.Neuron_Interface'Class);
 
     --
     --  NNet manipulation

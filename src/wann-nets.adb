@@ -24,7 +24,7 @@ package body wann.nets is
    ----------------
    -- Add_Neuron --
    procedure Add_Neuron (net : in out NNet_Interface'Class;
-                         neur : in PN.Neuron_Interface'Class)
+                         neur : in out PN.Neuron_Interface'Class)
    is
        idx : NN.NeuronIndex_Base;
    begin

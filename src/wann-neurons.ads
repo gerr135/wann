@@ -55,6 +55,9 @@ package wann.neurons is
 --     type Neuron_Access is access Neuron_Interface;  -- should not ever be needed
     type NeuronClass_Access is access all Neuron_Interface'Class;
 
+    type Neuron_Reference (Data : not null access Neuron_Interface'Class) is private
+        with Implicit_Dereference => Data;
+    
     -- NOTE on construction:
     -- Neurons are created with empty output list, to be populated by Add_Output calls..
     -- This should normally happen during insertion of Neuron into NNet and
@@ -138,5 +141,8 @@ package wann.neurons is
     procedure Prop_Forward (neur : in out Stateful_Neuron_Interface'Class);
     procedure Prop_Backward(neur : in out Stateful_Neuron_Interface'Class);
 
+private
+
+    type Neuron_Reference (Data : not null access Neuron_Interface'Class) is null record;
 
 end wann.neurons;
