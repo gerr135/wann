@@ -81,7 +81,7 @@ package wann.layers is
     -- flexibility but will duplicate the ADT code (we would have to mirror each interface
     -- first with abstract type and then derive specific types holding data from that).
 
-    type Layer_Interface is abstract tagged private;
+    type Layer_Interface is abstract tagged private; -- we need redispatching on some methods
     type LayerClass_Access is access Layer_Interface'Class;
 
     -- primitives

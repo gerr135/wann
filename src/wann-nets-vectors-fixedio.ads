@@ -29,9 +29,7 @@ package wann.nets.vectors.fixedIO is
     ----------------------------------
     -- A mutable NNet with fixed IO
     type NNet(Ni : NN.InputIndex; No : NN.OutputIndex) is new Proto_NNet with private;
-
-    -- Base constructor, create empty net with set Nin and Nout
---     function Create return NNet;
+    -- no need for constructor here, as the only essential parameters would be given at var declaratiopn
 
     -- inherited methods, the rest that needs overriding
     -- getters
@@ -44,7 +42,7 @@ package wann.nets.vectors.fixedIO is
 
     -- neuron handling
     overriding
-    procedure Add_Neuron(net : in out NNet; neur : PN.Neuron_Interface'Class;
+    procedure Add_Neuron(net : in out NNet; neur : in out PN.Neuron_Interface'Class;
                          idx : out NN.NeuronIndex);
 
     overriding

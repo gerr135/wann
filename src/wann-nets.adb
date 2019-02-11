@@ -1,67 +1,95 @@
 pragma Ada_2012;
 package body wann.nets is
 
-    ----------------
-    -- Add_Neuron --
-    procedure Add_Neuron (net : in out NNet_Interface'Class;
-                          neur : in PN.Neuron_Interface'Class)
-    is
-        idx : NN.NeuronIndex_Base;
+    ---------------------
+    -- Autosort_Layers --
+
+    function Autosort_Layers (net : NNet_Interface) return Boolean is
     begin
-        net.Add_Neuron(neur, idx);
-    end Add_Neuron;
+        return net.autosort_layers;
+    end Autosort_Layers;
 
-    --------------------------------
-    -- Reconnect_Neuron_At_Random --
-    --------------------------------
-
-    procedure Reconnect_Neuron_At_Random
-        (net : in out NNet_Interface'Class;
-        idx  : NN.NeuronIndex;
-        maxConnects : PN.InputIndex_Base := 0)
+    procedure Set_Autosort_Layers (net : in out NNet_Interface;
+                                   Autosort : Boolean;
+                                   Direction : Sort_Direction := Forward)
     is
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Reconnect_Neuron_At_Random unimplemented");
-        raise Program_Error with "Unimplemented procedure Reconnect_Neuron_At_Random";
-    end Reconnect_Neuron_At_Random;
+        net.autosort_layers := Autosort;
+        net.layer_sort_direction := Direction;
+        if Autosort then
+            net.Sort_Layers(Direction);
+        end if;
+    end Set_Autosort_Layers;
 
-    ------------------------
-    -- Populate_At_Random --
-    ------------------------
+   ----------------
+   -- Add_Neuron --
+   procedure Add_Neuron (net : in out NNet_Interface'Class;
+                         neur : in PN.Neuron_Interface'Class)
+   is
+       idx : NN.NeuronIndex_Base;
+   begin
+       net.Add_Neuron(neur, idx);
+   end Add_Neuron;
 
-    procedure Populate_At_Random
-        (net : in out NNet_Interface'Class;
-        Npts : NN.NeuronIndex_Base;
-        maxConnects : PN.InputIndex_Base := 0)
-    is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Populate_At_Random unimplemented");
-        raise Program_Error with "Unimplemented procedure Populate_At_Random";
-    end Populate_At_Random;
 
-    ------------------
-    -- Sort_Forward --
-    ------------------
+   --------------------------------
+   -- Reconnect_Neuron_At_Random --
+   --------------------------------
 
-    procedure Sort_Forward (net : in out NNet_Interface'Class) is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Sort_Forward unimplemented");
-        raise Program_Error with "Unimplemented procedure Sort_Forward";
-    end Sort_Forward;
+   procedure Reconnect_Neuron_At_Random
+     (net : in out NNet_Interface'Class;
+      idx  : NN.NeuronIndex;
+      maxConnects : PN.InputIndex_Base := 0)
+   is
+   begin
+      --  Generated stub: replace with real body!
+      pragma Compile_Time_Warning (Standard.True, "Reconnect_Neuron_At_Random unimplemented");
+      raise Program_Error with "Unimplemented procedure Reconnect_Neuron_At_Random";
+   end Reconnect_Neuron_At_Random;
 
-    -------------------
-    -- Sort_Backward --
-    -------------------
+   ------------------------
+   -- Populate_At_Random --
+   ------------------------
 
-    procedure Sort_Backward (net : in out NNet_Interface'Class) is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Sort_Backward unimplemented");
-        raise Program_Error with "Unimplemented procedure Sort_Backward";
-    end Sort_Backward;
+   procedure Populate_At_Random
+     (net : in out NNet_Interface'Class;
+      Npts : NN.NeuronIndex_Base;
+      maxConnects : PN.InputIndex_Base := 0)
+   is
+   begin
+      --  Generated stub: replace with real body!
+      pragma Compile_Time_Warning (Standard.True, "Populate_At_Random unimplemented");
+      raise Program_Error with "Unimplemented procedure Populate_At_Random";
+   end Populate_At_Random;
+
+   -----------------
+   -- Sort_Layers --
+   -----------------
+
+   procedure Sort_Layers
+     (net : in out NNet_Interface'Class;
+      Direction : Sort_Direction := Forward)
+   is
+   begin
+      --  Generated stub: replace with real body!
+      pragma Compile_Time_Warning (Standard.True, "Sort_Layers unimplemented");
+      raise Program_Error with "Unimplemented procedure Sort_Layers";
+   end Sort_Layers;
+
+   -------------------
+   -- Update_Layers --
+   -------------------
+
+   procedure Update_Layers
+     (net : in out NNet_Interface'Class;
+      idx : NN.NeuronIndex)
+   is
+   begin
+      --  Generated stub: replace with real body!
+      pragma Compile_Time_Warning (Standard.True, "Update_Layers unimplemented");
+      raise Program_Error with "Unimplemented procedure Update_Layers";
+   end Update_Layers;
+
 
     -----------------
     -- PropForward --
@@ -240,6 +268,7 @@ package body wann.nets is
         end loop;
         net.Set_State(netState);
     end Set_Input_Values;
+
 
     ------------------
     -- Prop_Forward --

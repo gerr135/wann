@@ -46,7 +46,11 @@ package wann.nets is
     --
     -- This is the base version, consists of stateless neurons (topology and weights only);
     -- can be used for "light" forwardProp only, initiated from pre-trained net.
-    type NNet_Interface is limited Interface;
+    --
+    -- SOme of the functionality is common to all, and is easiest to implement right here.
+    -- So, like with Layer_Interface we make this one abstract tagged, rather than interface.
+    -- We have no need for overlaying hierarchies so far..
+    type NNet_Interface is abstract tagged limited private;
     type NNet_Access is access NNet_Interface;
 
     -- Dimension getters; the setters are imnplementation-specific,
@@ -61,13 +65,16 @@ package wann.nets is
     -- As we have multiple neuron implementations, specific neurons should be created
     -- by their appropriate constructors and passed to Add_Neuron method.
     -- There should be no New_Neuron methods per se, we may need the Next_free_Idx function though..
-    procedure Add_Neuron(net : in out NNet_Interface;
-                         neur : PN.Neuron_Interface'Class; -- gotta be neuron itself, not reference, as NNet is essentially a container
+    procedure Add_Neuron(net  : in out NNet_Interface;
+                         neur : in out PN.Neuron_Interface'Class; -- gotta be neuron itself, not reference, as NNet is essentially a container
                          idx : out NN.NeuronIndex) is abstract;
+    -- adds pre-created neuron, return in idx new assigned NN.NeuronIndex
+    -- and updates connections (outputs) of other net entities (other neurons, inputs, etc..)
+    -- also should invalidate Layers_sorted or call sorting if autosort is set..
 
-    --
     procedure Del_Neuron(net : in out NNet_Interface; idx : NN.NeuronIndex) is null;
-    -- remove neuron from NNet_Interface, as with New, only for mutable representation
+    -- remove neuron from NNet_Interface,
+    -- as with Add, should update connections of affected entities and reset Layers_Sorted or autosort
 
     -- neuron getter and setter
     function  Neuron(net : NNet_Interface; idx : NN.NeuronIndex) return PN.Neuron_Interface'Class is abstract;
@@ -76,23 +83,29 @@ package wann.nets is
 --     procedure Set_Neuron(net : in out NNet_Interface; NA : PN.NeuronClass_Access) is abstract;
 
     -- layer handling
+    -- the (abstract) primitives
     function  Layers_Ready (net : NNet_Interface) return Boolean is abstract;
 --     function  Layers(net : NNet_Interface) return PL.LayerList_Interface'Class is abstract;
     function  Layer(net : NNet_Interface; idx : NN.LayerIndex) return PL.Layer_Interface'Class  is abstract;
     procedure Set_Layer(net : in out NNet_Interface; idx : NN.LayerIndex; L : PL.Layer_Interface'Class) is abstract;
 
+    -- autosort flag handling
+    function  Autosort_Layers(net : NNet_Interface) return Boolean;
+    procedure Set_Autosort_Layers(net : in out NNet_Interface;
+                                  Autosort : Boolean; Direction : Sort_Direction := Forward);
+
 
     --------------------
     --  "cached" nnet
     --  Stores neuron outputs in a state vector, uses base stateless neurons
-    type Cached_NNet_Interface is limited interface and NNet_Interface;
+    type Cached_NNet_Interface is abstract new NNet_Interface with private;
     type Cached_NNet_Access    is access Cached_NNet_Interface;
 
     function  State(net : Cached_NNet_Interface) return NN.State_Vector  is abstract;
     procedure Set_State(net : in out Cached_NNet_Interface; NSV : NN.State_Vector) is abstract;
     -- NOTE: GetInputValues should raise  UnsetValueAccess if called before SetInputValues
 
-    type Cached_Checked_NNet_Interface is limited interface and NNet_Interface;
+    type Cached_Checked_NNet_Interface is abstract new NNet_Interface with private;
     type Cached_Checked_NNet_Access    is access Cached_NNet_Interface;
 
     function  State(net : Cached_Checked_NNet_Interface) return NN.Checked_State_Vector  is abstract;
@@ -102,7 +115,7 @@ package wann.nets is
     --------------------
     --  Stateful nnet
     --  Stores neuron outputs in neurons themselves, uses stateful neurons
-    type Stateful_NNet_Interface is limited interface and NNet_Interface;
+    type Stateful_NNet_Interface is abstract new NNet_Interface with private;
     type Stateful_NNet_Access    is access Stateful_NNet_Interface;
 
     function  Input_Values(net : Stateful_NNet_Interface) return NN.Input_Array is abstract;
@@ -126,13 +139,19 @@ package wann.nets is
     -- populates net with new neurons or resets existing one to random configuration
     -- Npts needs to be passed in case of empty mutable net, otherwise it simply rearranges existing net.
 
-    procedure Sort_Forward (net : in out NNet_Interface'Class);
-    procedure Sort_Backward(net : in out NNet_Interface'Class);
+    procedure Sort_Layers (net : in out NNet_Interface'Class; Direction : Sort_Direction := Forward);
     -- perform a topological sort, (re-)creating layers tracking the connections,
     -- to allow optimizations (parallel computation, use of GPU).
     --
-    -- Forward and backward may be different if cycles are present
+    -- Forward and backward sort will produce different layering if cycles are present
     -- (which is a major modus operandi of this lib).
+
+    procedure Update_Layers (net : in out NNet_Interface'Class; idx : NN.NeuronIndex);
+    -- called upon insertion/deletion of a neuron to update pre-sroted layers
+    -- if Autosort_Layers = True.
+    -- Updates layers starting from the inserted neuron, following its connections.
+    -- May be more efficient (O(logN) instead of N*LogN) compared to complete sort.
+
 
     ------------------------
     --  Propagation
@@ -166,6 +185,19 @@ package wann.nets is
     --
     function  Calc_Outputs(net : Cached_Checked_NNet_Interface'Class) return NN.Output_Array;
 
+
+private
+
+    type NNet_Interface is abstract tagged limited record
+        autosort_layers : Boolean := False;
+        layer_sort_direction  : Sort_Direction := Forward;  -- reset by Sort_Layers
+    end record;
+
+    type Cached_NNet_Interface is abstract new NNet_Interface with null record;
+
+    type Cached_Checked_NNet_Interface is abstract new NNet_Interface with null record;
+
+    type Stateful_NNet_Interface is abstract new NNet_Interface with null record;
 
 end wann.nets;
 

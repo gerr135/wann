@@ -68,6 +68,10 @@ package wann is
     Unset_Value_Access : Exception;
     --  trying to access a not-yet-set (or already cleared) cached value
 
+    Invalid_Connection : Exception;
+    --  trying to make connection that obviously makes no sense
+    --  (connect neuron input to net output, etc..)
+
 
     ------------------------------------------------------------
     -- Some common types; basic and not requiring special naming
@@ -83,6 +87,7 @@ package wann is
               GPU);   -- try to do linear algebra in GPU
         -- this will be (most likely) handled through layer types via OOP hierarchy.
 
+    type Sort_Direction is (Forward, Backward);
 
     package NN is new nnet_types(Real);
 
