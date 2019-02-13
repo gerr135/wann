@@ -28,7 +28,7 @@ package wann.neurons.vectors is
     overriding
     function  ToRepr  (neur : Neuron) return NeuronRepr;
     overriding
-    procedure FromRepr(NI : in out Neuron; LR : NeuronRepr);
+    procedure FromRepr(neur : in out Neuron; NR : NeuronRepr);
     --
     overriding
     procedure Add_Output(neur : in out Neuron; Output : NN.ConnectionIndex);

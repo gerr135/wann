@@ -42,6 +42,36 @@ Below are the original ideas:
     (over time and "space" - weights, but those are standard. The time though introduces a
     new dimension.)
 
+# Package hierarchy
+Most essential packages are rooted at wann.ads. However there are some common index/record types
+that are representative of the NNet as a whole. These are defined in nnet_types.ads and
+a common import point is declared in wann.ads as package NN is new nnet_types..
+Thus, to keep the common notation for contextually similar types (indices, etc), they should
+be referred throughout as NN.InputIndex (e.g.). Use package renamings to shorten this if you
+import this from outside, rather than reinstantiating the package!
+
+Hierarchy overview:
+- wann.ads         root of package hierarchy
+- wann.inputs
+- wann.neurons
+- wann.layers      these all hold appropriate NNet entities
+- wann.nets        root of the NNet subhierarchy
+- wann.nets.fixed      all-fixed NNet implementation, for reading established topology and using without mutation
+- wann.nets.vectors    dynamic NNet root, Neurons can be dynamically rearranged
+- wann.nets.vectors.fixedIO    dynamic neurons, fixed IO
+- wann.nets.vectors.vectorIO   dynamic all, can even change number of NNet IO connections
+
+NOTE on nets.. hierarchy:
+- nets.fixed  - only one, as fixed neurons, variable IO does not make much sense
+    or is likely not even possible.
+- nets.vectors.fixedIO  - may not be feasible either, as, while total number of IO
+    connections is fixed, individual inputs may change number of connections as neurons mutate
+
+Simplyfy things for the moment: save current state in dev2 branch and create new branch dev3,
+where nets. hierarchy is rolled back a level, only holding
+- wann.nets.fixed
+- wann.nets.vectors
+
 
 # Representation notes
 

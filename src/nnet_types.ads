@@ -78,11 +78,12 @@ package nnet_types is
     -- Types for keeping/passing around connection info
     --
     -- The neuron inter-connection type
-    type Connection_Type is (I, O, N);
+    type Connection_Type is (I, O, N, None);
     -- Input, Output, Neuron, but intended to be used in assignment, so shortening down
     --
-    type ConnectionIndex(T : Connection_Type := N) is record
+    type ConnectionIndex(T : Connection_Type := None) is record
         case T is
+            when None => Null;
             when I => Iidx : InputIndex;
             when N => Nidx : NeuronIndex;
             when O => Oidx : OutputIndex;
@@ -90,8 +91,11 @@ package nnet_types is
     end record;
 
     -- now, arrays of connections
+    -- NOTE: only the Output_Connection_Array makes conceptual sense here,
+    -- as the only one having 1-to-1 routing (NNet output can take input from only 1 neuron)
+    -- all others would be more complex with their 1-to-many or many-to-many mappings..
     type Input_Connection_Array  is array (InputIndex  range <>) of ConnectionIndex;
-    type Neuron_Connection_Array is array (NeuronIndex range <>) of ConnectionIndex;
+--     type Neuron_Connection_Array is array (NeuronIndex range <>) of ConnectionIndex;
     type Output_Connection_Array is array (OutputIndex range <>) of ConnectionIndex;
 
 

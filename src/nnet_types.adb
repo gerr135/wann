@@ -10,6 +10,7 @@ package body nnet_types is
             when I => return SV.input (idx.Iidx);
             when N => return SV.neuron(idx.Nidx);
             when O => return SV.output(idx.Oidx);
+            when None => NUll;
         end case;
     end State_Value;
 
@@ -23,6 +24,7 @@ package body nnet_types is
             when I => return SV.validI(idx.Iidx);
             when N => return SV.validN(idx.Nidx);
             when O => return SV.validO(idx.Oidx);
+            when None => NUll;
         end case;
     end Is_Valid;
 

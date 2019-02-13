@@ -30,9 +30,40 @@ case of connectorn. This is designed to go "back to the roots" and mimick brain 
 a bit more closely. Still, nothing revolutonally new, but maybe some small tweak might
 get useful.
 
-Ok, after some basic design considerations: the 1st version will handle just one
-"connectrons" as entire network. That is recursive layering will wait until the initial
-prototyi=ping is doner and single blob thing is working.
+The initial implementation will handle just one "connectron". Recursive layering will wait
+until the initial prototyping is done and single blob thing is working.
+
+### Topology layout
+NNet consists of [inputs,neurons,outputs; layers].
+- input:  1-to-N connection, each is connected to multiple neurons
+- neuron: N-to-N connection. Multiple outputs, single output value shared with multiple other inputs
+- output: 1-to-1. Takes input from a single neuron.
+    To mix inputs we need an active entity, which is essentially a neuron anyway. So Outputs are
+    purely a service buffer in NNet.
+
+- layers: do not hold extra stuff or do not pass extra info. They are there to organize neurons.
+    Created automatically by sort methods or autoupdated if autosort is set.
+
+NOTE: NNet is essentially an N-to-N thingy, a "connectron" cited above. We should npt need
+an extra class/type to hold that connectron separately. The recursive structure can be added
+a bit later as a feature, by allowing NNet to contain other NNets rather than only neurons..
+The possible uses of this:
+1. complexification. Especially coupled with automutations, this can be a powerful mechanism
+    to go beyond simple uses. (human readability of the ensuing "spagetty mess" is not the
+    desired feature here. In fact, the main design principle *is* to leave this behind and
+    allow as much mess as the system itself can handle. Ada is of use here to ensure the
+    consistency of the basic elements of the unrelying strucutre.)
+
+2. comprehensibility. Quite the contrary effect might be achieved at the same time. If the
+    net is allowed to evolve, it may develop "base blocks" serving some common purpose.
+    Some known layouts can be used as seeds to facilitate the convergence towards what we expect
+    to be essential blocks (visual recognition, text processing, etc..). Left to evolve,
+    we may be able to retain these conceptually understood blocks in the net.
+
+NOTE 2: the balance between these two utilities may be controlled to some extent by varying
+the cost of creation/destruction of inner NNet units. Set it higher than Neuron creation/destruction,
+by a little or by orders of magnitude..
+
 
 For the design/data representation specifics see Readme under src/.
 

@@ -10,11 +10,11 @@ package body wann.neurons.vectors is
     overriding
     function ToRepr (neur : Neuron) return NeuronRepr is
         NR : NeuronRepr(Ni => InputIndex_Base (neur.inputs.Length),
-                       No => OutputIndex_Base(neur.outputs.Length));
+                        No => OutputIndex_Base(neur.outputs.Length));
     begin
         NR.idx     := neur.idx;
         NR.activat := neur.activat;
-        NR.lag     := 0.0;
+        NR.lag     := neur.lag;
         -- assign inputs/weights - this is the most inefficient part,
         -- but should only be used on construction/topology change.
         NR.weights(0) := neur.weights(0);
@@ -22,21 +22,35 @@ package body wann.neurons.vectors is
             NR.weights(i) := neur.weights(i);
             NR.inputs(i)  := neur.inputs(i);
         end loop;
+        for o in 1 .. NR.No loop
+            NR.outputs(o)  := neur.outputs(o);
+        end loop;
         --
         return NR;
     end ToRepr;
 
     overriding
-    procedure FromRepr (NI : in out Neuron; LR : NeuronRepr) is
+    procedure FromRepr (neur : in out Neuron; NR : NeuronRepr) is
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "FromRec unimplemented");
-        raise Program_Error with "Unimplemented procedure FromRec";
+        neur.idx     := NR.idx;
+        neur.activat := NR.activat;
+        neur.lag     := NR.lag;
+        -- assign inputs/weights
+        neur.weights(0) := NR.weights(0);
+        for i in 1 .. NR.Ni loop
+            neur.weights(i) := NR.weights(i);
+            neur.inputs(i)  := NR.inputs(i);
+        end loop;
+        for o in 1 .. NR.No loop
+            neur.outputs(o)  := NR.outputs(o);
+        end loop;
+        --
     end FromRepr;
 
     -------------------
     -- Add/DelOutput --
-    --
+    --  NOTE: these are Neuron primitives, only operate on this individual neuron
+    --  other side of connections is updated by the enclosing NNet
     overriding
     procedure Add_Output (neur : in out Neuron; Output : NN.ConnectionIndex) is
     begin

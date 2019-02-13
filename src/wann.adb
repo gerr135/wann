@@ -17,6 +17,7 @@ package body wann is
             when I => SV.input (idx.Iidx) := value;
             when N => SV.neuron(idx.Nidx) := value;
             when O => SV.output(idx.Oidx) := value;
+            when None => NUll;
         end case;
     end Set_Value;
 
@@ -41,6 +42,7 @@ package body wann is
                 when I => return SV.input (idx.Iidx);
                 when N => return SV.neuron(idx.Nidx);
                 when O => return SV.output(idx.Oidx);
+                when None => NUll;
             end case;
         else
             raise Unset_Value_Access;
@@ -54,6 +56,7 @@ package body wann is
             when I => SV.input (idx.Iidx) := value;
             when N => SV.neuron(idx.Nidx) := value;
             when O => SV.output(idx.Oidx) := value;
+            when None => NUll;
         end case;
     end Set_Value;
 

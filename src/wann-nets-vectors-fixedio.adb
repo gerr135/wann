@@ -39,17 +39,20 @@ package body wann.nets.vectors.fixedIO is
         for i in 1 .. neur.NInputs loop
             declare
                 input : NN.ConnectionIndex := neur.Input(i);
-                incoming : NN.ConnectionIndex := (NN.N, idx);
             begin
                 case input.T is
-                    when NN.I => raise Program_Error with "Unimplemented input connection";
-                    when NN.N => net.Neuron(input.Nidx).Add_Output(incoming);
+                    when NN.I => raise Program_Error with "Unimplemented add input connection"; -- net.inputs(input.Iidx) := (NN.N,idx);
+                    when NN.N => net.Neuron(input.Nidx).Add_Output((NN.N,idx));
                     -- ATTN: may need to rethink how Neuron's are returned
                     -- may be better to use access, to allow modification in dot notation..
-                    when NN.O => raise Invalid_Connection;
+                    when NN.O | NN.None => raise Invalid_Connection;
                 end case;
             end;
         end loop;
+        --  need more design of Net inputs/outputs
+        --  to be able to connect to multiple entries oon the other side..
+        pragma Compile_Time_Warning (Standard.True, "Del_Neuron unimplemented");
+        raise Program_Error with "Unimplemented procedure Del_Neuron";
         -- check if we autosort layers
         if net.autosort_layers then
             net.Update_Layers(idx);
@@ -58,7 +61,31 @@ package body wann.nets.vectors.fixedIO is
 
     overriding
     procedure Del_Neuron (net : in out NNet; idx : NN.NeuronIndex) is
+        neur : PN.Neuron_Interface'Class := net.Neuron(idx);
     begin
+        -- first disconnect the connections
+        for i in 1 .. neur.NInputs loop
+            declare
+                input : NN.ConnectionIndex := neur.Input(i);
+            begin
+                case input.T is
+                    when NN.I => net.inputs(input.Iidx) := (T=>NN.None);
+                    when NN.N => raise Program_Error with "Unimplemented del input connection"; -- net.Neuron(input.Nidx).Del_Output(idx);
+                    when NN.O | NN.None => raise Invalid_Connection;
+                end case;
+            end;
+        end loop;
+        for o in 1 .. neur.NOutputs loop
+            declare
+                output : NN.ConnectionIndex := neur.Output(o);
+            begin
+                case output.T is
+                    when NN.I | NN.None => raise Invalid_Connection;
+                    when NN.N => raise Program_Error with "Unimplemented del input connection"; --net.Neuron(output.Nidx).Del_Input((T=>NN.None));
+                    when NN.O => raise Program_Error with "Unimplemented del input connection"; --net.outputs(output.Iidx) := (T=>NN.None);
+                end case;
+            end;
+        end loop;
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "Del_Neuron unimplemented");
         raise Program_Error with "Unimplemented procedure Del_Neuron";

@@ -53,13 +53,13 @@ package wann.neurons is
 
     -- An internal representation that includes more details that might change.
     -- To be used for passing neuron state around
-    type NeuronRepr is private;
+    type NeuronRepr(<>) is private;
     type NeuronReprPtr is access NeuronRepr;
 
     ----------------------------------------------
     -- Neuron interface: to be used by layers and nets
     -- Multiple representations are possible, defined in child packages.
-    type Neuron_Interface is interface;
+    type Neuron_Interface is interface and Outputting_Interface;
 --     type Neuron_Access is access Neuron_Interface;  -- should not ever be needed
     type NeuronClass_Access is access all Neuron_Interface'Class;
 
@@ -75,15 +75,13 @@ package wann.neurons is
     -- Still, this is useful for setters, as neurons are going to be modded much less often
     -- than they would be used (notably for forward/back-prop). So this is still usefull for code minimization.
     function  ToRepr  (NI : Neuron_Interface) return NeuronRepr is abstract;
-    procedure FromRepr(NI : in out Neuron_Interface; LR : NeuronRepr) is abstract;
+    procedure FromRepr(NI : in out Neuron_Interface; NR : NeuronRepr) is abstract;
     --
-    -- Outputs, on the other hand, are not part of primitive Rec,
-    -- and will need to be reset individually during rearrangement, so need some primitives for these..
-    -- The principal users should be Layer or NNet while adding/removeing/reconnecting neurons
-    procedure Add_Output(NI : in out Neuron_Interface; Output : NN.ConnectionIndex) is abstract;
-    procedure Del_Output(NI : in out Neuron_Interface; Output : NN.ConnectionIndex) is abstract;
-    --     function  Outputs(NI : Neuron_Interface'Class) return Output_Connection_Array  is abstract;
-    -- use individual indexed output primitive instead for less overhead.
+--     -- Outputs, on the other hand, are not part of primitive Rec,
+--     -- and will need to be reset individually during rearrangement, so need some primitives for these..
+--     -- The principal users should be Layer or NNet while adding/removeing/reconnecting neurons
+--     procedure Add_Output(NI : in out Neuron_Interface; Output : NN.ConnectionIndex) is abstract;
+--     procedure Del_Output(NI : in out Neuron_Interface; Output : NN.ConnectionIndex) is abstract;
 
     -- Still, it is better to provide direct getters for frequently used fields
     function NInputs (neur : Neuron_Interface) return InputIndex  is abstract;
@@ -151,7 +149,7 @@ package wann.neurons is
 
 private
 
-    type NeuronRepr(Ni : InputIndex_Base := 0; No : OutputIndex_Base := 0) is record
+    type NeuronRepr(Ni : InputIndex_Base; No : OutputIndex_Base) is record
         idx     : NN.NeuronIndex_Base; -- own index in NNet
         activat : Activation_Type;
         lag     : Real;    -- delay of result propagation, unused for now
