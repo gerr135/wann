@@ -26,9 +26,9 @@ package wann.neurons.vectors is
 
     -- inherited primitives
     overriding
-    function  ToRec  (NI : Neuron) return NeuronRec;
+    function  ToRepr  (neur : Neuron) return NeuronRepr;
     overriding
-    procedure FromRec(NI : in out Neuron; LR : NeuronRec);
+    procedure FromRepr(NI : in out Neuron; LR : NeuronRepr);
     --
     overriding
     procedure Add_Output(neur : in out Neuron; Output : NN.ConnectionIndex);

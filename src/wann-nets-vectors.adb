@@ -31,10 +31,11 @@ package body wann.nets.vectors is
 --     end Neuron;
 
     overriding
-    function Neuron (net : Proto_NNet; idx : NN.NeuronIndex)
-        return PN.Neuron_Reference
+    function Neuron (net : aliased in out Proto_NNet; idx : NN.NeuronIndex)
+        return Neuron_Reference
     is
-        NR : PN.Neuron_Reference(net.neurons.Element(idx)'Access);
+        NVR : NV.Reference_Type := net.neurons.Reference(idx);
+        NR : Neuron_Reference(NVR.Element);
     begin
         return NR;
     end Neuron;

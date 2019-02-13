@@ -85,7 +85,7 @@ package wann is
              (Simple, -- cycle through neurons in layer; for basic use and in case of very sparse connections
               Matrix, -- compose a common matrix and do vector algebra; the common case
               GPU);   -- try to do linear algebra in GPU
-        -- this will be (most likely) handled through layer types via OOP hierarchy.
+    -- this will be (most likely) handled through layer types via OOP hierarchy.
 
     type Sort_Direction is (Forward, Backward);
 

@@ -54,7 +54,7 @@ package wann.nets.vectors is
 --     function  Neuron(net : Proto_NNet; idx : NN.NeuronIndex) return PN.Neuron_Interface'Class;
 
     overriding
-    function  Neuron(net : Proto_NNet; idx : NN.NeuronIndex) return PN.Neuron_Reference;
+    function  Neuron(net : aliased in out Proto_NNet; idx : NN.NeuronIndex) return Neuron_Reference;
 
     overriding
     function  Layers_Ready (net : Proto_NNet) return Boolean;

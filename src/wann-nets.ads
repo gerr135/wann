@@ -47,7 +47,7 @@ package wann.nets is
     -- This is the base version, consists of stateless neurons (topology and weights only);
     -- can be used for "light" forwardProp only, initiated from pre-trained net.
     --
-    -- SOme of the functionality is common to all, and is easiest to implement right here.
+    -- Some of the functionality is common to all, and is easiest to implement right here.
     -- So, like with Layer_Interface we make this one abstract tagged, rather than interface.
     -- We have no need for overlaying hierarchies so far..
     type NNet_Interface is abstract tagged limited private;
@@ -65,7 +65,12 @@ package wann.nets is
     -- NNet is conceptually a container. So we store/remove neurons with Add/Del_Neuron.
     -- As we have multiple neuron implementations, specific neurons should be created
     -- by their appropriate constructors and passed to the Add_Neuron method.
-    -- There should be no New_Neuron methods per se, we may need the Next_free_Idx function though..
+    --
+    -- To handle neurons we need
+    type Neuron_Reference (Data : not null access PN.Neuron_Interface'Class) is private
+        with Implicit_Dereference => Data;
+
+
     procedure Add_Neuron(net  : in out NNet_Interface;
                          neur : in out PN.Neuron_Interface'Class; -- gotta be neuron itself, not reference, as NNet is essentially a container
                          idx : out NN.NeuronIndex) is abstract;
@@ -80,9 +85,9 @@ package wann.nets is
     -- neuron getters
 --     function  Neuron(net : NNet_Interface; idx : NN.NeuronIndex) return PN.Neuron_Interface'Class is abstract;
         -- this provides read-only access, passing by reference (tagged record)
-    function  Neuron(net : NNet_Interface; idx : NN.NeuronIndex) return PN.Neuron_Reference is abstract;
+    function  Neuron(net : aliased in out NNet_Interface; idx : NN.NeuronIndex) return Neuron_Reference is abstract;
         -- this provides read-write access via Accessor trick
-    
+
 
     -- layer handling
     -- the (abstract) primitives
@@ -154,6 +159,8 @@ package wann.nets is
     -- Updates layers starting from the inserted neuron, following its connections.
     -- May be more efficient (O(logN) instead of N*LogN) compared to complete sort.
 
+    -- May need to add a method of sort validation if full state of neurons is saved/loaded
+
 
     ------------------------
     --  Propagation
@@ -189,6 +196,9 @@ package wann.nets is
 
 
 private
+
+    type Neuron_Reference (Data : not null access PN.Neuron_Interface'Class) is null record;
+
 
     type NNet_Interface is abstract tagged limited record
         autosort_layers : Boolean := False;

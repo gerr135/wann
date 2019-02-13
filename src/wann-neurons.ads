@@ -39,14 +39,22 @@ package wann.neurons is
     -- To be used for storage, IO and as an alphabet to form a linear description,
     -- a-la DNA/protein sequence. Then the NNet can be simply defined as some linear sequence
     -- in declaration which can be passed to the NNet constructor.
-    type NeuronRec(Nin : InputIndex) is record
+    --
+    -- NOTE: outputs are not part of the "base topology", so it might make sense to have
+    -- two record types
+    type NeuronRec(Ni : InputIndex) is record
         idx     : NN.NeuronIndex_Base; -- own index in NNet
         activat : Activation_Type;
         lag     : Real;    -- delay of result propagation, unused for now
-        weights : Weight_Array(0 .. Nin);
-        inputs  : Input_Connection_Array  (1 .. Nin);
+        weights : Weight_Array(0 .. Ni);
+        inputs  : Input_Connection_Array  (1 .. Ni);
     end record;
     type NeuronRecPtr is access NeuronRec;
+
+    -- An internal representation that includes more details that might change.
+    -- To be used for passing neuron state around
+    type NeuronRepr is private;
+    type NeuronReprPtr is access NeuronRepr;
 
     ----------------------------------------------
     -- Neuron interface: to be used by layers and nets
@@ -55,9 +63,6 @@ package wann.neurons is
 --     type Neuron_Access is access Neuron_Interface;  -- should not ever be needed
     type NeuronClass_Access is access all Neuron_Interface'Class;
 
-    type Neuron_Reference (Data : not null access Neuron_Interface'Class) is private
-        with Implicit_Dereference => Data;
-    
     -- NOTE on construction:
     -- Neurons are created with empty output list, to be populated by Add_Output calls..
     -- This should normally happen during insertion of Neuron into NNet and
@@ -69,8 +74,8 @@ package wann.neurons is
     -- large arrays will be often copied and discarded..
     -- Still, this is useful for setters, as neurons are going to be modded much less often
     -- than they would be used (notably for forward/back-prop). So this is still usefull for code minimization.
-    function  ToRec  (NI : Neuron_Interface) return NeuronRec is abstract;
-    procedure FromRec(NI : in out Neuron_Interface; LR : NeuronRec) is abstract;
+    function  ToRepr  (NI : Neuron_Interface) return NeuronRepr is abstract;
+    procedure FromRepr(NI : in out Neuron_Interface; LR : NeuronRepr) is abstract;
     --
     -- Outputs, on the other hand, are not part of primitive Rec,
     -- and will need to be reset individually during rearrangement, so need some primitives for these..
@@ -105,6 +110,9 @@ package wann.neurons is
     --
     -- Additional getters/setters
     -- mostly wrappers around FromRec, so inline them right here..
+    -- the entire Rec:
+    function  ToRec  (NI : Neuron_Interface'Class) return NeuronRec;
+    -- and individual fields:
     function Index  (NI : Neuron_Interface'Class) return NN.NeuronIndex with Inline;
     function Activation(NI : Neuron_Interface'Class) return Activation_Type with Inline;
     function Weights(NI : Neuron_Interface'Class) return Weight_Array with Inline;
@@ -143,6 +151,14 @@ package wann.neurons is
 
 private
 
-    type Neuron_Reference (Data : not null access Neuron_Interface'Class) is null record;
+    type NeuronRepr(Ni : InputIndex_Base := 0; No : OutputIndex_Base := 0) is record
+        idx     : NN.NeuronIndex_Base; -- own index in NNet
+        activat : Activation_Type;
+        lag     : Real;    -- delay of result propagation, unused for now
+        weights : Weight_Array(0 .. Ni);
+        inputs  : Input_Connection_Array  (1 .. Ni);
+        outputs : Output_Connection_Array (1 .. No);
+        -- may add level index this belongs to, to avoid resorting upon structure load..
+    end record;
 
 end wann.neurons;

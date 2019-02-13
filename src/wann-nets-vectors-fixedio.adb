@@ -1,4 +1,7 @@
 pragma Ada_2012;
+
+with Ada.Text_IO;
+
 package body wann.nets.vectors.fixedIO is
 
     -----------------------------
@@ -26,8 +29,10 @@ package body wann.nets.vectors.fixedIO is
                           idx : out NN.NeuronIndex)
     is
         use type Ada.Containers.Count_Type;
+        use Ada.Text_IO;
     begin
         idx := NN.NeuronIndex(net.neurons.Length + 1); -- new index
+        Put_Line("net.Add_Neuron(neur," & idx'Img & ")");
         neur.Set_Index(idx);
         net.neurons.Append(neur);
         -- now connect neur inputs to outputs of other entities

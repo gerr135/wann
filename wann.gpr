@@ -13,7 +13,7 @@ project wann is
    package Compiler is
       case Mode is
          when "dbg" =>
-            for Switches ("Ada") use ("-g");
+            for Switches ("Ada") use ("-g", "-gnatf");
          when "release" =>
             for Switches ("Ada") use ("-O2");
       end case;

@@ -4,33 +4,46 @@ with Ada.Numerics.Float_Random;
 
 package body wann.neurons.vectors is
 
-   --------------
-   -- To/FromRec --
-   -----------
-   overriding function ToRec (NI : Neuron) return NeuronRec is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "ToRec unimplemented");
-      return raise Program_Error with "Unimplemented function ToRec";
-   end ToRec;
+    ----------------
+    -- To/FromRec --
+    --
+    overriding
+    function ToRepr (neur : Neuron) return NeuronRepr is
+        NR : NeuronRepr(Ni => InputIndex_Base (neur.inputs.Length),
+                       No => OutputIndex_Base(neur.outputs.Length));
+    begin
+        NR.idx     := neur.idx;
+        NR.activat := neur.activat;
+        NR.lag     := 0.0;
+        -- assign inputs/weights - this is the most inefficient part,
+        -- but should only be used on construction/topology change.
+        NR.weights(0) := neur.weights(0);
+        for i in 1 .. NR.Ni loop
+            NR.weights(i) := neur.weights(i);
+            NR.inputs(i)  := neur.inputs(i);
+        end loop;
+        --
+        return NR;
+    end ToRepr;
 
-   overriding procedure FromRec (NI : in out Neuron; LR : NeuronRec) is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "FromRec unimplemented");
-      raise Program_Error with "Unimplemented procedure FromRec";
-   end FromRec;
+    overriding
+    procedure FromRepr (NI : in out Neuron; LR : NeuronRepr) is
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "FromRec unimplemented");
+        raise Program_Error with "Unimplemented procedure FromRec";
+    end FromRepr;
 
     -------------------
     -- Add/DelOutput --
     --
-    overriding 
+    overriding
     procedure Add_Output (neur : in out Neuron; Output : NN.ConnectionIndex) is
     begin
         neur.outputs.Append(Output);
     end Add_Output;
 
-    overriding 
+    overriding
     procedure Del_Output (neur : in out Neuron; Output : NN.ConnectionIndex) is
         -- unclear how the calls should be made - del by index or NN index
         -- may need to change interface
@@ -43,13 +56,13 @@ package body wann.neurons.vectors is
     ------------------
     -- NInputs/Outputs
     --
-    overriding 
+    overriding
     function NInputs (neur : Neuron) return InputIndex is
     begin
         return InputIndex_Base(neur.inputs.Length);
     end NInputs;
 
-    overriding 
+    overriding
     function NOutputs (neur : Neuron) return OutputIndex is
     begin
         return OutputIndex_Base(neur.outputs.Length);
@@ -58,13 +71,13 @@ package body wann.neurons.vectors is
     --------------------------
     -- Input/Output getters --
     --
-    overriding 
+    overriding
     function Input (neur : Neuron; idx : InputIndex) return NN.ConnectionIndex is
     begin
         return neur.inputs.Element(idx);
     end Input;
 
-    overriding 
+    overriding
     function Output (neur : Neuron; idx : OutputIndex) return NN.ConnectionIndex is
     begin
         return neur.outputs.Element(idx);
