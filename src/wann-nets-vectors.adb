@@ -1,6 +1,6 @@
 pragma Ada_2012;
 
--- with Ada.Text_IO;
+with Ada.Text_IO;
 package body wann.nets.vectors is
 
     -------------------
@@ -9,17 +9,13 @@ package body wann.nets.vectors is
     overriding
     function NInputs (net : NNet) return NN.InputIndex is
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "NInputs unimplemented");
-        return raise Program_Error with "Unimplemented procedure NInputs";
+        return NN.InputIndex(net.inputs.Length);
     end;
 
     overriding
     function NOutputs(net : NNet) return NN.OutputIndex is
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "NOutputs unimplemented");
-        return raise Program_Error with "Unimplemented procedure NOutputs";
+        return NN.OutputIndex(net.outputs.Length);
     end;
 
     overriding
@@ -40,17 +36,13 @@ package body wann.nets.vectors is
     overriding
     function  Input (net : NNet; i : NN.InputIndex)  return PI.Input_Interface'Class is
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Input unimplemented");
-        return raise Program_Error with "Unimplemented procedure Input";
+        return net.inputs(i);
     end;
 
     overriding
     function  Output(net : NNet; o : NN.OutputIndex) return NN.ConnectionIndex is
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Output unimplemented");
-        return raise Program_Error with "Unimplemented procedure Output";
+        return net.outputs(o);
     end;
 
     --------------------
@@ -62,10 +54,10 @@ package body wann.nets.vectors is
                           idx : out NN.NeuronIndex)
     is
         use type Ada.Containers.Count_Type;
---         use Ada.Text_IO;
+        use Ada.Text_IO;
     begin
         idx := NN.NeuronIndex(net.neurons.Length + 1); -- new index
---         Put_Line("net.Add_Neuron(neur," & idx'Img & ")");
+        Put_Line("net.Add_Neuron" & idx'Img);
         neur.Set_Index(idx);
         net.neurons.Append(neur);
         -- now connect neur inputs to outputs of other entities
@@ -73,19 +65,17 @@ package body wann.nets.vectors is
             declare
                 input : NN.ConnectionIndex := neur.Input(i);
             begin
+                Put("  adding input" & i'Img & "(" & input.T'Img & ",");
                 case input.T is
-                    when NN.I => raise Program_Error with "Unimplemented add input connection"; -- net.inputs(input.Iidx) := (NN.N,idx);
-                    when NN.N => net.Neuron(input.Nidx).Add_Output((NN.N,idx));
-                    -- ATTN: may need to rethink how Neuron's are returned
-                    -- may be better to use access, to allow modification in dot notation..
+                    when NN.I =>
+                        Put(input.Iidx'Img);
+                        net.inputs (input.Iidx).Add_Output((NN.N,idx));
+                    when NN.N => net.neurons(input.Nidx).Add_Output((NN.N,idx));
                     when NN.O | NN.None => raise Invalid_Connection;
                 end case;
+                Put_Line(")");
             end;
         end loop;
-        --  need more design of Net inputs/outputs
-        --  to be able to connect to multiple entries oon the other side..
-        pragma Compile_Time_Warning (Standard.True, "Del_Neuron unimplemented");
-        raise Program_Error with "Unimplemented procedure Del_Neuron";
         -- check if we autosort layers
         if net.autosort_layers then
             net.Update_Layers(idx);
@@ -95,6 +85,7 @@ package body wann.nets.vectors is
     overriding
     procedure Del_Neuron (net : in out NNet; idx : NN.NeuronIndex) is
         neur : PN.Neuron_Interface'Class := net.Neuron(idx);
+        self : NN.ConnectionIndex := (NN.N, idx);
     begin
         -- first disconnect the connections
         for i in 1 .. neur.NInputs loop
@@ -102,8 +93,8 @@ package body wann.nets.vectors is
                 input : NN.ConnectionIndex := neur.Input(i);
             begin
                 case input.T is
-                    when NN.I => raise Program_Error with "Unimplemented del input connection";
-                    when NN.N => raise Program_Error with "Unimplemented del input connection"; -- net.Neuron(input.Nidx).Del_Output(idx);
+                    when NN.I => net.inputs (input.Iidx).Del_Output(self);
+                    when NN.N => net.neurons(input.Nidx).Del_Output(self);
                     when NN.O | NN.None => raise Invalid_Connection;
                 end case;
             end;
@@ -114,8 +105,8 @@ package body wann.nets.vectors is
             begin
                 case output.T is
                     when NN.I | NN.None => raise Invalid_Connection;
-                    when NN.N => raise Program_Error with "Unimplemented del input connection"; --net.Neuron(output.Nidx).Del_Input((T=>NN.None));
-                    when NN.O => raise Program_Error with "Unimplemented del input connection"; --net.outputs(output.Iidx) := (T=>NN.None);
+                    when NN.N => net.neurons(output.Nidx).Del_Input(self);
+                    when NN.O => net.outputs(output.Oidx) := (T=>NN.None);
                 end case;
             end;
         end loop;

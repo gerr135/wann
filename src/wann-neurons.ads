@@ -89,11 +89,16 @@ package wann.neurons is
 --     procedure Add_Output(NI : in out Neuron_Interface; Output : NN.ConnectionIndex) is abstract;
 --     procedure Del_Output(NI : in out Neuron_Interface; Output : NN.ConnectionIndex) is abstract;
 
-    -- Still, it is better to provide direct getters for frequently used fields
+    -- primitives giving access to commonnly used fields/methods
+    -- Input handling, same interface layout as for Outputting_Interface
     function NInputs (neur : Neuron_Interface) return InputIndex  is abstract;
-
-    --
     function Input (neur : Neuron_Interface; idx : InputIndex)  return NN.ConnectionIndex is abstract;
+    --
+    procedure Add_Input(neur : in out Neuron_Interface; Input : NN.ConnectionIndex) is abstract;
+    procedure Del_Input(neur : in out Neuron_Interface; Input : NN.ConnectionIndex) is abstract;
+
+
+
 
     ------------------------------------------------------------
     --  stateful version, values are stored in the neuron itself

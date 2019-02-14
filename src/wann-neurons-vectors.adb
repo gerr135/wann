@@ -47,10 +47,27 @@ package body wann.neurons.vectors is
         --
     end FromRepr;
 
-    -------------------
-    -- Add/DelOutput --
+    ----------------------------
+    -- Add/Del inputs and output
+    --
     --  NOTE: these are Neuron primitives, only operate on this individual neuron
     --  other side of connections is updated by the enclosing NNet
+    overriding
+    procedure Add_Input (neur : in out Neuron; Input : NN.ConnectionIndex) is
+    begin
+        neur.inputs.Append(Input);
+    end Add_Input;
+
+    overriding
+    procedure Del_Input (neur : in out Neuron; Input : NN.ConnectionIndex) is
+        -- unclear how the calls should be made - del by index or NN index
+        -- may need to change interface
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "DelOutput unimplemented");
+        raise Program_Error with "Unimplemented procedure DelOutput";
+    end Del_Input;
+
     overriding
     procedure Add_Output (neur : in out Neuron; Output : NN.ConnectionIndex) is
     begin
