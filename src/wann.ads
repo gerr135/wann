@@ -125,4 +125,8 @@ package wann is
     --function Output(II : Input_Interface; idx : OutputIndex) return NN.ConnectionIndex;
     -- but they would all use their own (internal for the packege) OutputIndex !
 
+    -- exceptions associated with Outputting_Interface
+    Duplicate_Connection : exception;
+    Connection_Not_Found : exception;
+
 end wann;

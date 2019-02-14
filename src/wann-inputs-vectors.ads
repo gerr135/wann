@@ -31,13 +31,13 @@ package wann.inputs.vectors is
 --     procedure FromRec(II : in out Input_Interface; IR : InputRec);
 
     overriding
-    function Output(II : Input_Type; idx : OutputIndex) return NN.ConnectionIndex;
+    function Output(IT : Input_Type; idx : OutputIndex) return NN.ConnectionIndex;
 
     overriding
-    procedure Add_Output(NI : in out Input_Type; Output : NN.ConnectionIndex);
+    procedure Add_Output(IT : in out Input_Type; Output : NN.ConnectionIndex);
 
     overriding
-    procedure Del_Output(NI : in out Input_Type; Output : NN.ConnectionIndex);
+    procedure Del_Output(IT : in out Input_Type; Output : NN.ConnectionIndex);
 
 
 private
