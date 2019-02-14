@@ -18,15 +18,21 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
-with wann.neurons, wann.layers;
+with wann.neurons;
+with wann.layers.vectors;
+with wann.inputs.vectors;
 
 generic
 package wann.nets is
 
-    package PL is new wann.layers;
---     package PN is new wann.neurons; -- may run into trouble (package instantiation defines new types)
-    -- better to use PL.PN instead
+    package PI  is new wann.inputs;
+    package PIV is new PI.vectors;
+
+    package PL  is new wann.layers;
+    package PLV is new PL.vectors;
+
     package PN renames PL.PN;
+    --package PN is new wann.neurons; -- creates new package with new incompatible types
 
 
     -- NOTE 1: local indices are defined at the top level,
@@ -51,15 +57,24 @@ package wann.nets is
     -- So, like with Layer_Interface we make this one abstract tagged, rather than interface.
     -- We have no need for overlaying hierarchies so far..
     type NNet_Interface is abstract tagged limited private;
-    type NNet_Access is access NNet_Interface;
+    type NNet_Access is access NNet_Interface'Class;
 
     -- Dimension getters; the setters are imnplementation-specific,
+    function NInputs (net : NNet_Interface) return NN.InputIndex  is abstract;
+    function NOutputs(net : NNet_Interface) return NN.OutputIndex is abstract;
     function NNeurons(net : NNet_Interface) return NN.NeuronIndex is abstract;
     function NLayers (net : NNet_Interface) return NN.LayerIndex  is abstract;
 
-    -- net topology (connection info)
-    function  Input_Connections (net : NNet_Interface) return NN.Input_Connection_Array  is abstract;
-    function  Output_Connections(net : NNet_Interface) return NN.Output_Connection_Array is abstract;
+    -- net IO
+    -- These would be inefficient in dynamic implementations (have to copy entire array to access one element)
+    -- The 1st one is not even possible, as inputs have variable number of connections..
+    --function  Input_Connections (net : NNet_Interface) return NN.Input_Connection_Array  is abstract;
+    --function  Output_Connections(net : NNet_Interface) return NN.Output_Connection_Array is abstract;
+    --
+    -- So we access by element instead
+    function  Input (net : NNet_Interface; i : NN.InputIndex)  return PI.Input_Interface'Class is abstract;
+    function  Input (net : NNet_Interface'Class; i : NN.InputIndex)  return PI.InputRec;
+    function  Output(net : NNet_Interface; o : NN.OutputIndex) return NN.ConnectionIndex is abstract;
 
     --  Neuron handling
     -- NNet is conceptually a container. So we store/remove neurons with Add/Del_Neuron.

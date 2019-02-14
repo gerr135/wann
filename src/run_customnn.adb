@@ -11,7 +11,7 @@ with Ada.Command_Line, GNAT.Command_Line;
 with Ada.Text_IO, Ada.Integer_Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
-with wann.nets.vectors.fixedIO;
+with wann.nets.vectors;
 with wann.neurons.vectors;
 
 procedure run_customNN is
@@ -21,14 +21,13 @@ procedure run_customNN is
     package PW is new wann(Real => Float);
     package PNet   is new PW.nets;
     package PNetV  is new PNet.vectors;
-    package PNetVF is new PNetV.fixedIO;
     package PN renames PNet.PN;
     package PNV is new PN.vectors;
 
     use PW; use NN;
 
     neur1 : PNV.Neuron := PNV.Create(Sigmoid, ((I,1),(I,2)), 1.0);
-    net1  : PNetVF.NNet(Ni=>2, No=>1);
+    net1  : PNetV.NNet;
 
 
 begin  -- main

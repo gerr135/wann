@@ -94,7 +94,7 @@ package nnet_types is
     -- NOTE: only the Output_Connection_Array makes conceptual sense here,
     -- as the only one having 1-to-1 routing (NNet output can take input from only 1 neuron)
     -- all others would be more complex with their 1-to-many or many-to-many mappings..
-    type Input_Connection_Array  is array (InputIndex  range <>) of ConnectionIndex;
+--     type Input_Connection_Array  is array (InputIndex  range <>) of ConnectionIndex;
 --     type Neuron_Connection_Array is array (NeuronIndex range <>) of ConnectionIndex;
     type Output_Connection_Array is array (OutputIndex range <>) of ConnectionIndex;
 

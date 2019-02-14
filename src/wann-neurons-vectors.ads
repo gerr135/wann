@@ -59,7 +59,7 @@ package wann.neurons.vectors is
 
     not overriding
     function Create(activation : Activation_Type;
-                    connections : NN.Input_Connection_Array;
+                    connections : Input_Connection_Array;
                     maxWeight : Real) return Neuron;
     -- Create with weight uniformly distributed in [0 .. maxWeight]
 

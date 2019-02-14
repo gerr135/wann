@@ -34,7 +34,6 @@ package wann.inputs is
 
     -- associated arrray types for holding params
     type Output_Connection_Array is array (OutputIndex range <>) of NN.ConnectionIndex;
-    type Value_Array   is array (InputIndex range <>) of Real;
 
 
     -------------------------------------------------
@@ -49,11 +48,17 @@ package wann.inputs is
     -------------------------------------------------
     -- Input type with functionality
     type Input_Interface is interface and Outputting_Interface;
-    type InputClass_Access is access all Neuron_Interface'Class;
+    type InputClass_Access is access all Input_Interface'Class;
+    type Input_Reference (Data : not null access Input_Interface'Class) is private
+        with Implicit_Dereference => Data;
 
 --     function  ToRec  (II : Input_Interface) return InputRec is abstract;
 --     procedure FromRec(II : in out Input_Interface; IR : InputRec) is abstract;
     --
     function Output(II : Input_Interface; idx : OutputIndex) return NN.ConnectionIndex is abstract;
+
+private
+
+    type Input_Reference (Data : not null access Input_Interface'Class) is null record;
 
 end wann.inputs;

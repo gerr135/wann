@@ -2,8 +2,20 @@ pragma Ada_2012;
 package body wann.nets is
 
     ---------------------
-    -- Autosort_Layers --
+    -- IO handling
+    --
+    function  Input (net : NNet_Interface'Class; i : NN.InputIndex)  return PI.InputRec is
+        input : PI.Input_Interface'Class := net.Input(i);
+    begin
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "Input unimplemented");
+        return raise Program_Error with "Unimplemented procedure Input";
+    end;
 
+
+    ---------------------
+    -- Autosort_Layers --
+    --
     function Autosort_Layers (net : NNet_Interface) return Boolean is
     begin
         return net.autosort_layers;
@@ -99,8 +111,8 @@ package body wann.nets is
         -- this is a stateless prop version. All intermidiate data are kept and updated locally
         -- NOTE: layers can be interconnected in arbitrary way, to absolutely any neurons,
         -- or even inputs/outputs directly, so we need to pass a complete state around.
-        Ni : NN.InputIndex  := net.Input_Connections'Length;
-        No : NN.OutputIndex := net.Output_Connections'Length;
+        Ni : NN.InputIndex  := net.NInputs;
+        No : NN.OutputIndex := net.NOutputs;
         use type NN.InputIndex;
     begin
         -- check dimensions and if net has already been sorted
@@ -139,24 +151,27 @@ package body wann.nets is
     is
         -- consider pre/post-conditions?
         --
-        outputs : NN.Output_Connection_Array := net.Output_Connections;
-        results : NN.Output_Array(1 .. outputs'Last);
+        results : NN.Output_Array(1 .. net.NOutputs);
         use type NN.Connection_Type;
     begin
-        for i in results'Range loop
-            if outputs(i).T = NN.N then
-                if not NSV.validN(outputs(i).Nidx) then
-                    -- replace with Assert?
-                    raise Unset_Value_Access;
+        for o in results'Range loop
+            declare
+                output : NN.ConnectionIndex := net.Output(o);
+            begin
+                if output.T = NN.N then
+                    if not NSV.validN(output.Nidx) then
+                        -- replace with Assert?
+                        raise Unset_Value_Access;
+                    end if;
+                    results(o) := NSV.neuron(output.Nidx);
+                else
+                    if not NSV.validI(output.Iidx) then
+                        -- replace with Assert?
+                        raise Unset_Value_Access;
+                    end if;
+                    results(o) := NSV.input(output.Iidx);
                 end if;
-                results(i) := NSV.neuron(outputs(i).Nidx);
-            else
-                if not NSV.validI(outputs(i).Iidx) then
-                    -- replace with Assert?
-                    raise Unset_Value_Access;
-                end if;
-                results(i) := NSV.input(outputs(i).Iidx);
-            end if;
+            end;
         end loop;
         return results;
     end Calc_Outputs;
@@ -165,16 +180,19 @@ package body wann.nets is
         return NN.Output_Array
     is
         --
-        outputs : NN.Output_Connection_Array := net.Output_Connections;
-        results : NN.Output_Array(1 .. outputs'Last);
+        results : NN.Output_Array(1 .. net.NOutputs);
         use type NN.Connection_Type;
     begin
-        for i in results'Range loop
-            if outputs(i).T = NN.N then
-                results(i) := NSV.neuron(outputs(i).Nidx);
-            else
-                results(i) := NSV.input(outputs(i).Iidx);
-            end if;
+        for o in results'Range loop
+            declare
+                output : NN.ConnectionIndex := net.Output(o);
+            begin
+                if output.T = NN.N then
+                    results(o) := NSV.neuron(output.Nidx);
+                else
+                    results(o) := NSV.input(output.Iidx);
+                end if;
+            end;
         end loop;
         return results;
     end Calc_Outputs;
@@ -213,23 +231,26 @@ package body wann.nets is
     function Calc_Outputs (net : Stateful_NNet_Interface'Class)
         return NN.Output_Array
     is
-        outputs  : NN.Output_Connection_Array := net.Output_Connections;
-        results  : NN.Output_Array(1 .. outputs'Last);
+        results  : NN.Output_Array(1 .. net.NOutputs);
         inValues : NN.Input_Array := net.Input_Values;
         neur : PN.Stateful_NeuronClass_Access;
         use type NN.Connection_Type;
     begin
-        for i in results'Range loop
-            if outputs(i).T = NN.N then
-                neur := net.Neuron(outputs(i).Nidx);
-                if not neur.valid then
-                    -- replace with Assert?
-                    raise Unset_Value_Access;
+        for o in results'Range loop
+            declare
+                output : NN.ConnectionIndex := net.Output(o);
+            begin
+                if output.T = NN.N then
+                    neur := net.Neuron(output.Nidx);
+                    if not neur.valid then
+                        -- replace with Assert?
+                        raise Unset_Value_Access;
+                    end if;
+                    results(o) := neur.value;
+                else
+                    results(o) := inValues(output.Iidx);
                 end if;
-                results(i) := neur.value;
-            else
-                results(i) := inValues(outputs(i).Iidx);
-            end if;
+            end;
         end loop;
         return results;
     end Calc_Outputs;

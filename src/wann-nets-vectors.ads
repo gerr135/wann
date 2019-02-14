@@ -17,98 +17,98 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
+-- This package alows a mutable NNet "signature" - its inputs/outputs to change their
+-- connections and even number. This is not done in the majority of NNet libs out there,
+-- but this follow directly the paradigm of this lib - mutable nnets.
+--
+-- NOTE: conceptually it is possible to fix the number of inputs/outputs but mutate
+-- neurons inside. However, practically, we still would have to use mutable representation
+-- for the inputs at least, unless we prohibit varying inputs of the 1st neuron layer..
+-- As the other combination - fixed neurons but mutable IO - does not even make much sense,
+-- we would be blowing up our package hierarchy for unclearly formulated concept.
+-- (we would have to have nets.vectors-fixedIO/mutableIO subpackages)
+-- So, we keep things simple for the moment..
+
+
 with Ada.Containers.Vectors;
 with Ada.Containers.Indefinite_Vectors;
 
 with wann.layers.vectors;
+with wann.inputs.vectors;
 
 generic
 package wann.nets.vectors is
 
-
     ------------------------------
-    --  NOTE
+    -- mutable NNet
     --
-    -- Do we allow NNet "signature" - its inputs/outputs to be mutable?
-    -- This is not done in the majority of NNet libs out there,but I see no reason why not.
-    -- That would go nicely along with the design principle of this lib..
-    -- So, here goes (a more convoluted type hierarchy)
-    -- NOTE: this should probably be split into multiple child packages,
-    -- to keep it clean, but even more importantly, to prevent compiler confusion about constructors
-
-    ------------------------------
-    -- Proto_NNet
-    -- an ADT handling neurons and layers only, base for further derivation
-    type Proto_NNet is abstract new NNet_Interface with private;
-
-    -- only a few of abstract methods make sense at this level,
-    -- basically only the methods that do not touch IO
-    -- Thus no specific IO handling or even creation/deletion of neurons
-    overriding
-    function NNeurons(net : Proto_NNet) return NN.NeuronIndex;
+    type NNet is new NNet_Interface with private;
 
     overriding
-    function NLayers (net : Proto_NNet) return NN.LayerIndex;
-
---     overriding
---     function  Neuron(net : Proto_NNet; idx : NN.NeuronIndex) return PN.Neuron_Interface'Class;
+    function NInputs (net : NNet) return NN.InputIndex;
 
     overriding
-    function  Neuron(net : aliased in out Proto_NNet; idx : NN.NeuronIndex) return Neuron_Reference;
+    function NOutputs(net : NNet) return NN.OutputIndex;
 
     overriding
-    function  Layers_Ready (net : Proto_NNet) return Boolean;
+    function NNeurons(net : NNet) return NN.NeuronIndex;
 
     overriding
-    function  Layer(net : Proto_NNet; idx : NN.LayerIndex) return PL.Layer_Interface'Class;
+    function NLayers (net : NNet) return NN.LayerIndex;
+
+    -- IO handling
+    overriding
+    function  Input (net : NNet; i : NN.InputIndex)  return PI.Input_Interface'Class;
 
     overriding
-    procedure Set_Layer(net : in out Proto_NNet; idx : NN.LayerIndex; L : PL.Layer_Interface'Class);
+    function  Output(net : NNet; o : NN.OutputIndex) return NN.ConnectionIndex;
 
+    -- neuron handling
+    overriding
+    procedure Add_Neuron(net : in out NNet; neur : in out PN.Neuron_Interface'Class;
+                         idx : out NN.NeuronIndex);
 
-    -- these two types below break compiler for some reason
---     --------------------------------------------------------------------
---     --  Cached_NNet
---     type Cached_Proto_NNet is abstract new Proto_NNet and Cached_NNet_Interface with private;
---
---     overriding
---     function  State(net : Cached_Proto_NNet) return NN.State_Vector;
---
---     overriding
---     procedure Set_State(net : in out Cached_Proto_NNet; NSV : NN.State_Vector);
+    overriding
+    procedure Del_Neuron(net : in out NNet; idx : NN.NeuronIndex);
 
+    overriding
+    procedure Set_Layer(net : in out NNet; idx : NN.LayerIndex; L : PL.Layer_Interface'Class);
 
---     type Cached_Checked_Proto_NNet is abstract new Proto_NNet and Cached_Checked_NNet_Interface with private;
---
---     overriding
---     function  State(net : Cached_Checked_Proto_NNet) return NN.Checked_State_Vector;
---
---     overriding
---     procedure Set_State(net : in out Cached_Checked_Proto_NNet; NSV : NN.Checked_State_Vector);
+    overriding
+    function  Neuron(net : aliased in out NNet; idx : NN.NeuronIndex) return Neuron_Reference;
 
+    -- Layers handling
+    overriding
+    function  Layers_Ready (net : NNet) return Boolean;
+
+    overriding
+    function  Layer(net : NNet; idx : NN.LayerIndex) return PL.Layer_Interface'Class;
 
 
 private
+
+    use type PIV.Input_Type;
+    package IV is new Ada.Containers.Vectors(Index_Type=>NN.InputIndex,  Element_Type=>PIV.Input_Type);
+
+    use type NN.ConnectionIndex;
+    package OV is new Ada.Containers.Vectors(Index_Type=>NN.OutputIndex, Element_Type=>NN.ConnectionIndex);
 
     -- utilized vector types
     use type PN.Neuron_Interface;
     package NV is new Ada.Containers.Indefinite_Vectors (
             Index_Type=>NN.NeuronIndex, Element_Type=>PN.Neuron_Interface'Class);
 
-    package PLV is new PL.vectors;
     use type PLV.Layer;
     package LV is new Ada.Containers.Vectors(Index_Type=>NN.LayerIndex,  Element_Type=>PLV.Layer);
 
-    -- the Proto_NNet types themselves
-    type Proto_NNet is abstract new NNet_Interface with record
+    -- the NNet types themselves
+    type NNet is new NNet_Interface with record
+        inputs  : IV.Vector;
+        outputs : OV.Vector;
         neurons : NV.Vector;
         layers  : LV.Vector;
         Layers_Ready : Boolean := False;
     end record;
-
---     type Cached_Proto_NNet is abstract new Proto_NNet and Cached_NNet_Interface with null record;
-
---     type Cached_Checked_Proto_NNet is abstract new Proto_NNet and Cached_Checked_NNet_Interface with null record;
 
 end wann.nets.vectors;
 

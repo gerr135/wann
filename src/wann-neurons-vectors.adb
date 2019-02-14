@@ -140,7 +140,7 @@ package body wann.neurons.vectors is
 
     not overriding
     function Create(activation : Activation_Type;
-                    connections : NN.Input_Connection_Array;
+                    connections : Input_Connection_Array;
                     maxWeight : Real) return Neuron
     is
         neur : Neuron;
