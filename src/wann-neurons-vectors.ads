@@ -18,7 +18,7 @@
 --
 
 with Ada.Containers.Vectors;
-with wann.connectors.vectors;
+with connectors.vectors;
 
 generic
 package wann.neurons.vectors is

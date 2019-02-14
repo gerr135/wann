@@ -1,6 +1,7 @@
 generic
     type Index_Type is range <>;
-package wann.Connectors is
+    type Connection_Type is private;
+package Connectors is
 
     -- exceptions associated with Outputting_Interface
     Duplicate_Connection : exception;
@@ -15,13 +16,13 @@ package wann.Connectors is
     --
     -- getters
     function NOutputs(OI : Outputting_Interface) return Index_Type is abstract;
-    function Output  (OI : Outputting_Interface; idx : Index_Type) return NN.ConnectionIndex is abstract;
+    function Output  (OI : Outputting_Interface; idx : Index_Type) return Connection_Type is abstract;
     --
     -- setters
-    procedure Add_Output(OI : in out Outputting_Interface; Output : NN.ConnectionIndex) is abstract;
-    procedure Del_Output(OI : in out Outputting_Interface; Output : NN.ConnectionIndex) is abstract;
+    procedure Add_Output(OI : in out Outputting_Interface; Output : Connection_Type) is abstract;
+    procedure Del_Output(OI : in out Outputting_Interface; Output : Connection_Type) is abstract;
     -- The other side has no knowledge of internal index (and it does not even exist at the Add_),
     -- so output to be deleted should be IDed by the NNet idx..
 
-end wann.Connectors;
+end Connectors;
 

@@ -1,42 +1,52 @@
 pragma Ada_2012;
-package body wann.inputs.vectors is
+package body connectors.vectors is
+
+    --------------
+    -- NOutputs --
+    overriding
+    function NOutputs (OI : Outputting_Type) return Index_Type is
+    begin
+        return Index_Type(OI.outputs.Length);
+    end NOutputs;
 
     ------------
     -- Output --
+    ------------
+
     overriding
-    function Output (IT : Input_Type; idx : OutputIndex) return NN.ConnectionIndex is
+    function Output (OI : Outputting_Type; idx : Index_Type) return Connection_Type is
     begin
-        return IT.outputs(idx);
+        return OI.outputs(idx);
     end Output;
 
     ----------------
     -- Add_Output --
     overriding
-    procedure Add_Output (IT : in out Input_Type; Output : NN.ConnectionIndex) is
+    procedure Add_Output (OI : in out Outputting_Type; Output : Connection_Type) is
     begin
-        for o of IT.outputs loop
+        for o of OI.outputs loop
             -- need to ensure that passed connection is not a duplicate
             if o = Output then
                 raise Duplicate_Connection;
             end if;
         end loop;
-        IT.outputs.Append(Output);
+        OI.outputs.Append(Output);
     end Add_Output;
 
     ----------------
     -- Del_Output --
     overriding
-    procedure Del_Output (IT : in out Input_Type; Output : NN.ConnectionIndex) is
+    procedure Del_Output (OI : in out Outputting_Type; Output : Connection_Type) is
         -- The other side of connection has no concept of our internal index,
         -- so it cannot be passed to our method.
         -- So we do a search based on the passed idx (all connections are unique).
         -- and remove the index we found.
     begin
         -- search for connection
-        for o in 1 .. OutputIndex(IT.outputs.Length) loop
+        for o in 1 .. Index_Type(OI.outputs.Length) loop
             -- need to ensure that passed connection is not a duplicate
-            if IT.outputs(o) = Output then
-                IT.outputs.Delete(o);
+            if OI.outputs(o) = Output then
+                OI.outputs.Delete(o);
                 return;
             end if;
         end loop;
@@ -44,4 +54,4 @@ package body wann.inputs.vectors is
         raise Connection_Not_Found;
     end Del_Output;
 
-end wann.inputs.vectors;
+end connectors.vectors;

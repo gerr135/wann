@@ -17,7 +17,7 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
-with wann.connectors;
+with connectors;
 
 generic
 package wann.neurons is
@@ -63,7 +63,7 @@ package wann.neurons is
     -- Multiple representations are possible, defined in child packages.
     --
     -- like Input_Interface, is based on Outputting_Interface, as output handling code is the same
-    package PCN is new wann.Connectors(Index_Type=>OutputIndex);
+    package PCN is new Connectors(Index_Type=>OutputIndex, Connection_Type=>NN.ConnectionIndex);
 
     type Neuron_Interface is interface and PCN.Outputting_Interface;
 --     type Neuron_Access is access Neuron_Interface;  -- should not ever be needed

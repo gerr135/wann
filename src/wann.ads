@@ -72,6 +72,7 @@ package wann is
     --  trying to make connection that obviously makes no sense
     --  (connect neuron input to net output, etc..)
 
+    package NN is new nnet_types(Real);
 
     ------------------------------------------------------------
     -- Some common types; basic and not requiring special naming
@@ -89,7 +90,6 @@ package wann is
 
     type Sort_Direction is (Forward, Backward);
 
-    package NN is new nnet_types(Real);
 
     function  Get_Value(SV : NN.State_Vector; idx : NN.ConnectionIndex)
         return Real with Inline;
@@ -105,6 +105,5 @@ package wann is
     --
     procedure Set_Value(SV : in out NN.Checked_State_Vector; idx : NN.ConnectionIndex;
                         value : Real) with Inline;
-
 
 end wann;

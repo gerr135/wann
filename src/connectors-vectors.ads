@@ -20,7 +20,7 @@
 with Ada.Containers.Vectors;
 
 generic
-package wann.connectors.vectors is
+package connectors.vectors is
 
     -------------------------------------------------
     -- Input type with functionality
@@ -30,22 +30,22 @@ package wann.connectors.vectors is
     function NOutputs(OI : Outputting_Type) return Index_Type;
 
     overriding
-    function Output  (OI : Outputting_Type; idx : Index_Type) return NN.ConnectionIndex;
+    function Output  (OI : Outputting_Type; idx : Index_Type) return Connection_Type;
     --
     -- setters
     overriding
-    procedure Add_Output(OI : in out Outputting_Type; Output : NN.ConnectionIndex);
+    procedure Add_Output(OI : in out Outputting_Type; Output : Connection_Type);
 
     overriding
-    procedure Del_Output(OI : in out Outputting_Type; Output : NN.ConnectionIndex);
+    procedure Del_Output(OI : in out Outputting_Type; Output : Connection_Type);
 
 private
 
-    use type NN.ConnectionIndex;
-    package CV is new Ada.Containers.Vectors (Index_Type => Index_Type, Element_Type => NN.ConnectionIndex);
+    use type Connection_Type;
+    package CV is new Ada.Containers.Vectors (Index_Type => Index_Type, Element_Type => Connection_Type);
 
     type Outputting_Type is new Outputting_Interface with record
         outputs : CV.Vector;
     end record;
 
-end wann.connectors.vectors;
+end connectors.vectors;

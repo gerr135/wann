@@ -21,7 +21,7 @@
 with wann.neurons;
 with wann.layers.vectors;
 with wann.inputs;
-with wann.connectors.vectors;
+with connectors.vectors;
 
 generic
 package wann.nets is
