@@ -20,13 +20,13 @@
 
 with wann.neurons;
 with wann.layers.vectors;
-with wann.inputs.vectors;
+with wann.inputs;
+with wann.connectors.vectors;
 
 generic
 package wann.nets is
 
     package PI  is new wann.inputs;
-    package PIV is new PI.vectors;
 
     package PL  is new wann.layers;
     package PLV is new PL.vectors;
@@ -61,7 +61,7 @@ package wann.nets is
 
     -- Dimension getters; the setters are imnplementation-specific,
     function NInputs (net : NNet_Interface) return NN.InputIndex  is abstract;
-    function NOutputs(net : NNet_Interface) return NN.OutputIndex is abstract;
+    function NOutputs(net : NNet_Interface) return NN.OutputIndex is abstract; -- frm Connectors
     function NNeurons(net : NNet_Interface) return NN.NeuronIndex is abstract;
     function NLayers (net : NNet_Interface) return NN.LayerIndex  is abstract;
 
@@ -74,7 +74,7 @@ package wann.nets is
     -- So we access by element instead
     function  Input (net : NNet_Interface; i : NN.InputIndex)  return PI.Input_Interface'Class is abstract;
     function  Input (net : NNet_Interface'Class; i : NN.InputIndex)  return PI.InputRec;
-    function  Output(net : NNet_Interface; o : NN.OutputIndex) return NN.ConnectionIndex is abstract;
+    function  Output(net : NNet_Interface; o : NN.OutputIndex) return NN.ConnectionIndex is abstract; -- from Connectors
 
     --  Neuron handling
     -- NNet is conceptually a container. So we store/remove neurons with Add/Del_Neuron.

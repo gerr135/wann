@@ -17,6 +17,8 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
+with wann.connectors;
+
 generic
 package wann.neurons is
 
@@ -59,7 +61,11 @@ package wann.neurons is
     ----------------------------------------------
     -- Neuron interface: to be used by layers and nets
     -- Multiple representations are possible, defined in child packages.
-    type Neuron_Interface is interface and Outputting_Interface;
+    --
+    -- like Input_Interface, is based on Outputting_Interface, as output handling code is the same
+    package PCN is new wann.Connectors(Index_Type=>OutputIndex);
+
+    type Neuron_Interface is interface and PCN.Outputting_Interface;
 --     type Neuron_Access is access Neuron_Interface;  -- should not ever be needed
     type NeuronClass_Access is access all Neuron_Interface'Class;
 
@@ -85,10 +91,9 @@ package wann.neurons is
 
     -- Still, it is better to provide direct getters for frequently used fields
     function NInputs (neur : Neuron_Interface) return InputIndex  is abstract;
-    function NOutputs(neur : Neuron_Interface) return OutputIndex is abstract;
+
     --
     function Input (neur : Neuron_Interface; idx : InputIndex)  return NN.ConnectionIndex is abstract;
-    function Output(neur : Neuron_Interface; idx : OutputIndex) return NN.ConnectionIndex is abstract;
 
     ------------------------------------------------------------
     --  stateful version, values are stored in the neuron itself

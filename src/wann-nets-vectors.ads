@@ -34,7 +34,8 @@ with Ada.Containers.Vectors;
 with Ada.Containers.Indefinite_Vectors;
 
 with wann.layers.vectors;
-with wann.inputs.vectors;
+-- with wann.inputs.vectors;
+with wann.connectors.vectors;
 
 generic
 package wann.nets.vectors is
@@ -87,8 +88,11 @@ package wann.nets.vectors is
 
 private
 
-    use type PIV.Input_Type;
-    package IV is new Ada.Containers.Vectors(Index_Type=>NN.InputIndex,  Element_Type=>PIV.Input_Type);
+    package PIV is new PI.PCI.vectors;
+    subtype Input_Vector is PIV.Outputting_Type; -- may make sense to make it public
+
+    use type Input_Vector;
+    package IV is new Ada.Containers.Vectors(Index_Type=>NN.InputIndex,  Element_Type=>Input_Vector);
 
     use type NN.ConnectionIndex;
     package OV is new Ada.Containers.Vectors(Index_Type=>NN.OutputIndex, Element_Type=>NN.ConnectionIndex);

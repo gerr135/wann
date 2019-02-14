@@ -18,11 +18,14 @@
 --
 
 with Ada.Containers.Vectors;
+with wann.connectors.vectors;
 
 generic
 package wann.neurons.vectors is
 
-    type Neuron is new Neuron_Interface with private;
+    package PCNV is new PCN.vectors;
+
+    type Neuron is new PCNV.Outputting_Type and Neuron_Interface with private;
 
     -- inherited primitives
     overriding
@@ -72,7 +75,7 @@ private
     package OV is new Ada.Containers.Vectors(Index_Type=>OutputIndex, Element_Type=>NN.ConnectionIndex);
     package WV is new Ada.Containers.Vectors(Index_Type=>InputIndex_Base, Element_Type=>Real);
 
-    type Neuron is new Neuron_Interface with record
+    type Neuron is new PCNV.Outputting_Type and Neuron_Interface with record
         idx     : NN.NeuronIndex_Base; -- own index in NNet
         activat : Activation_Type;
         lag     : Real;    -- delay of result propagation, unused for now
@@ -80,6 +83,5 @@ private
         outputs : OV.Vector;
         weights : WV.Vector;
     end record;
-
 
 end wann.neurons.vectors;

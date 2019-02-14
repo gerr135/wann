@@ -22,6 +22,7 @@
 -- This is more complex than a simple Output_Connection_Array, but is way simple than Neuron
 -- (which is a many-to-many mapping with active core).
 
+with wann.connectors;
 
 generic
 package wann.inputs is
@@ -45,20 +46,25 @@ package wann.inputs is
 
 --     type InputRec_array is array (OutputIndex range <>) of InputRec;
 
+
     -------------------------------------------------
     -- Input type with functionality
-    type Input_Interface is interface and Outputting_Interface;
-    type InputClass_Access is access all Input_Interface'Class;
-    type Input_Reference (Data : not null access Input_Interface'Class) is private
-        with Implicit_Dereference => Data;
+    --
+    -- this is basically the Outputting_Interface with a specific Index type
+    package PCI is new wann.Connectors(Index_Type=>OutputIndex);
+
+    type Input_Interface is interface and PCI.Outputting_Interface;
+--     type InputClass_Access is access all Input_Interface'Class;
+--     type Input_Reference (Data : not null access Input_Interface'Class) is private
+--         with Implicit_Dereference => Data;
 
 --     function  ToRec  (II : Input_Interface) return InputRec is abstract;
 --     procedure FromRec(II : in out Input_Interface; IR : InputRec) is abstract;
     --
-    function Output(II : Input_Interface; idx : OutputIndex) return NN.ConnectionIndex is abstract;
+--     function Output(II : Input_Interface; idx : OutputIndex) return NN.ConnectionIndex is abstract;
 
-private
+-- private
 
-    type Input_Reference (Data : not null access Input_Interface'Class) is null record;
+--     type Input_Reference (Data : not null access Input_Interface'Class) is null record;
 
 end wann.inputs;
