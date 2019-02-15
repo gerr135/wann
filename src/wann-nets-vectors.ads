@@ -99,6 +99,10 @@ package wann.nets.vectors is
     -- basic constructor
     -- pre-creates given number of (unconnected) inputs and outputs, but no neurons or layers.
 
+    not overriding
+    function Create_From(S : string) return NNet;
+    -- convenience wrapper around COnstruct_From class-wide in the parent
+
     -- this version also has mutable IO, so we need methods to add/remore inputs and outputs
     --
     -- Append (N) new unconnected inputs. Connections are to be made upon neuron adds/mods

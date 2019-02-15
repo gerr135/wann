@@ -184,7 +184,9 @@ package body wann.nets.vectors is
 
     -------------------------------------------------------
     --  new methods
-
+    --
+    -- Constructors
+    --
     not overriding
     function Create(Ni : NN.InputIndex; No : NN.OutputIndex) return NNet is
         emptyInput  : PI.Input_Vector;
@@ -196,6 +198,18 @@ package body wann.nets.vectors is
             -- the rest of fields are autoinit to proper (emty vector) values
         end return;
     end;
+
+    not overriding
+    function Create_From(S : string) return NNet is
+    begin
+        return net : NNet do
+            net.Construct_From(S);
+        end return;
+    end;
+
+
+    ---------------------------------------------------------
+    -- Input handling
 
     not overriding
     procedure Add_Input(net : in out NNet; N : NN.InputIndex := 1) is

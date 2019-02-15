@@ -44,6 +44,16 @@ package body wann.nets is
    end Add_Neuron;
 
 
+   ------------------------------------------------------------------------
+   -- Class-wides
+
+   procedure Construct_From(net : in out NNet_Interface'Class; S : String) is
+   begin
+       --  Generated stub: replace with real body!
+       pragma Compile_Time_Warning (Standard.True, "Construct_From unimplemented");
+       raise Program_Error with "Unimplemented procedure Construct_From";
+   end;
+
    --------------------------------
    -- Reconnect_Neuron_At_Random --
    --------------------------------

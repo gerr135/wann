@@ -156,12 +156,23 @@ package wann.nets is
     -----------------------------------------
     -- class-wide stuff: main utility
     --
-    -- Neuron handling utility
+    -- Add_Neuron discarding idx
     procedure Add_Neuron(net : in out NNet_Interface'Class; neur : in out PN.Neuron_Interface'Class);
 
     --
     --  NNet manipulation
     --
+    -- readers from various formats
+    -- should take the form:
+    procedure Construct_From(net : in out NNet_Interface'Class; S : String);
+    -- this should fill the pre-constructed NNet from the given medium (here basic String
+    -- is shown as example)
+    -- SPecific implementations in child packages may provide a convenience wrappers
+    -- in the form of Create_From functions, returning the specific type
+    -- (these would do appropriateconstruction via return .. do syntax, passing constructed type to
+    -- appropriate Construct_From procedure)
+    --
+    -- random constructors
     procedure Reconnect_Neuron_At_Random(net : in out NNet_Interface'Class; idx  : NN.NeuronIndex; maxConnects : PN.InputIndex_Base := 0);
     procedure Populate_At_Random (net : in out NNet_Interface'Class; Npts : NN.NeuronIndex_Base;  maxConnects : PN.InputIndex_Base := 0);
     -- populates net with new neurons or resets existing one to random configuration
