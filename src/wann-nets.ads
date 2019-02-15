@@ -45,7 +45,8 @@ package wann.nets is
     --   2nd: stateful net  - signals are passed throgh the net itself,
     --   neurons store not only weights and connections, but also current data output..
 
-    ----------------------------------------------------------------
+
+    ---------------------------------------------------------------------------------
     -- the main type of this package, the NNet itself
     --  making it an interface to allow composition (say with Controlled)
     --  also to prototype the data access needs for different variants
@@ -61,7 +62,7 @@ package wann.nets is
 
     -- Dimension getters; the setters are imnplementation-specific,
     function NInputs (net : NNet_Interface) return NN.InputIndex  is abstract;
-    function NOutputs(net : NNet_Interface) return NN.OutputIndex is abstract; -- frm Connectors
+    function NOutputs(net : NNet_Interface) return NN.OutputIndex is abstract; -- from Connectors
     function NNeurons(net : NNet_Interface) return NN.NeuronIndex is abstract;
     function NLayers (net : NNet_Interface) return NN.LayerIndex  is abstract;
 
@@ -73,7 +74,7 @@ package wann.nets is
     --
     -- So we access by element instead
     function  Input (net : NNet_Interface; i : NN.InputIndex)  return PI.Input_Interface'Class is abstract;
-    function  Input (net : NNet_Interface'Class; i : NN.InputIndex)  return PI.InputRec;
+--     function  Input (net : NNet_Interface'Class; i : NN.InputIndex)  return PI.InputRec;
     function  Output(net : NNet_Interface; o : NN.OutputIndex) return NN.ConnectionIndex is abstract; -- from Connectors
 
     --  Neuron handling
@@ -81,42 +82,47 @@ package wann.nets is
     -- As we have multiple neuron implementations, specific neurons should be created
     -- by their appropriate constructors and passed to the Add_Neuron method.
     --
-    -- To handle neurons we need
-    type Neuron_Reference (Data : not null access PN.Neuron_Interface'Class) is private
-        with Implicit_Dereference => Data;
-
-
     procedure Add_Neuron(net  : in out NNet_Interface;
-                         neur : in out PN.Neuron_Interface'Class; -- gotta be neuron itself, not reference, as NNet is essentially a container
+                         neur : in out PN.Neuron_Interface'Class; -- pass pre-created Neuron
                          idx : out NN.NeuronIndex) is abstract;
-    -- adds pre-created neuron, return in idx new assigned NN.NeuronIndex
-    -- and updates connections (outputs) of other net entities (other neurons, inputs, etc..)
-    -- also should invalidate Layers_sorted or call sorting if autosort is set..
+        -- adds pre-created neuron, return in idx new assigned NN.NeuronIndex
+        -- and updates connections (outputs) of other net entities (other neurons, inputs, etc..)
+        -- also should invalidate Layers_sorted or call sorting if autosort is set..
 
     procedure Del_Neuron(net : in out NNet_Interface; idx : NN.NeuronIndex) is null;
-    -- remove neuron from NNet_Interface,
-    -- as with Add, should update connections of affected entities and reset Layers_Sorted or autosort
+        -- remove neuron from NNet_Interface,
+        -- as with Add, should update connections of affected entities and reset Layers_Sorted or autosort
 
-    -- neuron getters
---     function  Neuron(net : NNet_Interface; idx : NN.NeuronIndex) return PN.Neuron_Interface'Class is abstract;
-        -- this provides read-only access, passing by reference (tagged record)
-    function  Neuron(net : aliased in out NNet_Interface; idx : NN.NeuronIndex) return Neuron_Reference is abstract;
+    -- neuron accessor
+    function  Neuron(net : aliased in out NNet_Interface; idx : NN.NeuronIndex) return PN.Neuron_Reference is abstract;
         -- this provides read-write access via Accessor trick
+    --function  Neuron(net : NNet_Interface; idx : NN.NeuronIndex) return PN.Neuron_Interface'Class is abstract;
+        -- this provides read-only access, passing by reference (tagged record)
 
 
-    -- layer handling
-    -- the (abstract) primitives
-    function  Layers_Ready (net : NNet_Interface) return Boolean is abstract;
---     function  Layers(net : NNet_Interface) return PL.LayerList_Interface'Class is abstract;
+    --  Layer handling
+    -- Similar to neurons, Add/Del and accessor primitives
+    procedure Add_Layer(net : in out NNet_Interface;
+                        L   : in out PL.Layer_Interface'Class; -- pass pre-created Layer
+                        idx : out NN.LayerIndex) is abstract;
+    --
+    procedure Del_Layer(net : in out NNet_Interface; idx : NN.LayerIndex) is null;
+    --
+    function  Layer(net : aliased in out NNet_Interface; idx : NN.LayerIndex) return PL.Layer_Reference is abstract;
+        -- read-write access to Layers
     function  Layer(net : NNet_Interface; idx : NN.LayerIndex) return PL.Layer_Interface'Class  is abstract;
-    procedure Set_Layer(net : in out NNet_Interface; idx : NN.LayerIndex; L : PL.Layer_Interface'Class) is abstract;
+        -- read-only access to layers
 
-    -- autosort flag handling
+    -- Layer sorting/creation prmitives
+    function  Layers_Ready (net : NNet_Interface) return Boolean is abstract;
+    --
     function  Autosort_Layers(net : NNet_Interface) return Boolean;
     procedure Set_Autosort_Layers(net : in out NNet_Interface;
-                                  Autosort : Boolean; Direction : Sort_Direction := Forward);
+                                  Autosort : Boolean;
+                                  Direction : Sort_Direction := Forward);
 
 
+    --------------------------------------------------------------------------------------------------
     --------------------
     --  "cached" nnet
     --  Stores neuron outputs in a state vector, uses base stateless neurons
@@ -211,9 +217,6 @@ package wann.nets is
 
 
 private
-
-    type Neuron_Reference (Data : not null access PN.Neuron_Interface'Class) is null record;
-
 
     type NNet_Interface is abstract tagged limited record
         autosort_layers : Boolean := False;

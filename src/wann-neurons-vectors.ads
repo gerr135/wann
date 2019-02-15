@@ -35,23 +35,16 @@ package wann.neurons.vectors is
     --
     overriding
     function NInputs (neur : Neuron) return InputIndex ;
-    overriding
-    function NOutputs(neur : Neuron) return OutputIndex;
     --
     overriding
     function Input (neur : Neuron; idx : InputIndex)  return NN.ConnectionIndex;
-    overriding
-    function Output(neur : Neuron; idx : OutputIndex) return NN.ConnectionIndex;
     --
     overriding
     procedure Add_Input(neur : in out Neuron; Input : NN.ConnectionIndex);
     overriding
     procedure Del_Input(neur : in out Neuron; Input : NN.ConnectionIndex);
     --
-    overriding
-    procedure Add_Output(neur : in out Neuron; Output : NN.ConnectionIndex);
-    overriding
-    procedure Del_Output(neur : in out Neuron; Output : NN.ConnectionIndex);
+    -- Outputs are inherited from connectors
 
     ---------------
     -- constructors

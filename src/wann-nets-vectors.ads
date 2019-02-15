@@ -44,6 +44,7 @@ package wann.nets.vectors is
     --
     type NNet is new NNet_Interface with private;
 
+    --  overriding primitives
     overriding
     function NInputs (net : NNet) return NN.InputIndex;
 
@@ -72,20 +73,51 @@ package wann.nets.vectors is
     procedure Del_Neuron(net : in out NNet; idx : NN.NeuronIndex);
 
     overriding
-    procedure Set_Layer(net : in out NNet; idx : NN.LayerIndex; L : PL.Layer_Interface'Class);
-
-    overriding
-    function  Neuron(net : aliased in out NNet; idx : NN.NeuronIndex) return Neuron_Reference;
+    function  Neuron(net : aliased in out NNet; idx : NN.NeuronIndex) return PN.Neuron_Reference;
 
     -- Layers handling
     overriding
-    function  Layers_Ready (net : NNet) return Boolean;
+    procedure Add_Layer(net : in out NNet; L   : in out PL.Layer_Interface'Class;
+                        idx : out NN.LayerIndex);
+    --
+    overriding
+    procedure Del_Layer(net : in out NNet; idx : NN.LayerIndex);
+
+    overriding
+    function  Layer(net : aliased in out NNet; idx : NN.LayerIndex) return PL.Layer_Reference;
 
     overriding
     function  Layer(net : NNet; idx : NN.LayerIndex) return PL.Layer_Interface'Class;
 
+    overriding
+    function  Layers_Ready (net : NNet) return Boolean;
+
+    -------------------
+    -- new methods
+    not overriding
+    function Create(Ni : NN.InputIndex; No : NN.OutputIndex) return NNet;
+    -- basic constructor
+    -- pre-creates given number of (unconnected) inputs and outputs, but no neurons or layers.
+
+    -- this version also has mutable IO, so we need methods to add/remore inputs and outputs
+    --
+    -- Append (N) new unconnected inputs. Connections are to be made upon neuron adds/mods
+    not overriding
+    procedure Add_Input(net : in out NNet; N   : NN.InputIndex := 1);
+    --
+    -- Append (single) output connected to a given (by index) neuron
+    not overriding
+    procedure Add_Output(net : in out NNet; idx : NN.NeuronIndex);
+
+    not overriding
+    procedure Del_Input(net : in out NNet; idx : NN.InputIndex);
+
+    not overriding
+    procedure Del_Output(net : in out NNet; idx : NN.OutputIndex);
+
 
 private
+
 
     use type PI.Input_Vector;
     package IV is new Ada.Containers.Vectors(Index_Type=>NN.InputIndex,  Element_Type=>PI.Input_Vector);

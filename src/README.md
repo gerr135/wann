@@ -249,3 +249,24 @@ gnat bugs. Apparently the required to implement this features (this heavily reli
 and makes use of more advance type composition and mixin techniques) are too fresh.
 This ideam might get revisited in a few years, if gnat starts behaving better. But for now the
 wann interfaces wiil rely on simple getters/setters.
+
+## NNet dynamics
+Additions are easy - we only add new entities and tie them to already existing indices..
+Deletions are much more tricky: what to do with indices throughout if we delete neuron?
+We can either
+1. update all the indices upon each neuron addition. Which may lead to major overhead
+    (as each edletion may potentially lead to complete renumbering ~O(N^2)), but will keep
+    the net always consistent.
+2. Alternatively we can just delete connections and leave neuron s is (marking it as deleted,
+    say by its idx:=0). And then provide a prunning methods (call it Prune or Compact) that
+    removes unconnected neurons and renumbers the ones still in the net..
+
+Stricktly speaking, we do not need every NeuronIndex to point to an active neuron. Layers
+would only contain active neurons anyway, and all calculations are done by layers. We can
+have a sparse indexing throughout. Except for layers, but these are dynamically updated on any
+topology change or recreated upon NNet overhaul completeion..
+
+This (sparse indexing) stands for IO as well: there may be an advantage in some situations
+to keep the NNet IO interface stable. In fact that will likely be desirable in the majority
+of situations - better to have some disconnects rather than reshuffling all the connections
+to the outside..

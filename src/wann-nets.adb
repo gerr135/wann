@@ -4,13 +4,13 @@ package body wann.nets is
     ---------------------
     -- IO handling
     --
-    function  Input (net : NNet_Interface'Class; i : NN.InputIndex)  return PI.InputRec is
-        input : PI.Input_Interface'Class := net.Input(i);
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Input unimplemented");
-        return raise Program_Error with "Unimplemented procedure Input";
-    end;
+--     function  Input (net : NNet_Interface'Class; i : NN.InputIndex)  return PI.InputRec is
+--         input : PI.Input_Interface'Class := net.Input(i);
+--     begin
+--         --  Generated stub: replace with real body!
+--         pragma Compile_Time_Warning (Standard.True, "Input unimplemented");
+--         return raise Program_Error with "Unimplemented procedure Input";
+--     end;
 
 
     ---------------------

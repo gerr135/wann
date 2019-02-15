@@ -84,6 +84,10 @@ package wann.layers is
     type Layer_Interface is abstract tagged private; -- we need redispatching on some methods
     type LayerClass_Access is access Layer_Interface'Class;
 
+    type Layer_Reference (Data : not null access Layer_Interface'Class) is private
+        with Implicit_Dereference => Data;
+
+
     -- primitives
     function  ToRec  (LI : Layer_Interface) return LayerRec is abstract;
     procedure FromRec(LI : in out Layer_Interface; LR : LayerRec) is abstract;
@@ -131,6 +135,9 @@ package wann.layers is
 private
 
     type Layer_Interface is abstract tagged null record;
+
+    type Layer_Reference (Data : not null access Layer_Interface'Class) is null record;
+
 
     type Matrix_Layer_Interface is abstract new Layer_Interface with null record;
 

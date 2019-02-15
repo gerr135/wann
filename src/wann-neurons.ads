@@ -66,8 +66,11 @@ package wann.neurons is
     package PCN is new Connectors(Index_Type=>OutputIndex, Connection_Type=>NN.ConnectionIndex);
 
     type Neuron_Interface is interface and PCN.Outputting_Interface;
---     type Neuron_Access is access Neuron_Interface;  -- should not ever be needed
     type NeuronClass_Access is access all Neuron_Interface'Class;
+    -- and the accessor
+    type Neuron_Reference (Data : not null access Neuron_Interface'Class) is private
+        with Implicit_Dereference => Data;
+
 
     -- NOTE on construction:
     -- Neurons are created with empty output list, to be populated by Add_Output calls..
@@ -96,8 +99,8 @@ package wann.neurons is
     --
     procedure Add_Input(neur : in out Neuron_Interface; Input : NN.ConnectionIndex) is abstract;
     procedure Del_Input(neur : in out Neuron_Interface; Input : NN.ConnectionIndex) is abstract;
-
-
+    --
+    -- Outputs are inherited from connectors
 
 
     ------------------------------------------------------------
@@ -158,6 +161,8 @@ package wann.neurons is
     procedure Prop_Backward(neur : in out Stateful_Neuron_Interface'Class);
 
 private
+
+    type Neuron_Reference (Data : not null access Neuron_Interface'Class) is null record;
 
     type NeuronRepr(Ni : InputIndex_Base; No : OutputIndex_Base) is record
         idx     : NN.NeuronIndex_Base; -- own index in NNet

@@ -55,37 +55,34 @@ package body wann.neurons.vectors is
     overriding
     procedure Add_Input (neur : in out Neuron; Input : NN.ConnectionIndex) is
     begin
+        for i of neur.inputs loop
+            -- ensure that passed connection is not a duplicate
+            if i = Input then
+                raise PCN.Duplicate_Connection;
+            end if;
+        end loop;
         neur.inputs.Append(Input);
     end Add_Input;
 
     overriding
     procedure Del_Input (neur : in out Neuron; Input : NN.ConnectionIndex) is
-        -- unclear how the calls should be made - del by index or NN index
-        -- may need to change interface
+        -- same logic as in connectors.vectors
     begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "DelOutput unimplemented");
-        raise Program_Error with "Unimplemented procedure DelOutput";
+        -- search for the connection
+        for i in 1 .. InputIndex(neur.inputs.Length) loop
+            -- ensure that passed connection is not a duplicate
+            if neur.inputs(i) = Input then
+                neur.inputs.Delete(i);
+                return;
+            end if;
+        end loop;
+        -- if we got here, connection was not found
+        raise PCN.Connection_Not_Found;
     end Del_Input;
 
-    overriding
-    procedure Add_Output (neur : in out Neuron; Output : NN.ConnectionIndex) is
-    begin
-        neur.outputs.Append(Output);
-    end Add_Output;
-
-    overriding
-    procedure Del_Output (neur : in out Neuron; Output : NN.ConnectionIndex) is
-        -- unclear how the calls should be made - del by index or NN index
-        -- may need to change interface
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "DelOutput unimplemented");
-        raise Program_Error with "Unimplemented procedure DelOutput";
-    end Del_Output;
 
     ------------------
-    -- NInputs/Outputs
+    -- Inputs handling
     --
     overriding
     function NInputs (neur : Neuron) return InputIndex is
@@ -94,25 +91,10 @@ package body wann.neurons.vectors is
     end NInputs;
 
     overriding
-    function NOutputs (neur : Neuron) return OutputIndex is
-    begin
-        return OutputIndex_Base(neur.outputs.Length);
-    end NOutputs;
-
-    --------------------------
-    -- Input/Output getters --
-    --
-    overriding
     function Input (neur : Neuron; idx : InputIndex) return NN.ConnectionIndex is
     begin
         return neur.inputs.Element(idx);
     end Input;
-
-    overriding
-    function Output (neur : Neuron; idx : OutputIndex) return NN.ConnectionIndex is
-    begin
-        return neur.outputs.Element(idx);
-    end Output;
 
     ------------
     -- Create --

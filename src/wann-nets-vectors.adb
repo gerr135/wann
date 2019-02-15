@@ -110,40 +110,27 @@ package body wann.nets.vectors is
                 end case;
             end;
         end loop;
-        --  Generated stub: replace with real body!
+        -- Now for the tricky part
+        -- Need to delete the neuron
+        -- and liberate its idx, by compacting all other entries
+        -- and updating corresponding indices of all affected connections
+        --
+        -- Implementation postponed until design is clear:
+        -- there are multiple possible approaches on how to handle deletions (see Readme)
         pragma Compile_Time_Warning (Standard.True, "Del_Neuron unimplemented");
         raise Program_Error with "Unimplemented procedure Del_Neuron";
     end Del_Neuron;
 
     overriding
     function Neuron (net : aliased in out NNet; idx : NN.NeuronIndex)
-        return Neuron_Reference
+        return PN.Neuron_Reference
     is
         NVR : NV.Reference_Type := net.neurons.Reference(idx);
-        NR : Neuron_Reference(NVR.Element);
+        NR  : PN.Neuron_Reference(NVR.Element);
     begin
         return NR;
     end Neuron;
 
-
-
-    -------------------
-    -- Layers handling
-    --
-    overriding
-    procedure Set_Layer (net : in out NNet;
-            idx : NN.LayerIndex; L : PL.Layer_Interface'Class)
-    is
-    begin
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Set_Layer unimplemented");
-        raise Program_Error with "Unimplemented procedure Set_Layer";
-    end Set_Layer;
-
-
- ------------
-    -- Neuron --
-    ------------
 --     overriding
 --     function Neuron (net : NNet; idx : NN.NeuronIndex)
 --         return PN.Neuron_Interface'Class
@@ -153,16 +140,33 @@ package body wann.nets.vectors is
 --     end Neuron;
 
 
-    ------------------
-    -- Layers_Ready --
+    ------------------------
+    -- Layer handling
     overriding
-    function Layers_Ready (net : NNet) return Boolean is
+    procedure Add_Layer(net : in out NNet; L   : in out PL.Layer_Interface'Class;
+                        idx : out NN.LayerIndex)
+    is
     begin
-        return net.Layers_Ready;
-    end Layers_Ready;
+        pragma Compile_Time_Warning (Standard.True, "Add_Layer unimplemented");
+        raise Program_Error with "Unimplemented procedure Add_Layer";
+    end;
 
-    -----------
-    -- Layer --
+    overriding
+    procedure Del_Layer(net : in out NNet; idx : NN.LayerIndex) is
+    begin
+        pragma Compile_Time_Warning (Standard.True, "Del_Layer unimplemented");
+        raise Program_Error with "Unimplemented procedure Del_Layer";
+    end;
+
+    overriding
+    function  Layer(net : aliased in out NNet;
+                    idx : NN.LayerIndex) return PL.Layer_Reference is
+        LVR : LV.Reference_Type := net.layers.Reference(idx);
+        LR  : PL.Layer_Reference(LVR.Element);
+    begin
+        return LR;
+    end Layer;
+
     overriding
     function Layer (net : NNet; idx : NN.LayerIndex)
         return PL.Layer_Interface'Class
@@ -170,6 +174,62 @@ package body wann.nets.vectors is
     begin
         return net.layers.Element(idx);
     end Layer;
+
+    overriding
+    function Layers_Ready (net : NNet) return Boolean is
+    begin
+        return net.Layers_Ready;
+    end Layers_Ready;
+
+
+    -------------------------------------------------------
+    --  new methods
+
+    not overriding
+    function Create(Ni : NN.InputIndex; No : NN.OutputIndex) return NNet is
+        emptyInput  : PI.Input_Vector;
+        emptyOutput : NN.ConnectionIndex := (T=>NN.None);
+    begin
+        return net : NNet do
+            net.inputs.Append(emptyInput, Ada.Containers.Count_Type(Ni));
+            net.outputs.Append(emptyOutput, Ada.Containers.Count_Type(No));
+            -- the rest of fields are autoinit to proper (emty vector) values
+        end return;
+    end;
+
+    not overriding
+    procedure Add_Input(net : in out NNet; N : NN.InputIndex := 1) is
+        emptyInput  : PI.Input_Vector;
+    begin
+        net.inputs.Append(emptyInput, Ada.Containers.Count_Type(N));
+    end;
+
+    not overriding
+    procedure Del_Input(net : in out NNet; idx : NN.InputIndex) is
+    begin
+        -- as with Neuron deletion, this is a tricky issue, as it may require reindexing
+        -- many connections
+        -- Postponed until design is clear
+        pragma Compile_Time_Warning (Standard.True, "Del_Input unimplemented");
+        raise Program_Error with "Unimplemented procedure Del_Input";
+    end;
+
+    not overriding
+    procedure Add_Output(net : in out NNet; idx : NN.NeuronIndex) is
+        connection : NN.ConnectionIndex := (NN.N, idx);
+    begin
+        net.outputs.Append(connection);
+    end;
+
+    not overriding
+    procedure Del_Output(net : in out NNet; idx : NN.OutputIndex) is
+    begin
+        -- as with Neuron deletion, this is a tricky issue, as it may require reindexing
+        -- many connections
+        -- Postponed until design is clear
+        pragma Compile_Time_Warning (Standard.True, "Del_Output unimplemented");
+        raise Program_Error with "Unimplemented procedure Del_Output";
+    end;
 
 
 --     ---------------------
