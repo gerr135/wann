@@ -1,6 +1,6 @@
 pragma Ada_2012;
 
-with Ada.Text_IO;
+-- with Ada.Text_IO;
 
 package body wann.neurons is
 
@@ -49,9 +49,8 @@ package body wann.neurons is
     procedure Set_Index (NI : in out Neuron_Interface'Class;
         idx : NN.NeuronIndex)
     is
-        use Ada.Text_IO;
     begin
-        Put_Line("NI.Set_Index" & idx'Img);
+        GT.Trace(Debug, "NI.Set_Index" & idx'Img);
         declare
             NR : NeuronRepr := NI.ToRepr;
         begin

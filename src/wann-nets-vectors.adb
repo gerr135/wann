@@ -1,6 +1,6 @@
 pragma Ada_2012;
 
-with Ada.Text_IO;
+-- with Ada.Text_IO;
 package body wann.nets.vectors is
 
     -------------------
@@ -54,10 +54,9 @@ package body wann.nets.vectors is
                           idx : out NN.NeuronIndex)
     is
         use type Ada.Containers.Count_Type;
-        use Ada.Text_IO;
     begin
         idx := NN.NeuronIndex(net.neurons.Length + 1); -- new index
-        Put_Line("net.Add_Neuron" & idx'Img);
+        GT.Trace(Debug, "net.Add_Neuron" & idx'Img);
         neur.Set_Index(idx);
         net.neurons.Append(neur);
         -- now connect neur inputs to outputs of other entities
@@ -65,15 +64,19 @@ package body wann.nets.vectors is
             declare
                 input : NN.ConnectionIndex := neur.Input(i);
             begin
-                Put("  adding input" & i'Img & "(" & input.T'Img & ",");
+                GT.Trace(Debug, "  adding input" & i'Img 
+                         & "  (" & input.T'Img & "," 
+                         & (case input.T is
+                            when NN.None => "",
+                            when NN.I => input.Iidx'Img,
+                            when NN.N => input.Nidx'Img, 
+                            when NN.O => input.Oidx'Img)
+                         & ")");
                 case input.T is
-                    when NN.I =>
-                        Put(input.Iidx'Img);
-                        net.inputs (input.Iidx).Add_Output((NN.N,idx));
+                    when NN.I => net.inputs (input.Iidx).Add_Output((NN.N,idx));
                     when NN.N => net.neurons(input.Nidx).Add_Output((NN.N,idx));
                     when NN.O | NN.None => raise Invalid_Connection;
                 end case;
-                Put_Line(")");
             end;
         end loop;
         -- check if we autosort layers

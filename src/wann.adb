@@ -60,4 +60,6 @@ package body wann is
         end case;
     end Set_Value;
 
+begin
+    GT.Parse_Config_File;
 end wann;

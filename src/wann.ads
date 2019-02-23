@@ -20,7 +20,7 @@
 
 -----------------------------------------------------------------------
 -- General conventions
--- Neural Net (NNet) consists of Ni inputs, No outputs and Nn neurons
+-- Neural Net (NNet) consists of Ni inputs, No outputs and Nn neurons organized in Nl layers
 -- Connections are tracked by (ConnectionType, index) record, to discriminate between
 -- inputs, outputs and other neurons.
 --
@@ -47,15 +47,21 @@
 -- PN is instantiated in PL and then PL.PN is renamed to PN where necessary.
 --------------------------------------------------------------------------
 
+with GNATCOLL.Traces;
+
 with nnet_types;
 
 generic
     type Real is digits <>;
 package wann is
 
-    Debug : Boolean := False;
-    --  set this to True to make this lib spit out debug messages (to console)
+    -- Logging
+    -- We use gnatcoll.traces for logging in this project, as it is sufficiently simple 
+    -- to handle but is easily tunable
+    package GT renames GNATCOLL.Traces;
+    Debug : constant GT.Trace_Handle := GT.Create ("DBG");
 
+    
     ----------------------------
     -- exceptions
     --
