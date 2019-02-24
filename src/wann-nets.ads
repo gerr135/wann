@@ -159,9 +159,6 @@ package wann.nets is
     -- Add_Neuron discarding idx
     procedure Add_Neuron(net : in out NNet_Interface'Class; neur : in out PN.Neuron_Interface'Class);
 
-    --
-    --  NNet manipulation
-    --
     -- readers from various formats
     -- should take the form:
     procedure Construct_From(net : in out NNet_Interface'Class; S : String);
@@ -171,13 +168,22 @@ package wann.nets is
     -- in the form of Create_From functions, returning the specific type
     -- (these would do appropriateconstruction via return .. do syntax, passing constructed type to
     -- appropriate Construct_From procedure)
+
+    -- structure monitoring and IO
+    procedure Print_Structure(net : in out NNet_Interface'Class);
     --
+    -- add To_Stream/From_stream and/or To_JSON/From_JSON? methods
+    
     -- random constructors
     procedure Reconnect_Neuron_At_Random(net : in out NNet_Interface'Class; idx  : NN.NeuronIndex; maxConnects : PN.InputIndex_Base := 0);
     procedure Populate_At_Random (net : in out NNet_Interface'Class; Npts : NN.NeuronIndex_Base;  maxConnects : PN.InputIndex_Base := 0);
     -- populates net with new neurons or resets existing one to random configuration
     -- Npts needs to be passed in case of empty mutable net, otherwise it simply rearranges existing net.
 
+
+    --
+    -- Layer handling
+    --
     procedure Sort_Layers (net : in out NNet_Interface'Class; Direction : Sort_Direction := Forward);
     -- perform a topological sort, (re-)creating layers tracking the connections,
     -- to allow optimizations (parallel computation, use of GPU).
