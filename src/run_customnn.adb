@@ -38,6 +38,7 @@ begin  -- main
     net1.Add_Neuron(neur1);
     net1.Add_Output(1);
     Put_Line("added neuron 1 and connected to output 1");
+    net1.Print_Structure;
     --
 --     Put_Line("running forward prop");
 --     outputs1 := net1.Prop_Forward(inputs1);

@@ -179,10 +179,10 @@ package body wann.nets.vectors is
     end Layer;
 
     overriding
-    function Layers_Ready (net : NNet) return Boolean is
+    function Layers_Sorted (net : NNet) return Boolean is
     begin
         return net.Layers_Ready;
-    end Layers_Ready;
+    end Layers_Sorted;
 
 
     -------------------------------------------------------

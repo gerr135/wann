@@ -127,7 +127,8 @@ package wann.neurons is
     function Index  (NI : Neuron_Interface'Class) return NN.NeuronIndex with Inline;
     function Activation(NI : Neuron_Interface'Class) return Activation_Type with Inline;
     function Weights(NI : Neuron_Interface'Class) return Weight_Array with Inline;
-    function Inputs (NI : Neuron_Interface'Class) return Input_Connection_Array with Inline;
+    function Inputs (NI : Neuron_Interface'Class) return Input_Connection_Array  with Inline;
+    function Outputs(NI : Neuron_Interface'Class) return Output_Connection_Array with Inline;
 
     procedure Set_Index  (NI : in out Neuron_Interface'Class; idx : NN.NeuronIndex);
     procedure Set_Activation(NI : in out Neuron_Interface'Class; activat : Activation_Type);

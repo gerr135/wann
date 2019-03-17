@@ -23,6 +23,8 @@ with wann.layers.vectors;
 with wann.inputs;
 with connectors.vectors;
 
+with Ada.Text_IO;
+
 generic
 package wann.nets is
 
@@ -114,7 +116,7 @@ package wann.nets is
         -- read-only access to layers
 
     -- Layer sorting/creation prmitives
-    function  Layers_Ready (net : NNet_Interface) return Boolean is abstract;
+    function  Layers_Sorted (net : NNet_Interface) return Boolean is abstract;
     --
     function  Autosort_Layers(net : NNet_Interface) return Boolean;
     procedure Set_Autosort_Layers(net : in out NNet_Interface;
@@ -150,6 +152,9 @@ package wann.nets is
     procedure Set_Input_Values(net : in out Stateful_NNet_Interface; IV : NN.Input_Array) is abstract;
     --
     function  Neuron(net : Stateful_NNet_Interface; idx : NN.NeuronIndex) return PN.Stateful_NeuronClass_Access is abstract;
+    procedure Add_Neuron(net  : in out Stateful_NNet_Interface;
+                         neur : in out PN.Stateful_Neuron_Interface'Class; -- pass pre-created Neuron
+                         idx : out NN.NeuronIndex) is abstract;
 
 
 
@@ -170,7 +175,8 @@ package wann.nets is
     -- appropriate Construct_From procedure)
 
     -- structure monitoring and IO
-    procedure Print_Structure(net : in out NNet_Interface'Class);
+    procedure Print_Structure(net : in out NNet_Interface'Class; 
+                              F : Ada.Text_IO.File_Type := Ada.Text_IO.Standard_Output);
     --
     -- add To_Stream/From_stream and/or To_JSON/From_JSON? methods
     

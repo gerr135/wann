@@ -90,7 +90,7 @@ package wann.nets.vectors is
     function  Layer(net : NNet; idx : NN.LayerIndex) return PL.Layer_Interface'Class;
 
     overriding
-    function  Layers_Ready (net : NNet) return Boolean;
+    function  Layers_Sorted (net : NNet) return Boolean;
 
     -------------------
     -- new methods

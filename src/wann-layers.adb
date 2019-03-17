@@ -9,7 +9,7 @@ package body wann.layers is
     function Prop_Forward (L : Layer_Interface; inputs : NN.State_Vector) return NN.State_Vector is
         outputs : NN.State_Vector := inputs;
     begin
-        for i in 1 .. Layer_Interface'Class(L).Length loop
+        for i in 1 .. Layer_Interface'Class(L).NNeurons loop
             declare
                 neur : PN.NeuronClass_Access := Layer_Interface'Class(L).Neuron(i);
             begin
@@ -24,7 +24,7 @@ package body wann.layers is
     is
         outputs : NN.Checked_State_Vector := inputs;
     begin
-        for i in 1 .. Layer_Interface'Class(L).Length loop
+        for i in 1 .. Layer_Interface'Class(L).NNeurons loop
             declare
                 neur : PN.NeuronClass_Access := Layer_Interface'Class(L).Neuron(i);
             begin
@@ -37,7 +37,7 @@ package body wann.layers is
 
     procedure Prop_Forward(L : Layer_Interface; SV : in out NN.State_Vector) is
     begin
-        for i in 1 .. Layer_Interface'Class(L).Length loop
+        for i in 1 .. Layer_Interface'Class(L).NNeurons loop
             declare
                 neur : PN.NeuronClass_Access := Layer_Interface'Class(L).Neuron(i);
             begin
@@ -48,7 +48,7 @@ package body wann.layers is
 
     procedure Prop_Forward(L : Layer_Interface; SV : in out NN.Checked_State_Vector) is
     begin
-        for i in 1 .. Layer_Interface'Class(L).Length loop
+        for i in 1 .. Layer_Interface'Class(L).NNeurons loop
             declare
                 neur : PN.NeuronClass_Access := Layer_Interface'Class(L).Neuron(i);
             begin

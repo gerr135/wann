@@ -38,7 +38,7 @@ package wann.layers.vectors is
     --
 
     overriding
-    function  Length(L : Layer) return NeuronIndex_Base;
+    function  NNeurons(L : Layer) return NeuronIndex_Base;
 
     overriding
     procedure Add_Neuron(L : in out Layer; np : PN.NeuronCLass_Access);

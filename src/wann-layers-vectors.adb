@@ -27,12 +27,12 @@ package body wann.layers.vectors is
    -- Length --
    ------------
 
-   overriding function Length (L : Layer) return NeuronIndex_Base is
+   overriding function NNeurons (L : Layer) return NeuronIndex_Base is
    begin
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "Length unimplemented");
       return raise Program_Error with "Unimplemented function Length";
-   end Length;
+   end NNeurons;
 
    ---------------
    -- AddNeuron --

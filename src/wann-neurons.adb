@@ -39,6 +39,11 @@ package body wann.neurons is
         return NI.ToRec.inputs;
     end Inputs;
 
+    function Outputs (NI : Neuron_Interface'Class) return Input_Connection_Array is
+    begin
+        return NI.ToRec.inputs;
+    end Outputs;
+
 
     --------------
     -- Settters

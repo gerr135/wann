@@ -93,7 +93,7 @@ package wann.layers is
     procedure FromRec(LI : in out Layer_Interface; LR : LayerRec) is abstract;
     --     procedure Clear  (LI : in out Layer_Interface) is abstract;
     --
-    function  Length(LI : Layer_Interface) return NeuronIndex_Base is abstract;
+    function  NNeurons(LI : Layer_Interface) return NeuronIndex_Base is abstract;
     procedure Add_Neuron(LI : in out Layer_Interface; neur : PN.NeuronClass_Access) is abstract;
 --     procedure Del_Neuron(LI : in out Layer_Interface; idx : NeuronIndex) is abstract;
     function  Neuron(LI : Layer_Interface; idx : NeuronIndex) return PN.NeuronClass_Access is abstract;

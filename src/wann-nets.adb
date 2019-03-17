@@ -54,6 +54,51 @@ package body wann.nets is
        raise Program_Error with "Unimplemented procedure Construct_From";
    end;
 
+
+    procedure Print_Structure(net : in out NNet_Interface'Class; 
+                              F : Ada.Text_IO.File_Type := Ada.Text_IO.Standard_Output) is
+        use Ada.Text_IO;
+    begin
+        Put_Line(F, "printout of NNet connections in format  Layer: Nidx|i1, i2..|o1, o2.. ;");
+        if net.Layers_Sorted then
+            -- we print layer per line
+            for l in 1 .. net.NLayers loop
+                Put(F, "L" & l'Img & ": ");
+                for n in 1 .. net.Layer(l).NNeurons loop
+                    Put(F, net.Layer(l).Neuron(n).Index'Img & "|");
+                    for input of net.Layer(l).Neuron(n).Inputs loop
+                        -- inefficient, better be redone through indexed loop and individual .Input calls
+                        Put(F, input.T'Img & 
+                            (case input.T is
+                                when NN.None=> "-",
+                                when NN.I   => input.Iidx'Img,
+                                when NN.N   => input.Nidx'Img,
+                                when NN.O   => input.Oidx'Img) & ",");
+                    end loop;
+                    Put(F,"|");
+                    for output of net.Layer(l).Neuron(n).Outputs loop
+                        -- see above note in Inputs loop for why .Outputs is yet unimplemented
+                        Put(F, output.T'Img & 
+                            (case output.T is
+                                when NN.None=> "-",
+                                when NN.I   => output.Iidx'Img,
+                                when NN.N   => output.Nidx'Img,
+                                when NN.O   => output.Oidx'Img) & ",");
+                    end loop;
+                    Put(F,";  ");
+                end loop;
+                New_Line(F);
+            end loop;
+        else
+            -- we print stuff straight
+            for n in 1 .. net.NNeurons loop
+                Put(F, net.Neuron(n).Index'Img & "|");
+                Put(F,";  ");
+            end loop;
+            New_Line(F);
+        end if;
+    end;
+   
    --------------------------------
    -- Reconnect_Neuron_At_Random --
    --------------------------------
@@ -129,7 +174,7 @@ package body wann.nets is
         if inputs'Length /= Ni then
             raise Data_Width_Mismatch;
         end if;
-        if not net.Layers_Ready then
+        if not net.Layers_Sorted then
             raise Unsorted_Net_Propagation;
         end if;
         --
