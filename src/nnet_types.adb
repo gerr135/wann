@@ -1,6 +1,17 @@
 pragma Ada_2012;
 package body nnet_types is
 
+    function Con2Str(connection : ConnectionIndex) return String is
+    begin
+        return connection.T'Img &
+            (case connection.T is
+                when None=> "-",
+                when I   => connection.Iidx'Img,
+                when N   => connection.Nidx'Img,
+                when O   => connection.Oidx'Img
+            ) & ",";
+    end;
+
    ------------------------
    -- State_Value unckecked
 

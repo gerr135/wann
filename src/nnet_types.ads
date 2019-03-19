@@ -98,6 +98,8 @@ package nnet_types is
 --     type Neuron_Connection_Array is array (NeuronIndex range <>) of ConnectionIndex;
     type Output_Connection_Array is array (OutputIndex range <>) of ConnectionIndex;
 
+    function Con2Str(connection : ConnectionIndex) return String;
+
 
     --------------------------------------------------
     -- NNet values.

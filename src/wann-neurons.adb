@@ -39,9 +39,13 @@ package body wann.neurons is
         return NI.ToRec.inputs;
     end Inputs;
 
-    function Outputs (NI : Neuron_Interface'Class) return Input_Connection_Array is
+    function Outputs (NI : Neuron_Interface'Class) return Output_Connection_Array is
+        outs : Output_Connection_Array(1 .. NI.NOutputs);
     begin
-        return NI.ToRec.inputs;
+        for o in 1 .. NI.NOutputs loop
+            outs(o) := NI.Output(o);
+        end loop;
+        return outs;
     end Outputs;
 
 

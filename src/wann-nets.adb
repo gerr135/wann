@@ -55,7 +55,7 @@ package body wann.nets is
    end;
 
 
-    procedure Print_Structure(net : in out NNet_Interface'Class; 
+    procedure Print_Structure(net : in out NNet_Interface'Class;
                               F : Ada.Text_IO.File_Type := Ada.Text_IO.Standard_Output) is
         use Ada.Text_IO;
     begin
@@ -68,22 +68,12 @@ package body wann.nets is
                     Put(F, net.Layer(l).Neuron(n).Index'Img & "|");
                     for input of net.Layer(l).Neuron(n).Inputs loop
                         -- inefficient, better be redone through indexed loop and individual .Input calls
-                        Put(F, input.T'Img & 
-                            (case input.T is
-                                when NN.None=> "-",
-                                when NN.I   => input.Iidx'Img,
-                                when NN.N   => input.Nidx'Img,
-                                when NN.O   => input.Oidx'Img) & ",");
+                        Put(F, NN.Con2Str(input));
                     end loop;
                     Put(F,"|");
                     for output of net.Layer(l).Neuron(n).Outputs loop
                         -- see above note in Inputs loop for why .Outputs is yet unimplemented
-                        Put(F, output.T'Img & 
-                            (case output.T is
-                                when NN.None=> "-",
-                                when NN.I   => output.Iidx'Img,
-                                when NN.N   => output.Nidx'Img,
-                                when NN.O   => output.Oidx'Img) & ",");
+                        Put(F, NN.Con2Str(output));
                     end loop;
                     Put(F,";  ");
                 end loop;
@@ -93,12 +83,21 @@ package body wann.nets is
             -- we print stuff straight
             for n in 1 .. net.NNeurons loop
                 Put(F, net.Neuron(n).Index'Img & "|");
+                for input of net.Neuron(n).Inputs loop
+                    -- inefficient, better be redone through indexed loop and individual .Input calls
+                    Put(F, NN.Con2Str(input));
+                end loop;
+                Put(F,"|");
+                for output of net.Neuron(n).Outputs loop
+                    -- see above note in Inputs loop for why .Outputs is yet unimplemented
+                    Put(F, NN.Con2Str(output));
+                end loop;
                 Put(F,";  ");
             end loop;
             New_Line(F);
         end if;
     end;
-   
+
    --------------------------------
    -- Reconnect_Neuron_At_Random --
    --------------------------------

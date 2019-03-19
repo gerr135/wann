@@ -63,7 +63,7 @@ package wann.neurons is
     -- Multiple representations are possible, defined in child packages.
     --
     -- like Input_Interface, is based on Outputting_Interface, as output handling code is the same
-    package PCN is new Connectors(Index_Type=>OutputIndex, Connection_Type=>NN.ConnectionIndex);
+    package PCN is new Connectors(Index_Type=>OutputIndex_Base, Connection_Type=>NN.ConnectionIndex);
 
     type Neuron_Interface is interface and PCN.Outputting_Interface;
     type NeuronClass_Access is access all Neuron_Interface'Class;
