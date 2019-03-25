@@ -14,7 +14,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with wann.nets.vectors;
 with wann.neurons.vectors;
 
-procedure run_customNN is
+procedure tst_topol is
 
     use Ada.Text_IO;
 
@@ -43,4 +43,4 @@ begin  -- main
 --     Put_Line("running forward prop");
 --     outputs1 := net1.Prop_Forward(inputs1);
 --     Put_Line("done, output1 = " & outputs1(1)'Img);
-end run_customNN;
+end tst_topol;

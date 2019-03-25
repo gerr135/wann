@@ -1,6 +1,7 @@
-TARGET = run_customNN
 SOURCES = src/*.ad?
 
 # rule to link the program
-customNN: $(SOURCES)
+gpr:
 	gprbuild -P wann.gpr
+
+.PHONY gpr:
