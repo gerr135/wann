@@ -21,7 +21,7 @@
 with wann.neurons;
 with wann.layers.vectors;
 with wann.inputs;
-with connectors.vectors;
+-- with connectors.vectors;
 
 with Ada.Text_IO;
 
@@ -175,11 +175,11 @@ package wann.nets is
     -- appropriate Construct_From procedure)
 
     -- structure monitoring and IO
-    procedure Print_Structure(net : in out NNet_Interface'Class; 
+    procedure Print_Structure(net : in out NNet_Interface'Class;
                               F : Ada.Text_IO.File_Type := Ada.Text_IO.Standard_Output);
     --
     -- add To_Stream/From_stream and/or To_JSON/From_JSON? methods
-    
+
     -- random constructors
     procedure Reconnect_Neuron_At_Random(net : in out NNet_Interface'Class; idx  : NN.NeuronIndex; maxConnects : PN.InputIndex_Base := 0);
     procedure Populate_At_Random (net : in out NNet_Interface'Class; Npts : NN.NeuronIndex_Base;  maxConnects : PN.InputIndex_Base := 0);

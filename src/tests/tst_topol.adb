@@ -26,7 +26,7 @@ procedure tst_topol is
 
     use PW; use NN;
 
-    neur1 : PNV.Neuron := PNV.Create(Sigmoid, ((I,1),(I,2)), 1.0);
+    neur1 : PNV.Neuron := PNV.Create(Sigmoid, ((I,1),(I,2)), maxWeight => 1.0);
     net1  : PNetV.NNet := PNetV.Create(2,1);
 --     inputs1  : NN.Input_Array := (0.0, 1.0);
 --     outputs1 : NN.Output_Array(1..1);
@@ -36,7 +36,9 @@ begin  -- main
 --     processCommandLine (params);
     Put_Line("creating basic 1-neuron network");
     net1.Add_Neuron(neur1);
-    net1.Add_Output(1);
+    net1.Connect_Output(1);
+    -- Add_Output is called implicitly by Create above
+    -- all outputs are already pre-created, we just need to connect them..
     Put_Line("added neuron 1 and connected to output 1");
     net1.Print_Structure;
     --
