@@ -1,3 +1,10 @@
 1. change all basic Text_IO to proper logging ank make use of Debug field
 
 2. Add fixed implementations..
+
+
+FIXES:
+Finish refactoring Connectors.ourputs - rioght now many methods are duplicated in derived types -
+NNet.vector just plain oiverrides it wihth its own code..
+
+Do similar design for inputs..
