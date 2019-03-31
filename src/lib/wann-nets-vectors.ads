@@ -39,17 +39,20 @@ with connectors.vectors;
 generic
 package wann.nets.vectors is
 
+    package PLV  is new PL.vectors;
+    package PCNV is new PCN.vectors(Base=>NNet_Interface);
+
     ------------------------------
     -- mutable NNet
     --
-    type NNet is new NNet_Interface with private;
+    type NNet is new PCNV.Output_Vector with private;
 
-    --  overriding primitives
+    -- Getters --
     overriding
-    function NInputs (net : NNet) return NN.InputIndex;
+    function NInputs (net : NNet) return NN.InputIndex_Base;
 
     overriding
-    function NOutputs(net : NNet) return NN.OutputIndex;
+    function NOutputs(net : NNet) return NN.OutputIndex_Base;
 
     overriding
     function NNeurons(net : NNet) return NN.NeuronIndex;
@@ -57,14 +60,31 @@ package wann.nets.vectors is
     overriding
     function NLayers (net : NNet) return NN.LayerIndex;
 
-    -- IO handling
+    -- IO handling --
     overriding
     function  Input (net : NNet; i : NN.InputIndex)  return PI.Input_Interface'Class;
 
     overriding
     function  Output(net : NNet; o : NN.OutputIndex) return NN.ConnectionIndex;
 
-    -- neuron handling
+    -- this version also has mutable IO, so we need methods to add/remore inputs and outputs
+    not overriding
+    procedure Add_Input(net : in out NNet; N : NN.InputIndex := 1);
+    -- Append (N) new unconnected inputs. Connections are to be made upon neuron adds/mods
+
+    not overriding
+    procedure Del_Input(net : in out NNet; idx : NN.InputIndex);
+
+    overriding
+    procedure Add_Output(net : in out NNet; N : NN.OutputIndex := 1);
+
+    overriding
+    procedure Connect_Output(net : in out NNet; Output : NN.ConnectionIndex);
+
+    overriding
+    procedure Del_Output(net : in out NNet; Output : NN.ConnectionIndex);
+
+    -- neuron handling --
     overriding
     procedure Add_Neuron(net : in out NNet; neur : in out PN.Neuron_Interface'Class;
                          idx : out NN.NeuronIndex);
@@ -75,7 +95,7 @@ package wann.nets.vectors is
     overriding
     function  Neuron(net : aliased in out NNet; idx : NN.NeuronIndex) return PN.Neuron_Reference;
 
-    -- Layers handling
+    -- Layer handling --
     overriding
     procedure Add_Layer(net : in out NNet; L   : in out PL.Layer_Interface'Class;
                         idx : out NN.LayerIndex);
@@ -92,6 +112,7 @@ package wann.nets.vectors is
     overriding
     function  Layers_Sorted (net : NNet) return Boolean;
 
+
     -------------------
     -- new methods
     not overriding
@@ -103,21 +124,6 @@ package wann.nets.vectors is
     function Create_From(S : string) return NNet;
     -- convenience wrapper around COnstruct_From class-wide in the parent
 
-    -- this version also has mutable IO, so we need methods to add/remore inputs and outputs
-    --
-    -- Append (N) new unconnected inputs. Connections are to be made upon neuron adds/mods
-    not overriding
-    procedure Add_Input(net : in out NNet; N   : NN.InputIndex := 1);
-    --
-    -- Append (single) output connected to a given (by index) neuron
-    not overriding
-    procedure Add_Output(net : in out NNet; idx : NN.NeuronIndex);
-
-    not overriding
-    procedure Del_Input(net : in out NNet; idx : NN.InputIndex);
-
-    not overriding
-    procedure Del_Output(net : in out NNet; idx : NN.OutputIndex);
 
 
 private
@@ -138,7 +144,7 @@ private
     package LV is new Ada.Containers.Vectors(Index_Type=>NN.LayerIndex,  Element_Type=>PLV.Layer);
 
     -- the NNet types themselves
-    type NNet is new NNet_Interface with record
+    type NNet is new PCNV.Output_Vector with record
         inputs  : IV.Vector;
         outputs : OV.Vector;
         neurons : NV.Vector;

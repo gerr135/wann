@@ -30,7 +30,7 @@ package wann.neurons is
     subtype OutputIndex is OutputIndex_Base range 1 .. OutputIndex_Base'Last;
 
     -- associated arrray types for holding params
-    type Input_Connection_Array  is array (InputIndex range <>)  of NN.ConnectionIndex;
+    type Input_Connection_Array  is array (InputIndex  range <>) of NN.ConnectionIndex;
     type Output_Connection_Array is array (OutputIndex range <>) of NN.ConnectionIndex;
     type Weight_Array  is array (InputIndex_Base range <>) of Real;
     type Value_Array   is array (InputIndex range <>) of Real;
@@ -63,7 +63,7 @@ package wann.neurons is
     -- Multiple representations are possible, defined in child packages.
     --
     -- like Input_Interface, is based on Outputting_Interface, as output handling code is the same
-    package PCN is new Connectors(Index_Type=>OutputIndex_Base, Connection_Type=>NN.ConnectionIndex);
+    package PCN is new Connectors(Index_Base=>OutputIndex_Base, Connection_Type=>NN.ConnectionIndex);
 
     type Neuron_Interface is interface and PCN.Outputting_Interface;
     type NeuronClass_Access is access all Neuron_Interface'Class;

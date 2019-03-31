@@ -4,7 +4,7 @@ package body connectors.vectors is
     --------------
     -- NOutputs --
     overriding
-    function NOutputs (OI : Outputting_Type) return Index_Type is
+    function NOutputs (OI : Output_Vector) return Index_Type is
     begin
         return Index_Type(OI.outputs.Length);
     end NOutputs;
@@ -14,7 +14,7 @@ package body connectors.vectors is
     ------------
 
     overriding
-    function Output (OI : Outputting_Type; idx : Index_Type) return Connection_Type is
+    function Output (OI : Output_Vector; idx : Index_Type) return Connection_Type is
     begin
         return OI.outputs(idx);
     end Output;
@@ -22,7 +22,7 @@ package body connectors.vectors is
     ----------------
     -- Add_Output --
     overriding
-    procedure Add_Output (OI : in out Outputting_Type; Output : Connection_Type) is
+    procedure Add_Output(OI : in out Output_Vector; N : Index_Type := 1) is
     begin
         for o of OI.outputs loop
             -- need to ensure that passed connection is not a duplicate
@@ -33,10 +33,22 @@ package body connectors.vectors is
         OI.outputs.Append(Output);
     end Add_Output;
 
+    overriding
+    procedure Connect_Output(OI : in out Output_Vector; Output : Connection_Type) is
+    begin
+        for o of OI.outputs loop
+            -- need to ensure that passed connection is not a duplicate
+            if o = Output then
+                raise Duplicate_Connection;
+            end if;
+        end loop;
+        OI.outputs.Append(Output);
+    end Connect_Output;
+
     ----------------
     -- Del_Output --
     overriding
-    procedure Del_Output (OI : in out Outputting_Type; Output : Connection_Type) is
+    procedure Del_Output (OI : in out Output_Vector; Output : Connection_Type) is
         -- The other side of connection has no concept of our internal index,
         -- so it cannot be passed to our method.
         -- So we do a search based on the passed idx (all connections are unique).

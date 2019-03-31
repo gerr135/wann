@@ -19,9 +19,9 @@
 --
 
 with wann.neurons;
-with wann.layers.vectors;
+with wann.layers;
 with wann.inputs;
--- with connectors.vectors;
+with connectors;
 
 with Ada.Text_IO;
 
@@ -29,12 +29,13 @@ generic
 package wann.nets is
 
     package PI  is new wann.inputs;
-
     package PL  is new wann.layers;
-    package PLV is new PL.vectors;
-
     package PN renames PL.PN;
     --package PN is new wann.neurons; -- creates new package with new incompatible types
+
+    -- similar to Neuron_Interface, NNet_Interface uses same method signature for Outputs
+    -- this package encapsulates the common interface, specific by index
+    package PCN is new Connectors(Index_Base=>NN.OutputIndex_Base, Connection_Type=>NN.ConnectionIndex);
 
 
     -- NOTE 1: local indices are defined at the top level,
@@ -59,13 +60,17 @@ package wann.nets is
     -- Some of the functionality is common to all, and is easiest to implement right here.
     -- So, like with Layer_Interface we make this one abstract tagged, rather than interface.
     -- We have no need for overlaying hierarchies so far..
-    type NNet_Interface is abstract tagged limited private;
+    type NNet_Interface is abstract limited new PCN.Outputting_Interface with private;
     type NNet_Access is access NNet_Interface'Class;
 
     -- Dimension getters; the setters are imnplementation-specific,
-    function NInputs (net : NNet_Interface) return NN.InputIndex  is abstract;
-    function NOutputs(net : NNet_Interface) return NN.OutputIndex is abstract; -- from Connectors
+    not overriding
+    function NInputs (net : NNet_Interface) return NN.InputIndex_Base  is abstract;
+    overriding  -- from Connectors
+    function NOutputs(net : NNet_Interface) return NN.OutputIndex_Base is abstract;
+    not overriding
     function NNeurons(net : NNet_Interface) return NN.NeuronIndex is abstract;
+    not overriding
     function NLayers (net : NNet_Interface) return NN.LayerIndex  is abstract;
 
     -- net IO
@@ -75,8 +80,10 @@ package wann.nets is
     --function  Output_Connections(net : NNet_Interface) return NN.Output_Connection_Array is abstract;
     --
     -- So we access by element instead
+    not overriding
     function  Input (net : NNet_Interface; i : NN.InputIndex)  return PI.Input_Interface'Class is abstract;
---     function  Input (net : NNet_Interface'Class; i : NN.InputIndex)  return PI.InputRec;
+    --     function  Input (net : NNet_Interface'Class; i : NN.InputIndex)  return PI.InputRec;
+    overriding
     function  Output(net : NNet_Interface; o : NN.OutputIndex) return NN.ConnectionIndex is abstract; -- from Connectors
 
     --  Neuron handling
@@ -241,7 +248,7 @@ package wann.nets is
 
 private
 
-    type NNet_Interface is abstract tagged limited record
+    type NNet_Interface is abstract limited new PCN.Outputting_Interface with record
         autosort_layers : Boolean := False;
         layer_sort_direction  : Sort_Direction := Forward;  -- reset by Sort_Layers
     end record;

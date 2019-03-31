@@ -20,31 +20,35 @@
 with Ada.Containers.Vectors;
 
 generic
+    type Base is abstract tagged limited private;
 package connectors.vectors is
 
     -------------------------------------------------
     -- Input type with functionality
-    type Outputting_Type is new Outputting_Interface with private;
+    type Output_Vector is abstract new Base and Outputting_Interface with private;
 
     overriding
-    function NOutputs(OI : Outputting_Type) return Index_Type;
+    function NOutputs(OI : Output_Vector) return Index_Base;
 
     overriding
-    function Output  (OI : Outputting_Type; idx : Index_Type) return Connection_Type;
+    function Output  (OI : Output_Vector; idx : Index_Type) return Connection_Type;
     --
     -- setters
-    overriding
-    procedure Add_Output(OI : in out Outputting_Type; Output : Connection_Type);
+    not overriding
+    procedure Add_Output(OI : in out Output_Vector; N : Index_Type := 1);
 
     overriding
-    procedure Del_Output(OI : in out Outputting_Type; Output : Connection_Type);
+    procedure Connect_Output(OI : in out Output_Vector; Output : Connection_Type);
+
+    not overriding
+    procedure Del_Output(OI : in out Output_Vector; Output : Connection_Type);
 
 private
 
     use type Connection_Type;
     package CV is new Ada.Containers.Vectors (Index_Type => Index_Type, Element_Type => Connection_Type);
 
-    type Outputting_Type is new Outputting_Interface with record
+    type Output_Vector is abstract new Base and Outputting_Interface with record
         outputs : CV.Vector;
     end record;
 

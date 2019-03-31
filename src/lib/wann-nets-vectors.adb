@@ -7,13 +7,13 @@ package body wann.nets.vectors is
     -- Dimension getters
     --
     overriding
-    function NInputs (net : NNet) return NN.InputIndex is
+    function NInputs (net : NNet) return NN.InputIndex_Base is
     begin
         return NN.InputIndex(net.inputs.Length);
     end;
 
     overriding
-    function NOutputs(net : NNet) return NN.OutputIndex is
+    function NOutputs(net : NNet) return NN.OutputIndex_Base is
     begin
         return NN.OutputIndex(net.outputs.Length);
     end;
@@ -64,12 +64,12 @@ package body wann.nets.vectors is
             declare
                 input : NN.ConnectionIndex := neur.Input(i);
             begin
-                GT.Trace(Debug, "  adding input" & i'Img 
-                         & "  (" & input.T'Img & "," 
+                GT.Trace(Debug, "  adding input" & i'Img
+                         & "  (" & input.T'Img & ","
                          & (case input.T is
                             when NN.None => "",
                             when NN.I => input.Iidx'Img,
-                            when NN.N => input.Nidx'Img, 
+                            when NN.N => input.Nidx'Img,
                             when NN.O => input.Oidx'Img)
                          & ")");
                 case input.T is
@@ -231,15 +231,22 @@ package body wann.nets.vectors is
         raise Program_Error with "Unimplemented procedure Del_Input";
     end;
 
-    not overriding
-    procedure Add_Output(net : in out NNet; idx : NN.NeuronIndex) is
-        connection : NN.ConnectionIndex := (NN.N, idx);
+    overriding
+    procedure Add_Output(net : in out NNet; N : NN.OutputIndex := 1) is
     begin
-        net.outputs.Append(connection);
+        pragma Compile_Time_Warning (Standard.True, "Add_Output unimplemented");
+        raise Program_Error with "Unimplemented procedure Add_Output";
     end;
 
-    not overriding
-    procedure Del_Output(net : in out NNet; idx : NN.OutputIndex) is
+    overriding
+    procedure Connect_Output(net : in out NNet; Output : NN.ConnectionIndex) is
+    begin
+        pragma Compile_Time_Warning (Standard.True, "Connect_Output unimplemented");
+        raise Program_Error with "Unimplemented procedure Connect_Output";
+    end;
+
+    overriding
+    procedure Del_Output(net : in out NNet; Output : NN.ConnectionIndex) is
     begin
         -- as with Neuron deletion, this is a tricky issue, as it may require reindexing
         -- many connections
