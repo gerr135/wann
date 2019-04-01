@@ -1,17 +1,11 @@
 pragma Ada_2012;
 package body connectors.vectors is
 
-    --------------
-    -- NOutputs --
     overriding
-    function NOutputs (OI : Output_Vector) return Index_Type is
+    function NOutputs (OI : Output_Vector) return Index_Base is
     begin
-        return Index_Type(OI.outputs.Length);
+        return Index_Base(OI.outputs.Length);
     end NOutputs;
-
-    ------------
-    -- Output --
-    ------------
 
     overriding
     function Output (OI : Output_Vector; idx : Index_Type) return Connection_Type is
@@ -23,26 +17,30 @@ package body connectors.vectors is
     -- Add_Output --
     overriding
     procedure Add_Output(OI : in out Output_Vector; N : Index_Type := 1) is
+        -- add N unconnected entries
     begin
-        for o of OI.outputs loop
-            -- need to ensure that passed connection is not a duplicate
-            if o = Output then
-                raise Duplicate_Connection;
-            end if;
-        end loop;
-        OI.outputs.Append(Output);
+        OI.outputs.Append(No_Connection, Count => Ada.Containers.Count_Type(N));
     end Add_Output;
 
     overriding
-    procedure Connect_Output(OI : in out Output_Vector; Output : Connection_Type) is
+    procedure Connect_Output(OI : in out Output_Vector; idx : Index_Type; val : Connection_Type) is
+        curCon : Connection_Type := OI.outputs(idx);
     begin
-        for o of OI.outputs loop
-            -- need to ensure that passed connection is not a duplicate
-            if o = Output then
-                raise Duplicate_Connection;
-            end if;
-        end loop;
-        OI.outputs.Append(Output);
+        -- need to ensure that passed connection is not a duplicate
+        if curCon /= No_Connection then
+            for o in Index_Type'First .. idx - 1 loop
+                if OI.outputs(o) = val then
+                    raise Duplicate_Connection;
+                end if;
+            end loop;
+            -- but should not check the idx position
+            for o in idx + 1 .. OI.NOutputs loop
+                if OI.outputs(o) = val then
+                    raise Duplicate_Connection;
+                end if;
+            end loop;
+        end if;
+        OI.outputs.Replace_Element(idx, val);
     end Connect_Output;
 
     ----------------
@@ -65,5 +63,6 @@ package body connectors.vectors is
         -- if we got here, connection was not found
         raise Connection_Not_Found;
     end Del_Output;
+
 
 end connectors.vectors;

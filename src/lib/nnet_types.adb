@@ -5,11 +5,11 @@ package body nnet_types is
     begin
         return connection.T'Img &
             (case connection.T is
-                when None=> "-",
+                when None=> "",
                 when I   => connection.Iidx'Img,
                 when N   => connection.Nidx'Img,
                 when O   => connection.Oidx'Img
-            ) & ",";
+            );
     end;
 
    ------------------------

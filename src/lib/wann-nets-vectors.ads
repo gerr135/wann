@@ -34,12 +34,15 @@ with Ada.Containers.Vectors;
 with Ada.Containers.Indefinite_Vectors;
 
 with wann.layers.vectors;
+with wann.neurons.vectors;
 with connectors.vectors;
 
 generic
 package wann.nets.vectors is
 
     package PLV  is new PL.vectors;
+    package PNV  is new PN.vectors;
+    --
     package PCNV is new PCN.vectors(Base=>NNet_Interface);
 
     ------------------------------
@@ -79,7 +82,7 @@ package wann.nets.vectors is
     procedure Add_Output(net : in out NNet; N : NN.OutputIndex := 1);
 
     overriding
-    procedure Connect_Output(net : in out NNet; Output : NN.ConnectionIndex);
+    procedure Connect_Output(net : in out NNet; idx : NN.OutputIndex; val : NN.ConnectionIndex);
 
     overriding
     procedure Del_Output(net : in out NNet; Output : NN.ConnectionIndex);

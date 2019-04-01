@@ -1,5 +1,5 @@
 --
--- wann.inputs.vectors package. Holds NNet inputs as Ada.Containers.Vectors
+-- connectors.vectors package. Implements basic common code for (Neuron/NNet) output vectors
 --
 -- Copyright (C) 2018  <George Shapovalov> <gshapovalov@gmail.com>
 --
@@ -34,14 +34,15 @@ package connectors.vectors is
     function Output  (OI : Output_Vector; idx : Index_Type) return Connection_Type;
     --
     -- setters
-    not overriding
+    overriding
     procedure Add_Output(OI : in out Output_Vector; N : Index_Type := 1);
 
     overriding
-    procedure Connect_Output(OI : in out Output_Vector; Output : Connection_Type);
+    procedure Connect_Output(OI : in out Output_Vector; idx : Index_Type; val : Connection_Type);
 
-    not overriding
+    overriding
     procedure Del_Output(OI : in out Output_Vector; Output : Connection_Type);
+
 
 private
 

@@ -65,13 +65,7 @@ package body wann.nets.vectors is
                 input : NN.ConnectionIndex := neur.Input(i);
             begin
                 GT.Trace(Debug, "  adding input" & i'Img
-                         & "  (" & input.T'Img & ","
-                         & (case input.T is
-                            when NN.None => "",
-                            when NN.I => input.Iidx'Img,
-                            when NN.N => input.Nidx'Img,
-                            when NN.O => input.Oidx'Img)
-                         & ")");
+                         & "  (" & NN.Con2Str(input) & ")");
                 case input.T is
                     when NN.I => net.inputs (input.Iidx).Add_Output((NN.N,idx));
                     when NN.N => net.neurons(input.Nidx).Add_Output((NN.N,idx));
@@ -239,7 +233,7 @@ package body wann.nets.vectors is
     end;
 
     overriding
-    procedure Connect_Output(net : in out NNet; Output : NN.ConnectionIndex) is
+    procedure Connect_Output(net : in out NNet; idx : NN.OutputIndex; val : NN.ConnectionIndex) is
     begin
         pragma Compile_Time_Warning (Standard.True, "Connect_Output unimplemented");
         raise Program_Error with "Unimplemented procedure Connect_Output";

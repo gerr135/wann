@@ -35,7 +35,9 @@ package wann.nets is
 
     -- similar to Neuron_Interface, NNet_Interface uses same method signature for Outputs
     -- this package encapsulates the common interface, specific by index
-    package PCN is new Connectors(Index_Base=>NN.OutputIndex_Base, Connection_Type=>NN.ConnectionIndex);
+    package PCN is new Connectors(Index_Base      => NN.OutputIndex_Base,
+                                  Connection_Type => NN.ConnectionIndex,
+                                  No_Connection   => NN.No_Connection );
 
 
     -- NOTE 1: local indices are defined at the top level,

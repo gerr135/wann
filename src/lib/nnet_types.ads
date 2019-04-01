@@ -90,6 +90,8 @@ package nnet_types is
         end case;
     end record;
 
+    No_Connection : constant ConnectionIndex := (t=> None);
+
     -- now, arrays of connections
     -- NOTE: only the Output_Connection_Array makes conceptual sense here,
     -- as the only one having 1-to-1 routing (NNet output can take input from only 1 neuron)

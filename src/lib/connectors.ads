@@ -4,10 +4,15 @@
 -- In case of Neurons a single output is connected to multiple other entities (neurons or outputs).
 -- In the case of NNet, multiple outputs with each connected to a single entity.
 -- So, in either case, its NN.Connection_Index on the other side..
+--
+-- NOTE: this only handles common code for the "container" itself - add/delete/assign, etc.
+-- Any adjustment on the other side needs to be done in derived methods, as only actual neuons/nets
+-- would have access to appropriate data..
 
 generic
     type Index_Base is range <>;     -- an internal index of outputs
     type Connection_Type is private; -- an external handle, most likely NN.Connection_Index in all cases
+    No_Connection : Connection_Type;
 package Connectors is
 
     -- exceptions associated with Outputting_Interface
@@ -27,19 +32,24 @@ package Connectors is
 
     -- general use case is to pre-create neuron/net with given amount of connections
     -- so we need separate Add_ and Connect_ methods
---     procedure Add_Output(OI : in out Outputting_Interface; N : Index_Type := 1) is abstract;
+    procedure Add_Output(OI : in out Outputting_Interface; N : Index_Type := 1) is abstract;
 
-    procedure Connect_Output(OI : in out Outputting_Interface; Output : Connection_Type) is abstract;
+    procedure Connect_Output(OI : in out Outputting_Interface;
+                             idx : Index_Type;      -- which output
+                             val : Connection_Type  -- to where
+                            ) is abstract;
 
---     procedure Del_Output(OI : in out Outputting_Interface; Output : Connection_Type) is abstract;
-    -- The other side has no knowledge of internal index (and it does not even exist at the Add_),
+    procedure Del_Output(OI : in out Outputting_Interface; Output : Connection_Type) is abstract;
+    -- The other side has no knowledge of internal index,
     -- so output to be deleted should be IDed by the NNet idx..
-
 
 
     ----------------------------------------------------
     -- common class-wide functionality, basic wrapper(s)
+    --
     procedure Add_Output(OI : in out Outputting_Interface'Class; Output : Connection_Type);
-        -- a basic wrapper, calling Add_Output and then Connect_Output for a single entry
+    -- a basic wrapper, calling Add_Output and then Connect_Output for a single entry
+
+    procedure Connect_Next_Unused(OI : in out Outputting_Interface'Class; val : Connection_Type);
 
 end Connectors;

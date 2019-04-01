@@ -51,7 +51,9 @@ package wann.inputs is
     -- Input type with functionality
     --
     -- this is basically the Outputting_Interface with a specific Index type
-    package PCI  is new Connectors(Index_Base=>OutputIndex_Base, Connection_Type=>NN.ConnectionIndex);
+    package PCI  is new Connectors(Index_Base      => OutputIndex_Base,
+                                   Connection_Type => NN.ConnectionIndex,
+                                   No_Connection   => NN.No_Connection );
 
     type Input_Interface is interface and PCI.Outputting_Interface;
 

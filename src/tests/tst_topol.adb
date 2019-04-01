@@ -36,7 +36,7 @@ begin  -- main
 --     processCommandLine (params);
     Put_Line("creating basic 1-neuron network");
     net1.Add_Neuron(neur1);
-    net1.Connect_Output((N,1));
+    net1.Connect_Output(1,(N,1));
     -- Add_Output is called implicitly by Create above
     -- all outputs are already pre-created, we just need to connect them..
     Put_Line("added neuron 1 and connected to output 1");
