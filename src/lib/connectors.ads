@@ -1,8 +1,9 @@
--- This is a common interface for outputs of neurons and the net.
--- the semantics seem to be similar, even if connection designation may have different meaning
+-- This is a service subpackage, containing utility connection types - e.g. 1-to-many connections.
+-- The semantics seem to be similar, even if connection designation may have different meaning,
+-- so it makes sense to have a single common package for all such instances.
 --
 -- In case of Neurons a single output is connected to multiple other entities (neurons or outputs).
--- In the case of NNet, multiple outputs with each connected to a single entity.
+-- In the case of NNet, outputs of multiple neurons (or even inputs) can be connected to a single output.
 -- So, in either case, its NN.Connection_Index on the other side..
 --
 -- NOTE: this only handles common code for the "container" itself - add/delete/assign, etc.
@@ -10,7 +11,7 @@
 -- would have access to appropriate data..
 
 generic
-    type Index_Base is range <>;     -- an internal index of outputs
+    type Index_Base is range <>;     -- index of eintries - externally defined
     type Connection_Type is private; -- an external handle, most likely NN.Connection_Index in all cases
     No_Connection : Connection_Type;
 package Connectors is
