@@ -2,13 +2,13 @@ pragma Ada_2012;
 package body connectors.vectors is
 
     overriding
-    function NOutputs (OI : Output_Vector) return Index_Base is
+    function NOutputs (OI : Connector_Vector) return Index_Base is
     begin
         return Index_Base(OI.outputs.Length);
     end NOutputs;
 
     overriding
-    function Output (OI : Output_Vector; idx : Index_Type) return Connection_Type is
+    function Output (OI : Connector_Vector; idx : Index_Type) return Connection_Type is
     begin
         return OI.outputs(idx);
     end Output;
@@ -16,14 +16,14 @@ package body connectors.vectors is
     ----------------
     -- Add_Output --
     overriding
-    procedure Add_Output(OI : in out Output_Vector; N : Index_Type := 1) is
+    procedure Add_Output(OI : in out Connector_Vector; N : Index_Type := 1) is
         -- add N unconnected entries
     begin
         OI.outputs.Append(No_Connection, Count => Ada.Containers.Count_Type(N));
     end Add_Output;
 
     overriding
-    procedure Connect_Output(OI : in out Output_Vector; idx : Index_Type; val : Connection_Type) is
+    procedure Connect_Output(OI : in out Connector_Vector; idx : Index_Type; val : Connection_Type) is
         curCon : Connection_Type := OI.outputs(idx);
     begin
         -- need to ensure that passed connection is not a duplicate
@@ -46,7 +46,7 @@ package body connectors.vectors is
     ----------------
     -- Del_Output --
     overriding
-    procedure Del_Output (OI : in out Output_Vector; Output : Connection_Type) is
+    procedure Del_Output (OI : in out Connector_Vector; Output : Connection_Type) is
         -- The other side of connection has no concept of our internal index,
         -- so it cannot be passed to our method.
         -- So we do a search based on the passed idx (all connections are unique).

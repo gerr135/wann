@@ -25,7 +25,7 @@ package wann.neurons.vectors is
 
     package PCNV is new PCN.vectors(Neuron_Interface);
 
-    type Neuron is new PCNV.Output_Vector and Neuron_Interface with private;
+    type Neuron is new PCNV.Connector_Vector and Neuron_Interface with private;
 
     -- inherited primitives
     overriding
@@ -72,7 +72,7 @@ private
     package OV is new Ada.Containers.Vectors(Index_Type=>OutputIndex, Element_Type=>NN.ConnectionIndex);
     package WV is new Ada.Containers.Vectors(Index_Type=>InputIndex_Base, Element_Type=>Real);
 
-    type Neuron is new PCNV.Output_Vector and Neuron_Interface with record
+    type Neuron is new PCNV.Connector_Vector and Neuron_Interface with record
         idx     : NN.NeuronIndex_Base; -- own index in NNet
         activat : Activation_Type;
         lag     : Real;    -- delay of result propagation, unused for now

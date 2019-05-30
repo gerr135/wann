@@ -50,23 +50,23 @@ package wann.inputs is
     -------------------------------------------------
     -- Input type with functionality
     --
-    -- this is basically the Outputting_Interface with a specific Index type
+    -- this is basically the Connector_Interface with a specific Index type
     package PCI  is new Connectors(Index_Base      => OutputIndex_Base,
                                    Connection_Type => NN.ConnectionIndex,
                                    No_Connection   => NN.No_Connection );
 
-    type Input_Interface is interface and PCI.Outputting_Interface;
+    type Input_Interface is interface and PCI.Connector_Interface;
 
     type MyBase is abstract tagged null record;
     package PCIV is new PCI.vectors(Base=>MyBase);
-    type Input_Vector is new PCIV.Output_Vector and Input_Interface with private;
+    type Input_Vector is new PCIV.Connector_Vector and Input_Interface with private;
     -- NOTE: "and Input_Interface" is implicit via Connectors structure.
     -- Making this explicit here to make this relation visible and to ensure that
     -- it does not get lost in some refactoring..
 
 private
 
-    type Input_Vector is new PCIV.Output_Vector and Input_Interface with record
+    type Input_Vector is new PCIV.Connector_Vector and Input_Interface with record
         idx     : NN.InputIndex_Base;
     end record;
 

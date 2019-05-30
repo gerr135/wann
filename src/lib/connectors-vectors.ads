@@ -25,23 +25,23 @@ package connectors.vectors is
 
     -------------------------------------------------
     -- Input type with functionality
-    type Output_Vector is abstract new Base and Outputting_Interface with private;
+    type Connector_Vector is abstract new Base and Connector_Interface with private;
 
     overriding
-    function NOutputs(OI : Output_Vector) return Index_Base;
+    function NOutputs(OI : Connector_Vector) return Index_Base;
 
     overriding
-    function Output  (OI : Output_Vector; idx : Index_Type) return Connection_Type;
+    function Output  (OI : Connector_Vector; idx : Index_Type) return Connection_Type;
     --
     -- setters
     overriding
-    procedure Add_Output(OI : in out Output_Vector; N : Index_Type := 1);
+    procedure Add_Output(OI : in out Connector_Vector; N : Index_Type := 1);
 
     overriding
-    procedure Connect_Output(OI : in out Output_Vector; idx : Index_Type; val : Connection_Type);
+    procedure Connect_Output(OI : in out Connector_Vector; idx : Index_Type; val : Connection_Type);
 
     overriding
-    procedure Del_Output(OI : in out Output_Vector; Output : Connection_Type);
+    procedure Del_Output(OI : in out Connector_Vector; Output : Connection_Type);
 
 
 private
@@ -49,7 +49,7 @@ private
     use type Connection_Type;
     package CV is new Ada.Containers.Vectors (Index_Type => Index_Type, Element_Type => Connection_Type);
 
-    type Output_Vector is abstract new Base and Outputting_Interface with record
+    type Connector_Vector is abstract new Base and Connector_Interface with record
         outputs : CV.Vector;
     end record;
 

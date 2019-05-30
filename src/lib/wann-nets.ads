@@ -62,7 +62,7 @@ package wann.nets is
     -- Some of the functionality is common to all, and is easiest to implement right here.
     -- So, like with Layer_Interface we make this one abstract tagged, rather than interface.
     -- We have no need for overlaying hierarchies so far..
-    type NNet_Interface is abstract limited new PCN.Outputting_Interface with private;
+    type NNet_Interface is abstract limited new PCN.Connector_Interface with private;
     type NNet_Access is access NNet_Interface'Class;
 
     -- Dimension getters; the setters are imnplementation-specific,
@@ -250,7 +250,7 @@ package wann.nets is
 
 private
 
-    type NNet_Interface is abstract limited new PCN.Outputting_Interface with record
+    type NNet_Interface is abstract limited new PCN.Connector_Interface with record
         autosort_layers : Boolean := False;
         layer_sort_direction  : Sort_Direction := Forward;  -- reset by Sort_Layers
     end record;

@@ -48,7 +48,7 @@ package wann.nets.vectors is
     ------------------------------
     -- mutable NNet
     --
-    type NNet is new PCNV.Output_Vector with private;
+    type NNet is new PCNV.Connector_Vector with private;
 
     -- Getters --
     overriding
@@ -147,7 +147,7 @@ private
     package LV is new Ada.Containers.Vectors(Index_Type=>NN.LayerIndex,  Element_Type=>PLV.Layer);
 
     -- the NNet types themselves
-    type NNet is new PCNV.Output_Vector with record
+    type NNet is new PCNV.Connector_Vector with record
         inputs  : IV.Vector;
         outputs : OV.Vector;
         neurons : NV.Vector;

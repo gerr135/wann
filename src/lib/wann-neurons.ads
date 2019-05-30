@@ -62,12 +62,12 @@ package wann.neurons is
     -- Neuron interface: to be used by layers and nets
     -- Multiple representations are possible, defined in child packages.
     --
-    -- like Input_Interface, is based on Outputting_Interface, as output handling code is the same
+    -- like Input_Interface, is based on Connector_Interface, as output handling code is the same
     package PCN is new Connectors(Index_Base      => OutputIndex_Base,
                                   Connection_Type => NN.ConnectionIndex,
                                   No_Connection   => NN.No_Connection );
 
-    type Neuron_Interface is interface and PCN.Outputting_Interface;
+    type Neuron_Interface is interface and PCN.Connector_Interface;
     type NeuronClass_Access is access all Neuron_Interface'Class;
     -- and the accessor
     type Neuron_Reference (Data : not null access Neuron_Interface'Class) is private
@@ -95,7 +95,7 @@ package wann.neurons is
 --     procedure Del_Output(NI : in out Neuron_Interface; Output : NN.ConnectionIndex) is abstract;
 
     -- primitives giving access to commonnly used fields/methods
-    -- Input handling, same interface layout as for Outputting_Interface
+    -- Input handling, same interface layout as for Connector_Interface
     function NInputs (neur : Neuron_Interface) return InputIndex  is abstract;
     function Input (neur : Neuron_Interface; idx : InputIndex)  return NN.ConnectionIndex is abstract;
     --
