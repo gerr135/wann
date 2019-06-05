@@ -3,7 +3,8 @@
 -- so it makes sense to have a single common package for all such instances.
 --
 -- In case of Neurons a single output is connected to multiple other entities (neurons or outputs).
--- In the case of NNet, outputs of multiple neurons (or even inputs) can be connected to a single output.
+-- In the case of NNet, single NNet input can be connected to multiple neurons
+-- (or even outputs directly, in a pass-thrugh configuration).
 -- So, in either case, its NN.Connection_Index on the other side..
 --
 -- NOTE: this only handles common code for the "container" itself - add/delete/assign, etc.
@@ -48,9 +49,10 @@ package Connectors is
     ----------------------------------------------------
     -- common class-wide functionality, basic wrapper(s)
     --
-    procedure Add_Output(OI : in out Connector_Interface'Class; Output : Connection_Type);
+    procedure Add_and_Connect(OI : in out Connector_Interface'Class; Output : Connection_Type);
     -- a basic wrapper, calling Add_Output and then Connect_Output for a single entry
 
     procedure Connect_Next_Unused(OI : in out Connector_Interface'Class; val : Connection_Type);
+    -- loop through existing outputs and assign first unattached.
 
 end Connectors;

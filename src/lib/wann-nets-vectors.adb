@@ -67,8 +67,8 @@ package body wann.nets.vectors is
                 GT.Trace(Debug, "  adding input" & i'Img
                          & "  (" & NN.Con2Str(input) & ")");
                 case input.T is
-                    when NN.I => net.inputs (input.Iidx).Add_Output((NN.N,idx));
-                    when NN.N => net.neurons(input.Nidx).Add_Output((NN.N,idx));
+                    when NN.I => net.inputs (input.Iidx).Add_and_Connect((NN.N,idx));
+                    when NN.N => net.neurons(input.Nidx).Add_and_Connect((NN.N,idx));
                     when NN.O | NN.None => raise Invalid_Connection;
                 end case;
             end;

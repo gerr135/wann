@@ -1,6 +1,6 @@
 package body Connectors is
 
-    procedure Add_Output(OI : in out Connector_Interface'Class; Output : Connection_Type) is
+    procedure Add_and_Connect(OI : in out Connector_Interface'Class; Output : Connection_Type) is
     begin
         OI.Add_Output(1);
         OI.Connect_Output(OI.NOutputs, Output);
