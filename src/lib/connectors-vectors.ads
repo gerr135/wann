@@ -53,4 +53,6 @@ private
         outputs : CV.Vector;
     end record;
 
+    pragma Inline(NOutputs, Output);
+
 end connectors.vectors;

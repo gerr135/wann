@@ -26,20 +26,18 @@ package body connectors.vectors is
     procedure Connect_Output(OI : in out Connector_Vector; idx : Index_Type; val : Connection_Type) is
         curCon : Connection_Type := OI.outputs(idx);
     begin
-        -- need to ensure that passed connection is not a duplicate
-        if curCon /= No_Connection then
-            for o in Index_Type'First .. idx - 1 loop
-                if OI.outputs(o) = val then
-                    raise Duplicate_Connection;
-                end if;
-            end loop;
-            -- but should not check the idx position
-            for o in idx + 1 .. OI.NOutputs loop
-                if OI.outputs(o) = val then
-                    raise Duplicate_Connection;
-                end if;
-            end loop;
-        end if;
+        -- need to ensure that passed connection is not a duplicate of already attached one
+        -- (except the one at idx)
+        for o in Index_Type'First .. idx - 1 loop
+            if OI.outputs(o) = val then
+                raise Duplicate_Connection;
+            end if;
+        end loop;
+        for o in idx + 1 .. OI.NOutputs loop
+            if OI.outputs(o) = val then
+                raise Duplicate_Connection;
+            end if;
+        end loop;
         OI.outputs.Replace_Element(idx, val);
     end Connect_Output;
 
@@ -54,7 +52,6 @@ package body connectors.vectors is
     begin
         -- search for connection
         for o in 1 .. Index_Type(OI.outputs.Length) loop
-            -- need to ensure that passed connection is not a duplicate
             if OI.outputs(o) = Output then
                 OI.outputs.Delete(o);
                 return;

@@ -2,6 +2,8 @@
 -- The semantics seem to be similar, even if connection designation may have different meaning,
 -- so it makes sense to have a single common package for all such instances.
 --
+-- NOTE: the outputs are unique (otherwise we get duplicate connections).
+--
 -- In case of Neurons a single output is connected to multiple other entities (neurons or outputs).
 -- In the case of NNet, single NNet input can be connected to multiple neurons
 -- (or even outputs directly, in a pass-thrugh configuration).
@@ -19,16 +21,24 @@ package Connectors is
 
     -- exceptions associated with Connector_Interface
     Duplicate_Connection : exception;
+        -- raised when trying to add a duplicate index to prevent identical connections
+
     Connection_Not_Found : exception;
+        -- raised by Del_Output or any lookup by external index (when not found)
+        -- raised by Connect_Next_Unused if no free ends are found
 
     subtype Index_Type is Index_Base range Index_Base'First + 1 .. Index_Base'Last;
 
-    type Connector_Interface is limited interface;
-    -- This one is used to provide a common signature for output handling by neurons ans inputs
+    ----------------------------------------------------------
+    -- main type
+    -- Used to provide a common signature for output handling by neurons ans inputs
     -- both have outputs handled in the same way. Neuron_Interface provides additional input-related
     -- methods. And both Input_Interface and Neuron_Interface have more specific primitives.
+    --
+    type Connector_Interface is limited interface;
 
-    -- Output handling primitives. Only handle internals. The other side is handled by NNet
+    -- Output handling primitives. Only handle internals.
+    -- The other side should be handled by calling entity
     function NOutputs(OI : Connector_Interface) return Index_Base is abstract;
     function Output  (OI : Connector_Interface; idx :  Index_Type) return Connection_Type is abstract;
 

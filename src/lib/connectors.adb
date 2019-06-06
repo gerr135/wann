@@ -14,6 +14,8 @@ package body Connectors is
                 return;
             end if;
         end loop;
+        -- if we got here, no unused connections are available
+        raise Connection_Not_Found;
     end;
 
 end Connectors;
