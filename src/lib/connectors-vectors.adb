@@ -24,7 +24,6 @@ package body connectors.vectors is
 
     overriding
     procedure Connect_Output(OI : in out Connector_Vector; idx : Index_Type; val : Connection_Type) is
-        curCon : Connection_Type := OI.outputs(idx);
     begin
         -- need to ensure that passed connection is not a duplicate of already attached one
         -- (except the one at idx)
