@@ -55,11 +55,13 @@ package body wann.nets.vectors is
     is
         use type Ada.Containers.Count_Type;
     begin
+        -- generate new index
         idx := NN.NeuronIndex(net.neurons.Length + 1); -- new index
         GT.Trace(Debug, "net.Add_Neuron" & idx'Img);
+        -- set generated idx in neuron and add it to the NNet container
         neur.Set_Index(idx);
         net.neurons.Append(neur);
-        -- now connect neur inputs to outputs of other entities
+        -- now connect neuron inputs to outputs of other entities that are already in NNet
         for i in 1 .. neur.NInputs loop
             declare
                 input : NN.ConnectionIndex := neur.Input(i);
@@ -113,7 +115,15 @@ package body wann.nets.vectors is
         -- and updating corresponding indices of all affected connections
         --
         -- Implementation postponed until design is clear:
-        -- there are multiple possible approaches on how to handle deletions (see Readme)
+        -- there are multiple possible approaches on how to handle deletions:
+        -- 1. we can update all the indices upon every deletion.
+        --    Less efficient, as every delete can force renumbering of the same indices
+        --    but can use A.C.Vectors directly.
+        -- 2. Can keep indices unchanged upon deletion, and update them by a separate "compact" procedure.
+        --    more eofficient, but less automatic - need not forget to call compact if needed.
+        --    A.C.Vectors autocompacts upon deletion, so cannot be used as is. Need another
+        --    container that supports sparse indexing..
+        -- (see also Readme)
         pragma Compile_Time_Warning (Standard.True, "Del_Neuron unimplemented");
         raise Program_Error with "Unimplemented procedure Del_Neuron";
     end Del_Neuron;
@@ -227,16 +237,22 @@ package body wann.nets.vectors is
 
     overriding
     procedure Add_Output(net : in out NNet; N : NN.OutputIndex := 1) is
+        emptyOutput  : NN.ConnectionIndex := (T=>NN.None);
     begin
-        pragma Compile_Time_Warning (Standard.True, "Add_Output unimplemented");
-        raise Program_Error with "Unimplemented procedure Add_Output";
+        net.outputs.Append(emptyOutput, Ada.Containers.Count_Type(N));
     end;
 
     overriding
     procedure Connect_Output(net : in out NNet; idx : NN.OutputIndex; val : NN.ConnectionIndex) is
     begin
-        pragma Compile_Time_Warning (Standard.True, "Connect_Output unimplemented");
-        raise Program_Error with "Unimplemented procedure Connect_Output";
+        -- A NNet output takes signal from a single neuron or input
+        -- but we have to set both sides of a connection
+        net.outputs.Replace_Element(idx, val);  -- direct assignment raises "discriminant check failed" here..
+        case val.T is
+            when NN.I => net.inputs (val.Iidx).Add_and_Connect((NN.O,idx));
+            when NN.N => net.neurons(val.Nidx).Add_and_Connect((NN.O,idx));
+            when NN.O | NN.None => raise Invalid_Connection;
+        end case;
     end;
 
     overriding
