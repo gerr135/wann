@@ -1,14 +1,18 @@
 pragma Ada_2012;
+
+with Ada.Strings.Fixed;
+
 package body nnet_types is
 
     function Con2Str(connection : ConnectionIndex) return String is
+        use Ada.Strings, Ada.Strings.Fixed;
     begin
         return connection.T'Img &
             (case connection.T is
                 when None=> "",
-                when I   => connection.Iidx'Img,
-                when N   => connection.Nidx'Img,
-                when O   => connection.Oidx'Img
+                when I   => Trim(connection.Iidx'Img, Side => Both),
+                when N   => Trim(connection.Nidx'Img, Side => Both),
+                when O   => Trim(connection.Oidx'Img, Side => Both)
             );
     end;
 

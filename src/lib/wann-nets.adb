@@ -1,4 +1,7 @@
 pragma Ada_2012;
+
+with Ada.Integer_Text_IO;
+
 package body wann.nets is
 
     ---------------------
@@ -57,10 +60,11 @@ package body wann.nets is
 
     procedure Print_Structure(net : in out NNet_Interface'Class;
                               F : Ada.Text_IO.File_Type := Ada.Text_IO.Standard_Output) is
-        use Ada.Text_IO;
+        use Ada.Text_IO, Ada.Integer_Text_IO;
     begin
-        Put_Line(F, "printout of NNet connections in format  Layer: Nidx|i1, i2..|o1, o2.. ;");
+        Put(F, "printout of NNet layout:  ");
         if net.Layers_Sorted then
+            Put_Line(F, "layer# |i1, i2.. |o1, o2.. ;");
             -- we print layer per line
             for l in 1 .. net.NLayers loop
                 Put(F, "L" & l'Img & ": ");
@@ -80,17 +84,20 @@ package body wann.nets is
                 New_Line(F);
             end loop;
         else
+            Put_Line(F, "unsorted layers;  neur# |i1, i2.. |o1, o2.. ;");
             -- we print stuff straight
             for n in 1 .. net.NNeurons loop
-                Put(F, net.Neuron(n).Index'Img & "|");
+                Put("  ");
+                Put(F, Integer(net.Neuron(n).Index), 2);
+                Put(" |");
                 for input of net.Neuron(n).Inputs loop
                     -- inefficient, better be redone through indexed loop and individual .Input calls
-                    Put(F, NN.Con2Str(input));
+                    Put(F, NN.Con2Str(input) & " ");
                 end loop;
                 Put(F,"|");
                 for output of net.Neuron(n).Outputs loop
                     -- see above note in Inputs loop for why .Outputs is yet unimplemented
-                    Put(F, NN.Con2Str(output));
+                    Put(F, NN.Con2Str(output) & " ");
                 end loop;
                 Put(F,";  ");
             end loop;
