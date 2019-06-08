@@ -99,7 +99,7 @@ package body wann.nets is
                     -- see above note in Inputs loop for why .Outputs is yet unimplemented
                     Put(F, NN.Con2Str(output) & " ");
                 end loop;
-                Put(F,";  ");
+                Put_Line(F,";");
             end loop;
             New_Line(F);
         end if;
