@@ -26,32 +26,46 @@ procedure tst_topol is
 
     use PW; use NN;
 
-    neur1 : PNV.Neuron := PNV.Create(Sigmoid, ((I,1),(I,2)), maxWeight => 1.0);
-    neur2 : PNV.Neuron := PNV.Create(Sigmoid, ((I,1),(I,2)), maxWeight => 1.0);
-    net1  : PNetV.NNet := PNetV.Create(Ni=>2, No=>1);
-    net2  : PNetV.NNet := PNetV.Create(Ni=>2, No=>2);
---     inputs1  : NN.Input_Array := (0.0, 1.0);
---     outputs1 : NN.Output_Array(1..1);
-
-
 begin  -- main
---     processCommandLine (params);
     Put_Line("creating basic 1-neuron network");
-    net1.Add_Neuron(neur1);
-    net1.Connect_Output(1,(N,1));
-    -- Add_Output is called implicitly by Create above
-    -- all outputs are already pre-created, we just need to connect them..
-    Put_Line("added neuron 1 and connected to output 1");
-    net1.Print_Structure;
+    declare
+        neur : PNV.Neuron := PNV.Create(Sigmoid, ((I,1),(I,2)), maxWeight => 1.0);
+        net  : PNetV.NNet := PNetV.Create(Ni=>2, No=>1);
+    begin
+        net.Add_Neuron(neur);
+        net.Connect_Output(1,(N,1));
+        -- Add_Output is called implicitly by Create above
+        -- all outputs are already pre-created, we just need to connect them..
+        Put_Line("added neuron 1 and connected to output 1");
+        net.Print_Structure;
+    end;
     --
     New_Line;
     Put_Line("creating 2-neuron network");
-    net2.Add_Neuron(neur1);
-    net2.Connect_Output(1,(N,1));
-    net2.Add_Neuron(neur2);
-    net2.Connect_Output(2,(N,2));
-    net2.Print_Structure;
---     Put_Line("running forward prop");
---     outputs1 := net1.Prop_Forward(inputs1);
---     Put_Line("done, output1 = " & outputs1(1)'Img);
+    declare
+        neur1 : PNV.Neuron := PNV.Create(Sigmoid, ((I,1),(I,2)), maxWeight => 1.0);
+        neur2 : PNV.Neuron := PNV.Create(Sigmoid, ((I,1),(I,2)), maxWeight => 1.0);
+        net   : PNetV.NNet := PNetV.Create(Ni=>2, No=>2);
+    begin
+        net.Add_Neuron(neur1);
+        net.Connect_Output(1,(N,1));
+        net.Add_Neuron(neur2);
+        net.Connect_Output(2,(N,2));
+        net.Print_Structure;
+    end;
+    --
+    New_Line;
+    Put_Line("creating 2-layer network from 3 neurons");
+    declare
+        neur1 : PNV.Neuron := PNV.Create(Sigmoid, ((I,1),(I,2)), maxWeight => 1.0);
+        neur2 : PNV.Neuron := PNV.Create(Sigmoid, ((I,1),(I,2)), maxWeight => 1.0);
+        neur3 : PNV.Neuron := PNV.Create(Sigmoid, ((N,1),(N,2)), maxWeight => 1.0);
+        net   : PNetV.NNet := PNetV.Create(Ni=>2, No=>1);
+    begin
+        net.Add_Neuron(neur1);
+        net.Add_Neuron(neur2);
+        net.Add_Neuron(neur3);
+        net.Connect_Output(1,(N,3));
+        net.Print_Structure;
+    end;
 end tst_topol;

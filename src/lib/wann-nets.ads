@@ -168,8 +168,9 @@ package wann.nets is
 
 
     -----------------------------------------
-    -- class-wide stuff: main utility
+    -- class-wide stuff
     --
+    --  Implementation-independent code for
     -- Add_Neuron discarding idx
     procedure Add_Neuron(net : in out NNet_Interface'Class; neur : in out PN.Neuron_Interface'Class);
 
@@ -194,6 +195,14 @@ package wann.nets is
     procedure Populate_At_Random (net : in out NNet_Interface'Class; Npts : NN.NeuronIndex_Base;  maxConnects : PN.InputIndex_Base := 0);
     -- populates net with new neurons or resets existing one to random configuration
     -- Npts needs to be passed in case of empty mutable net, otherwise it simply rearranges existing net.
+    --
+    -- This interface should be redesigned to be more general:
+    -- these methods should take more parameters:
+    --   Nconnection_Style - fixed, random: uniform, exp?, given distribution
+    --   Ncoonn distribution (optional)
+    --   Fraction to inputs/other neurons (or set numbers)
+    --   Neuron index distribution type: uniform, exp?, given distribution
+    --   Neuron index distribution (optional)
 
 
     --
