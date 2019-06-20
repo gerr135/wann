@@ -208,7 +208,9 @@ package wann.nets is
     --
     -- Layer handling
     --
-    procedure Sort_Layers (net : in out NNet_Interface'Class; Direction : Sort_Direction := Forward);
+    procedure Sort_Layers (net : in out NNet_Interface'Class;
+                           LG  : PL.Layer_Generator;
+                           Direction : Sort_Direction := Forward);
     -- perform a topological sort, (re-)creating layers tracking the connections,
     -- to allow optimizations (parallel computation, use of GPU).
     --
@@ -262,6 +264,7 @@ private
     type NNet_Interface is abstract limited new PCN.Connector_Interface with record
         autosort_layers : Boolean := False;
         layer_sort_direction  : Sort_Direction := Forward;  -- reset by Sort_Layers
+        LG : PL.Layer_Generator;
     end record;
 
     type Cached_NNet_Interface is abstract new NNet_Interface with null record;
