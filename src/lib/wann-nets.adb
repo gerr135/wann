@@ -32,7 +32,7 @@ package body wann.nets is
         net.autosort_layers := Autosort;
         net.layer_sort_direction := Direction;
         if Autosort then
-            net.Sort_Layers(Direction);
+            net.Sort_Layers(net.LG, Direction);
         end if;
     end Set_Autosort_Layers;
 
@@ -135,19 +135,28 @@ package body wann.nets is
       raise Program_Error with "Unimplemented procedure Populate_At_Random";
    end Populate_At_Random;
 
-   -----------------
-   -- Sort_Layers --
-   -----------------
-
-   procedure Sort_Layers
-     (net : in out NNet_Interface'Class;
-      Direction : Sort_Direction := Forward)
+    -----------------
+    -- Sort_Layers --
+    -----------------
+   procedure Sort_Layers (net : in out NNet_Interface'Class;
+                          LG  : PL.Layer_Generator;
+                          Direction : Sort_Direction := Forward)
    is
+       -- we need to implement the "simulation sorting" - run through connections starting from inputs
+       -- and establishing the order..
    begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Sort_Layers unimplemented");
-      raise Program_Error with "Unimplemented procedure Sort_Layers";
-   end Sort_Layers;
+       -- start with inputs and generate 1st layer
+       declare
+           L1 : PL.LayerClass_Access := LG.all;
+           -- cannot create layers directly in interface/abstract type.
+           --Need to pass a layer constructor in here..
+       begin
+           Null;
+       end;
+        --  Generated stub: replace with real body!
+        pragma Compile_Time_Warning (Standard.True, "Sort_Layers unimplemented");
+        raise Program_Error with "Unimplemented procedure Sort_Layers";
+    end Sort_Layers;
 
    -------------------
    -- Update_Layers --
