@@ -4,7 +4,7 @@ project wann is
     -- supports debug (default) or release modes
     -- use with -Xmode=release to prepare a release version
 
-    TESTS := ("tst_topol.adb");
+    TESTS := ("tst_topol.adb", "tst_forward_prop_01.adb");
 
     for Create_Missing_Dirs use "True";
 
