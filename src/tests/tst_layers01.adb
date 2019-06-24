@@ -41,7 +41,7 @@ begin  -- main
         net.Connect_Output(3,(N,3));
         net.Print_Structure;
         Put_Line("sorting layers..");
-        net.Sort_Layers;
+--         net.Sort_Layers;
         net.Print_Structure;
     end;
     --
