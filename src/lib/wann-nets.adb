@@ -139,15 +139,23 @@ package body wann.nets is
     -- Sort_Layers --
     -----------------
    procedure Sort_Layers (net : in out NNet_Interface'Class;
-                          LG  : PL.Layer_Generator;
+                          LG  : PL.Layer_Generator := Null;
                           Direction : Sort_Direction := Forward)
    is
        -- we need to implement the "simulation sorting" - run through connections starting from inputs
        -- and establishing the order..
+       use PL;
    begin
+       if (LG = Null) and (net.LG = Null) then
+           raise Unset_Layer_Generator;
+       end if;
+       if LG /= Null then
+           -- reset stored generator to the passed one (and use stored value throughout)
+           net.LG := LG;
+       end if;
        -- start with inputs and generate 1st layer
        declare
-           L1 : PL.LayerClass_Access := LG.all;
+           L1 : PL.LayerClass_Access := net.LG.all;
            -- cannot create layers directly in interface/abstract type.
            --Need to pass a layer constructor in here..
        begin
