@@ -209,10 +209,12 @@ package wann.nets is
     -- Layer handling
     --
     procedure Sort_Layers (net : in out NNet_Interface'Class;
-                           LG  : PL.Layer_Generator := Null;
+                           LG  : PL.Layer_Generator := Null; -- Null means to use pre-set generator
                            Direction : Sort_Direction := Forward);
     -- perform a topological sort, (re-)creating layers tracking the connections,
     -- to allow optimizations (parallel computation, use of GPU).
+    -- raises:
+    --   Unset_Layer_Generator  - if LG is Null and generator was not set
     --
     -- Forward and backward sort will produce different layering if cycles are present
     -- (which is a major modus operandi of this lib).

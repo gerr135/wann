@@ -95,10 +95,14 @@ package wann.layers is
     --     procedure Clear  (LI : in out Layer_Interface) is abstract;
     --
     function  NNeurons(LI : Layer_Interface) return NeuronIndex_Base is abstract;
-    procedure Add_Neuron(LI : in out Layer_Interface; neur : PN.NeuronClass_Access) is abstract;
---     procedure Del_Neuron(LI : in out Layer_Interface; idx : NeuronIndex) is abstract;
+    --     procedure Add_Neuron(LI : in out Layer_Interface; neur : PN.NeuronClass_Access) is abstract;
+    --     procedure Del_Neuron(LI : in out Layer_Interface; idx : NeuronIndex) is abstract;
     function  Neuron(LI : Layer_Interface; idx : NeuronIndex) return PN.NeuronClass_Access is abstract;
     --     procedure Reset_Neuron(LI : Layer_Interface; idx : NeuronIndex; np : PN.Neuron_Access) is abstract;
+
+    procedure Add_Neuron(LI : in out Layer_Interface; Nidx : NN.ConnectionIndex) is abstract;
+    -- adds neuron to layer by index. Ignores duplicates (so that each neuron is added only once)
+
 
     --------------
     -- propagators

@@ -157,9 +157,14 @@ package body wann.nets is
        declare
            L1 : PL.LayerClass_Access := net.LG.all;
            -- cannot create layers directly in interface/abstract type.
-           --Need to pass a layer constructor in here..
+           -- Need to pass a layer constructor in here..
        begin
-           Null;
+           -- go oer inputs and add all their connections to L1
+           for i in 1 .. net.NInputs loop
+               for n in 1 .. net.Input(i).NOutputs loop
+                   L1.Add_Neuron(net.Input(i).Output(n));
+               end loop;
+           end loop;
        end;
         --  Generated stub: replace with real body!
         pragma Compile_Time_Warning (Standard.True, "Sort_Layers unimplemented");

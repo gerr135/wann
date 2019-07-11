@@ -12,6 +12,7 @@ with Ada.Text_IO, Ada.Integer_Text_IO;
 
 with wann.nets.vectors;
 with wann.neurons.vectors;
+with wann.layers.vectors;
 
 procedure tst_layers01 is
 
@@ -22,8 +23,11 @@ procedure tst_layers01 is
     package PNetV  is new PNet.vectors;
     package PN renames PNet.PN;
     package PNV is new PN.vectors;
+    package PL renames PNet.PL;
+    package PLV is new PL.vectors;
 
     use PW; use NN;
+--     use Pnet;
 
 begin  -- main
     Put_Line("creating net of 3 neurons in parallel (1 layer)");
@@ -41,7 +45,7 @@ begin  -- main
         net.Connect_Output(3,(N,3));
         net.Print_Structure;
         Put_Line("sorting layers..");
-        net.Sort_Layers;
+        net.Sort_Layers(LG => PLV.Generate'Access, Direction => Forward);
         net.Print_Structure;
     end;
     --
