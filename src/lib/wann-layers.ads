@@ -87,7 +87,7 @@ package wann.layers is
     type Layer_Reference (Data : not null access Layer_Interface'Class) is private
         with Implicit_Dereference => Data;
 
-    type Layer_Generator is access function return LayerClass_Access;
+    type Layer_Generator is access function return Layer_Interface'Class;
 
     -- primitives
     function  ToRec  (LI : Layer_Interface) return LayerRec is abstract;

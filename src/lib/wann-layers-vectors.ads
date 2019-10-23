@@ -48,10 +48,10 @@ package wann.layers.vectors is
     function  Neuron(L : Layer; idx : NeuronIndex) return PN.NeuronClass_Access;
     --     procedure SetNeuron(LI : Layer_Interface; idx : NeuronIndex; np : PN.Neuron_Access) is abstract;
 
-    not overriding
-    function Create return Layer;
+--     not overriding
+    function Generate return Layer_Interface'Class;
 
-    function Generate return LayerClass_Access;
+--     function Generate return LayerClass_Access;
     -- calls create and casts the returned access to be used iderctly with generator signature
 
 private

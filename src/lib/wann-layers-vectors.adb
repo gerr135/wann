@@ -72,27 +72,26 @@ package body wann.layers.vectors is
       return raise Program_Error with "Unimplemented function Neuron";
    end Neuron;
 
-   ------------
-   -- Create --
-   ------------
-
-   not overriding function Create
-      return Layer
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Create unimplemented");
-      return raise Program_Error with "Unimplemented function Create";
-   end Create;
-
     --------------
     -- Generate --
     --------------
 
-    function Generate return LayerClass_Access is
-        L : LayerClass_Access := new Layer'Class Create;
-    begin
-        return L;
-    end Generate;
+--    not overriding
+   function Generate return Layer_Interface'Class
+   is
+   begin
+      --  Generated stub: replace with real body!
+      pragma Compile_Time_Warning (Standard.True, "Generate unimplemented");
+      return raise Program_Error with "Unimplemented function Generate";
+   end Generate;
+
+
+--     function Generate return LayerClass_Access is
+-- --         L : LayerClass_Access := Layer'Class Create;
+--     begin
+--         --         return L;
+--         pragma Compile_Time_Warning (Standard.True, "Create unimplemented");
+--         return raise Program_Error with "Unimplemented function Create";
+--     end Generate;
 
 end wann.layers.vectors;

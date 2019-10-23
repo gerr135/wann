@@ -155,7 +155,7 @@ package body wann.nets is
        end if;
        -- start with inputs and generate 1st layer
        declare
-           L1 : PL.LayerClass_Access := net.LG.all;
+           L1 : PL.Layer_Interface'Class := net.LG.all;
            -- cannot create layers directly in interface/abstract type.
            -- Need to pass a layer constructor in here..
        begin
