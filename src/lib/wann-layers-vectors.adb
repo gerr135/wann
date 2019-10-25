@@ -75,15 +75,11 @@ package body wann.layers.vectors is
     --------------
     -- Generate --
     --------------
-
---    not overriding
-   function Generate return Layer_Interface'Class
-   is
-   begin
-      --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Generate unimplemented");
-      return raise Program_Error with "Unimplemented function Generate";
-   end Generate;
+    function Generate return Layer_Interface'Class is
+        L : Layer;
+    begin
+        return Layer_Interface'Class(L);
+    end Generate;
 
 
 --     function Generate return LayerClass_Access is
