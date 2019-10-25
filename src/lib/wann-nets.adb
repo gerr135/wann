@@ -155,20 +155,56 @@ package body wann.nets is
        end if;
        -- start with inputs and generate 1st layer
        declare
-           L1 : PL.Layer_Interface'Class := net.LG.all;
-           -- cannot create layers directly in interface/abstract type.
-           -- Need to pass a layer constructor in here..
+           Last_Layer : PL.Layer_Interface'Class := net.LG.all;
+--            Open_Connections : Boolean := True; -- tracking if any connections to follow still left
+           idx : NN.LayerIndex; -- in-net layer index; discarded..
        begin
-           -- go oer inputs and add all their connections to L1
+           -- go over inputs and add all their connections to Last_Layer
            for i in 1 .. net.NInputs loop
                for n in 1 .. net.Input(i).NOutputs loop
-                   L1.Add_Neuron(net.Input(i).Output(n));
+                   Last_Layer.Add_Neuron(net.Input(i).Output(n));
                end loop;
            end loop;
+           net.Add_Layer(Last_Layer, idx);
+           --
+           loop
+               -- go over las layer outputs and add them to the next layer..
+                declare
+                    Next_Layer : PL.Layer_Interface'Class := net.LG.all;
+                    connection : NN.ConnectionIndex;
+                    use type NN.Connection_Type;
+                begin
+                    -- go over inputs and add all their connections to L1
+                    for i in 1 .. Last_Layer.NNeurons loop
+                        for n in 1 .. Last_Layer.Neuron(i).NOutputs loop
+                            connection := Last_Layer.Neuron(i).Output(n);
+                            if connection.T = NN.N then
+                                -- layers contain only neurons. So, if this particular connection
+                                -- reached an output (or is Null), its a dead-end
+                                -- (Neuron outputs should not connect to Inputs either,
+                                -- so only NN.N should be accepted)
+                                Next_Layer.Add_Neuron(connection);
+                            end if;
+                        end loop; -- for n
+                    end loop; -- for i
+                    --
+                    -- if new layer is empty, we depleted connections
+                    exit when Next_Layer.NNeurons = 0;
+                    --
+                    -- ATTN!!
+                    -- NOTE:
+                    -- Need to add cycle detection!
+                    --
+                    --   Simplest case: check for Next_Layer = Last_Layer.
+                    --   But may need layer cycling infrastructure in place first.
+                    --   General case (layer repetition N-deep back) needs tracking of all the constructed layers..
+                    --
+                    -- otherwise cycle local layer vars and continue
+                    net.Add_Layer(Next_Layer, idx);
+                    Last_Layer := Next_Layer;
+                end; -- declare block
+           end loop; -- main loop, cycling over layers
        end;
-        --  Generated stub: replace with real body!
-        pragma Compile_Time_Warning (Standard.True, "Sort_Layers unimplemented");
-        raise Program_Error with "Unimplemented procedure Sort_Layers";
     end Sort_Layers;
 
    -------------------
