@@ -4,4 +4,7 @@ SOURCES = src/*.ad?
 gpr:
 	gprbuild -P wann.gpr
 
-.PHONY gpr:
+clean:
+	rm -f obj/*/* bin/*
+
+.PHONY gpr, clean:

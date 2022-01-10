@@ -41,12 +41,18 @@ package wann.layers.vectors is
     function  NNeurons(L : Layer) return NeuronIndex_Base;
 
     overriding
-    procedure Add_Neuron(L : in out Layer; np : PN.NeuronCLass_Access);
+    procedure Add_Neuron(L : in out Layer; Nidx : NN.ConnectionIndex);
     --     procedure DelNeuron(LI : Layer_Interface; idx : NeuronIndex) is abstract;
 
     overriding
     function  Neuron(L : Layer; idx : NeuronIndex) return PN.NeuronClass_Access;
     --     procedure SetNeuron(LI : Layer_Interface; idx : NeuronIndex; np : PN.Neuron_Access) is abstract;
+
+--     not overriding
+    function Generate return Layer_Interface'Class;
+
+--     function Generate return LayerClass_Access;
+    -- calls create and casts the returned access to be used iderctly with generator signature
 
 private
 

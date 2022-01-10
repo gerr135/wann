@@ -56,12 +56,12 @@ generic
 package wann is
 
     -- Logging
-    -- We use gnatcoll.traces for logging in this project, as it is sufficiently simple 
+    -- We use gnatcoll.traces for logging in this project, as it is sufficiently simple
     -- to handle but is easily tunable
     package GT renames GNATCOLL.Traces;
     Debug : constant GT.Trace_Handle := GT.Create ("DBG");
 
-    
+
     ----------------------------
     -- exceptions
     --
@@ -70,6 +70,9 @@ package wann is
 
     Unsorted_Net_Propagation : Exception;
     --  trying to propagate through NNet before creating layers
+
+    Unset_Layer_Generator : Exception;
+    --  trying to use Layer_Generator before it is set in nnet
 
     Unset_Value_Access : Exception;
     --  trying to access a not-yet-set (or already cleared) cached value

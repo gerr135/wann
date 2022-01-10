@@ -5,7 +5,10 @@ package body wann.layers.vectors is
    -- ToRec --
    -----------
 
-   overriding function ToRec (L : Layer) return LayerRec is
+   overriding function ToRec
+     (L : Layer)
+      return LayerRec
+   is
    begin
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "ToRec unimplemented");
@@ -16,47 +19,75 @@ package body wann.layers.vectors is
    -- FromRec --
    -------------
 
-   overriding procedure FromRec (L : in out Layer; LR : LayerRec) is
+   overriding procedure FromRec
+     (L : in out Layer;
+      LR : LayerRec)
+   is
    begin
       --  Generated stub: replace with real body!
       pragma Compile_Time_Warning (Standard.True, "FromRec unimplemented");
       raise Program_Error with "Unimplemented procedure FromRec";
    end FromRec;
 
-   ------------
-   -- Length --
-   ------------
+   --------------
+   -- NNeurons --
+   --------------
 
-   overriding function NNeurons (L : Layer) return NeuronIndex_Base is
+   overriding function NNeurons
+     (L : Layer)
+      return NeuronIndex_Base
+   is
    begin
       --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "Length unimplemented");
-      return raise Program_Error with "Unimplemented function Length";
+      pragma Compile_Time_Warning (Standard.True, "NNeurons unimplemented");
+      return raise Program_Error with "Unimplemented function NNeurons";
    end NNeurons;
 
-   ---------------
-   -- AddNeuron --
-   ---------------
+   ----------------
+   -- Add_Neuron --
+   ----------------
 
-   overriding
-   procedure Add_Neuron (L : in out Layer; np : PN.NeuronCLass_Access) is
+   overriding procedure Add_Neuron
+     (L : in out Layer;
+      Nidx : NN.ConnectionIndex)
+   is
    begin
       --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "AddNeuron unimplemented");
-      raise Program_Error with "Unimplemented procedure AddNeuron";
+      pragma Compile_Time_Warning (Standard.True, "Add_Neuron unimplemented");
+      raise Program_Error with "Unimplemented procedure Add_Neuron";
    end Add_Neuron;
 
-   ---------------
-   -- GetNeuron --
-   ---------------
+   ------------
+   -- Neuron --
+   ------------
 
-   overriding
-   function Neuron (L : Layer; idx : NeuronIndex)
-   return PN.NeuronClass_Access is
+   overriding function Neuron
+     (L : Layer;
+      idx : NeuronIndex)
+      return PN.NeuronClass_Access
+   is
    begin
       --  Generated stub: replace with real body!
-      pragma Compile_Time_Warning (Standard.True, "GetNeuron unimplemented");
-      return raise Program_Error with "Unimplemented function GetNeuron";
+      pragma Compile_Time_Warning (Standard.True, "Neuron unimplemented");
+      return raise Program_Error with "Unimplemented function Neuron";
    end Neuron;
+
+    --------------
+    -- Generate --
+    --------------
+    function Generate return Layer_Interface'Class is
+        L : Layer;
+    begin
+        return Layer_Interface'Class(L);
+    end Generate;
+
+
+--     function Generate return LayerClass_Access is
+-- --         L : LayerClass_Access := Layer'Class Create;
+--     begin
+--         --         return L;
+--         pragma Compile_Time_Warning (Standard.True, "Create unimplemented");
+--         return raise Program_Error with "Unimplemented function Create";
+--     end Generate;
 
 end wann.layers.vectors;
